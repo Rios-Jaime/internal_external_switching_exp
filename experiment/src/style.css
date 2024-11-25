@@ -1,19 +1,8 @@
 /*******************************************************/
 /*******************************************************/
 
-body {
-  background-color: #707070;
-  color: white;
-}
-
-.fb_box {
-  width: 35vw;
-  height: 20vh;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -175%);
+body, .jspsych-display-element {
+  background-color: #A9A9A9 !important; /* Force light grey background */
 }
 
 .picture_box {
@@ -26,61 +15,10 @@ body {
   text-align: center;
 }
 
+/* Fixation in the center */
 .fixation {
-  text-align: center;
-  font-size: 60px;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  -webkit-transform: translateY(-50%);
-  color: white;
-}
-
-.cue-text {
-  width: 20vw;
-  height: 20vh;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
-  background-color: none;
-}
-
-.bigbox {
-  width: 100%;
-  margin: auto;
-  min-height: 100%;
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  margin-right: 0%;
-  background-color: none;
-  text-align: center;
-}
-
-.instructBox {
-  width: 80vw;
-  height: 10vw;
-  position: absolute;
-  top: 10%;
-  left: 50%;
-  margin-right: 0%;
-  transform: translate(-50%, -50%);
-  background-color: none;
-  font-size: 24px;
-}
-
-.prompt_box {
-  width: 75%;
-  height: 20%;
-  position: absolute;
-  top: 15%;
-  left: 20%;
-  transform: translate(-50%, -45%);
-  margin-right: 0%;
-  background-color: none;
-  text-align: center;
+  font-size: 40px;
+  margin-bottom: 20px;
 }
 
 img.center {
@@ -98,50 +36,9 @@ img.center {
   width: 120px;
 }
 
-/*******************************************************/
-/************       Posner CSS Styles        ***********/
-/*******************************************************/
-
-.gng_number {
-  width: 5vw;
-  height: 5vw;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: 0%;
-  transform: translate(-50%, -50%);
-  background-color: none;
-}
-
-#left_box {
-  width: 25vw;
-  height: 25vw;
-  background: none;
-  position: absolute;
-  border-style: solid;
-  border-width: 5px;
-  border-color: white;
-  top: 50%;
-  left: 25%;
-  margin-right: -25%;
-  transform: translate(-50%, -50%);
-}
-
-#right_box {
-  width: 25vw;
-  height: 25vw;
-  background: none;
-  position: absolute;
-  border-style: solid;
-  border-width: 5px;
-  border-color: white;
-  top: 50%;
-  left: 75%;
-  margin-right: -75%;
-  transform: translate(-50%, -50%);
-}
-
-.star {
-  font-size: 60px;
-  color: white;
+.center-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0;
 }
