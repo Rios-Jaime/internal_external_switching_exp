@@ -1,7 +1,21 @@
 var jsPsych = initJsPsych({
   on_finish: function () {
     jsPsych.data.displayData();
+    //window.location = "https://app.prolific.co/submissions/complete?cc=XXXXXXX"
+    
+    const experimentData = jsPsych.data.get().json();
   },
+});
+
+// capture info from Prolific
+var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
+var study_id = jsPsych.data.getURLVariable("STUDY_ID");
+var session_id = jsPsych.data.getURLVariable("SESSION_ID");
+
+jsPsych.data.addProperties({
+  subject_id: subject_id,
+  study_id: study_id,
+  session_id: session_id,
 });
 
 /* ************************************ */
