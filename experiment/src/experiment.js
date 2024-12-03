@@ -43,9 +43,9 @@ var jsPsych = initJsPsych({
 //var study_id = jsPsych.data.getURLVariable("STUDY_ID");
 //var session_id = jsPsych.data.getURLVariable("SESSION_ID");
 
-var subject_id = jsPsych.randomization.randomID(8)
-var study_id = 'attention-test'
-)var session_id = 'ses-1'
+var subject_id = jsPsych.randomization.randomID(8);
+var study_id = "attention-test";
+var session_id = "ses-1";
 
 jsPsych.data.addProperties({
   subject_id: subject_id,
@@ -886,7 +886,7 @@ var animate_objects = [
   "cockroach",
   "giraffe",
   "gorilla",
-  "rhinosceros",
+  "rhinoceros",
   "rabbit",
   "scorpion",
   "seahorse",
