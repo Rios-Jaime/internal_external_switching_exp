@@ -1,16 +1,51 @@
 var jsPsych = initJsPsych({
   on_finish: function () {
     jsPsych.data.displayData();
-    //window.location = "https://app.prolific.co/submissions/complete?cc=XXXXXXX"
-    
+    // Uncomment the following line to redirect participants after finishing
+    // window.location = "https://app.prolific.co/submissions/complete?cc=XXXXXXX";
+
+    // Collect experiment data
     const experimentData = jsPsych.data.get().json();
+
+    // Define a function to send data with retry logic
+    const sendData = () => {
+      fetch("/egner", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          participant_id: subject_id, // Replace 'subject_id' with the appropriate variable or method to get the participant ID
+          data: experimentData,
+        }),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log("Data successfully sent to server");
+          } else {
+            console.error("Failed to send data to server; retrying...");
+            setTimeout(sendData, 3000); // Retry after 3 seconds
+          }
+        })
+        .catch((error) => {
+          console.error("Error sending data:", error);
+          setTimeout(sendData, 3000); // Retry after 3 seconds
+        });
+    };
+
+    // Call sendData to initiate the process
+    sendData();
   },
 });
 
 // capture info from Prolific
-var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
-var study_id = jsPsych.data.getURLVariable("STUDY_ID");
-var session_id = jsPsych.data.getURLVariable("SESSION_ID");
+//var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
+//var study_id = jsPsych.data.getURLVariable("STUDY_ID");
+//var session_id = jsPsych.data.getURLVariable("SESSION_ID");
+
+var subject_id = jsPsych.randomization.randomID(8)
+var study_id = 'attention-test'
+)var session_id = 'ses-1'
 
 jsPsych.data.addProperties({
   subject_id: subject_id,
