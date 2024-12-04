@@ -31,6 +31,11 @@ var jsPsych = initJsPsych({
         });
     };
 
+    // Call sendData to initiate the upload to the server
+    sendData();
+  },
+});
+
 // capture info from Prolific
 //var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
 //var study_id = jsPsych.data.getURLVariable("STUDY_ID");
