@@ -985,8 +985,8 @@ var pageInstruct = [
     <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the cued reference item. The finger mappings are shown below:</p>
     ${promptTextList}
 
-    <p class="block-text">Looking at the example trial above, the <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span> cue indicates that on this trial you would need to compare the target to the item held in memory. Because the target (insert object name) is larger than the item held in memory (insert object name), you would press the <b>${responseMappings.index}</b> button.</p>
-
+    <p class="block-text"> Looking at the example trial above, the <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span> cue indicates that on this trial you would need to compare the target to the ${internalColor === "#1A85FF" ? "internal item" : "external item"}. Because the target (<i>leopard</i>) is larger than the ${internalColor === "#1A85FF" ? "internal item" : "external item"} (<i>${internalColor === "#1A85FF" ? "tennis ball" : "drill"}</i>), you would press your <b>${responseMappings.larger}</b> finger.
+  </p>
     <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
     ${speedReminder}
   </div>
