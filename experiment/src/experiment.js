@@ -832,12 +832,9 @@ var fileTypeExtension = "png";
 var preFileType =
   "<img class='center' src='/images/"; // Adjusted to match static file serving
 
-var trialExamplePath = pathSource + "trial_example/trial_example.png";
-
-console.log(trialExamplePath)
-
 // PRE LOAD IMAGES HERE
 var pathSource = "/images/";
+var trialExamplePath = pathSource + "trial_example/trial_example.png";
 
 var tool_objects = [
   "axe",
