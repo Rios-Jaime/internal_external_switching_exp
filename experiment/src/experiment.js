@@ -832,9 +832,9 @@ var fileTypeExtension = "png";
 var preFileType =
   "<img class='center' src='/images/"; // Adjusted to match static file serving
 
-var trialExample = "/images/trial_example/trial_example.png"; // Relative to server root
-
 var trialExamplePath = pathSource + "trial_example/trial_example.png";
+
+console.log(trialExamplePath)
 
 // PRE LOAD IMAGES HERE
 var pathSource = "/images/";
