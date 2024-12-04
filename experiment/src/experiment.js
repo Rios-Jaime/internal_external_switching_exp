@@ -832,11 +832,10 @@ var fileTypeExtension = "png";
 var preFileType =
   "<img class = center src='/static/internal_external_switching_exp/experiment/images/";
 var trialExample =
-  "/home/vcm/egner/internal_external_switching_exp/experiment/images/trial_example.png";
+  "/internal_external_switching_exp/experiment/images/trial_example.png";
 
 // PRE LOAD IMAGES HERE
-var pathSource =
-  "/home/vcm/egner/internal_external_switching_exp/experiment/images/";
+var pathSource = "/internal_external_switching_exp/experiment/images/";
 
 var tool_objects = [
   "axe",
