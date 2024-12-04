@@ -732,8 +732,8 @@ var getResponse = function () {
 const responseMappings = assignedCondition.response_mapping
   .split(", ")
   .reduce((acc, mapping) => {
-    const [meaning, key] = mapping.split(":"); // Map 'smaller' and 'larger' to keys
-    acc[meaning] = key;
+    const [finger, meaning] = mapping.split(":"); // Map 'index' and 'middle' to 'smaller' or 'larger'
+    acc[meaning] = finger === "index" ? "," : "."; // Ensure fixed keys for fingers
     return acc;
   }, {});
 
