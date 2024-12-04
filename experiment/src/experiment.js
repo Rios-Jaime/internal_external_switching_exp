@@ -178,27 +178,6 @@ function getRandomPosition() {
   return Math.random() < 0.5 ? "left" : "right";
 }
 
-function getResponseMappings(group_index) {
-  var mappings;
-
-  switch (group_index % 4) {
-    case 0: // Condition 1
-      mappings = {
-        smaller: ",",
-        larger: ".",
-      };
-      break;
-    case 1: // Condition 2
-      mappings = {
-        smaller: ".",
-        larger: ",",
-      };
-      break;
-  }
-
-  return mappings;
-}
-
 const getInstructFeedback = () =>
   `<div class="centerbox"><p class="center-block-text">${feedbackInstructText}</p></div>`;
 
@@ -218,7 +197,7 @@ const getFixation = (color = "black") => `
 `;
 
 const getCue = () =>
-  getFixation(currCue === "internal" ? "#1A85FF" : "#D41159");
+  getFixation(currCue === "internal" ? internalColor : externalColor);
 
 const getEncodingStim = () => {
   // Determine the internal stimulus image
@@ -749,19 +728,37 @@ var getResponse = function () {
 /* ************************************ */
 
 // Generic Task Variables
-var group_index =
-  typeof window.efVars !== "undefined" ? window.efVars.group_index : 1;
+// Extract response mappings from assignedCondition
+const responseMappings = assignedCondition.response_mapping
+  .split(", ")
+  .reduce((acc, mapping) => {
+    const [key, meaning] = mapping.split(":");
+    acc[meaning] = key; // e.g., acc.smaller = ','; acc.larger = '.'
+    return acc;
+  }, {});
 
-var expID = "cued_task_switching_rdoc";
+const internalColor = assignedCondition.internal_color;
+const externalColor = assignedCondition.external_color;
+
+console.log("Response Mappings:", responseMappings); // {index: 'smaller', middle: 'larger'}
+
+var expID = "internal_external_switching_task";
 var expStage = "practice";
 
 const possibleResponses = [
-  ["index finger", ",", "comma key (,)"],
-  ["middle finger", ".", "period (.)"],
+  [
+    "index finger",
+    responseMappings.smaller,
+    `key (${responseMappings.smaller})`,
+  ],
+  [
+    "middle finger",
+    responseMappings.larger,
+    `key (${responseMappings.larger})`,
+  ],
 ];
 
-const choices = [possibleResponses[0][1], possibleResponses[1][1]];
-var responseMappings = getResponseMappings(group_index);
+const choices = [responseMappings.smaller, responseMappings.larger];
 
 // Toggle Attention Checks
 var runAttentionChecks = false;
@@ -829,8 +826,7 @@ var tasks = {
 
 // Image Variables
 var fileTypeExtension = "png";
-var preFileType =
-  "<img class='center' src='/images/"; // Adjusted to match static file serving
+var preFileType = "<img class='center' src='/images/"; // Adjusted to match static file serving
 
 // PRE LOAD IMAGES HERE
 var pathSource = "/images/";
@@ -918,7 +914,14 @@ var speedReminder = `
   </p>
 `;
 
-const responseKeys = `<p class='block-text'>Press the <b>${possibleResponses[0][2]}</b> if the target is larger and the <b>${possibleResponses[1][2]}</b> if the target is smaller than the referent object.</p>`;
+const responseKeys = `
+  <p class='block-text'>
+    Press the <b>${possibleResponses[1][2]}</b> if the target is <b>larger</b> 
+    and the <b>${possibleResponses[0][2]}</b> if the target is <b>smaller</b> 
+    than the referent object.
+  </p>
+`;
+
 var currStim = "";
 
 var feedbackInstructText = `
@@ -935,16 +938,13 @@ var feedbackText =
   "<div class = centerbox><p class = center-block-text>Press <i>enter</i> to begin practice.</p></div>";
 
 var promptTextList = `
-  <ul style="text-align:center;font-size:24px; ">
-    Press <b>comma key (,)</b> if the target is <b>${
-      responseMappings.smaller === "," ? "smaller" : "larger"
-    }</b> and <b>period key (.)</b> if the target is <b>${
-  responseMappings.smaller === "," ? "larger" : "smaller"
-}</b>
+  <ul style="text-align:center; font-size:24px;">
+    Press <b>${responseMappings.smaller}</b> if the target is <b>smaller</b> 
+    and <b>${responseMappings.larger}</b> if the target is <b>larger</b>.
   </ul>
 `;
 
-var promptText = `
+const promptText = `
   <div style="
     position: absolute; 
     top: 5%; 
@@ -953,49 +953,50 @@ var promptText = `
     text-align: left; 
     font-size: 16px; 
     line-height: 1.2;">
-    <p><b>comma key (,)</b> if <b>${
-      responseMappings.smaller === "," ? "smaller" : "larger"
-    }</b> and 
-    <b>period key (.)</b> if <b>${
-      responseMappings.smaller === "," ? "larger" : "smaller"
-    }</b> <br> <span style="display: inline-block; width: 20px; height: 20px; background-color: #D41159; margin-bottom: -4px; border: 1px solid black;"></span> fixation indicated memory and <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span> fixation indicated perception item.
+    <p><b>${responseMappings.smaller} key</b> if <b>smaller</b> and 
+    <b>${responseMappings.larger} key</b> if <b>larger</b>.<br> 
+    <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span> indicates memory (internal item) and 
+    <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> indicates perception (external item).
     </p>
   </div>
 `;
 
-var pageInstruct = [
+const pageInstruct = [
   `
   <div class="centerbox">
-    <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross ( <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span>  or  <span style="display: inline-block; width: 20px; height: 20px; background-color: #D41159; margin-bottom: -4px; border: 1px solid black;"></span> ), and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color ( <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span>  or  <span style="display: inline-block; width: 20px; height: 20px; background-color: #D41159; margin-bottom: -4px; border: 1px solid black;"></span> ) of the fixation cross shown on the screen between the memory object and the target screen.</p>
+    <p class="block-text">
+      During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. 
+      This is followed by a colored fixation cross 
+      (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> 
+      or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>), 
+      and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) 
+      is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; 
+      in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color 
+      (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> 
+      or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>) 
+      of the fixation cross shown on the screen between the memory object and the target screen.
+    </p>
     
     <div class="center-image">
       <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
     </div>
 
-    <p class="block-text">Place your right-hand index finger on the <b>comma key (,)</b> and your right-hand middle finger on the <b>period key (.)</b></p>
+    <p class="block-text">
+      Place your right-hand index finger on the <b>${responseMappings.smaller}</b> key for smaller 
+      and your right-hand middle finger on the <b>${responseMappings.larger}</b> key for larger.
+    </p>
 
-    <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: #D41159; margin-bottom: -4px; border: 1px solid black;"></span> then compare the target to the reference item held in memory (internal item). If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span> then compare the target to the reference item shown alongside it on the screen (external item).</p>
-
-  </div>
-  `,
-  `
-
-    <div class="center-image">
-      <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
-    </div>
-
-  <div class="centerbox">
-    <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the cued reference item. The finger mappings are shown below:</p>
-    ${promptTextList}
-
-    <p class="block-text">Looking at the example trial above, the <span style="display: inline-block; width: 20px; height: 20px; background-color: #D41159; margin-bottom: -4px; border: 1px solid black;"></span> cue indicates that on this trial you would need to compare the target to the item held in memory. Because the target (insert object name) is larger than the item held in memory (insert object name), you would press the index finger (comma) button.</p>
-
-    <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
-    ${speedReminder}
+    <p class="block-text">
+      If the cue is 
+      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>, 
+      then compare the target to the reference item held in memory (internal item). 
+      If the cue is 
+      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span>, 
+      then compare the target to the reference item shown alongside it on the screen (external item).
+    </p>
   </div>
   `,
 ];
-
 /* ************************************ */
 /* Set up jsPsych blocks */
 /* ************************************ */
@@ -1331,6 +1332,8 @@ var endBlock = {
 var internal_external_experiment = [];
 var internal_external_experiment_init = () => {
   console.log(all_images);
+  console.log("Response Mappings:", responseMappings);
+  console.log("Assigned condition:", assignedCondition);
 
   jsPsych.pluginAPI.preloadImages(imageUrls);
 
