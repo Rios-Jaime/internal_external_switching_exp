@@ -4,7 +4,7 @@ var jsPsych = initJsPsych({
     // Collect experiment data
     const experimentData = jsPsych.data.get().json();
 
-    // Send data to the server
+    // Define a function to send data with retry logic
     const sendData = () => {
       fetch("/egner", {
         method: "POST",
@@ -30,33 +30,6 @@ var jsPsych = initJsPsych({
           setTimeout(sendData, 3000); // Retry after 3 seconds
         });
     };
-
-    // Function to download data as JSON
-    const downloadData = (data, filename) => {
-      const blob = new Blob([data], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    };
-
-    // Trigger data download
-    downloadData(
-      JSON.stringify({
-        participant_id: subject_id,
-        assignedCondition: assignedCondition,
-        data: experimentData,
-      }),
-      `participant_${subject_id}.json`
-    );
-
-    // Call sendData to initiate server upload
-    sendData();
-  },
-});
 
 // capture info from Prolific
 //var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
