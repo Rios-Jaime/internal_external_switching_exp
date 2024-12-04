@@ -1,13 +1,10 @@
 var jsPsych = initJsPsych({
   on_finish: function () {
     jsPsych.data.displayData();
-    // Uncomment the following line to redirect participants after finishing
-    // window.location = "https://app.prolific.co/submissions/complete?cc=XXXXXXX";
-
     // Collect experiment data
     const experimentData = jsPsych.data.get().json();
 
-    // Define a function to send data with retry logic
+    // Send data to the server
     const sendData = () => {
       fetch("/egner", {
         method: "POST",
@@ -15,8 +12,9 @@ var jsPsych = initJsPsych({
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          participant_id: subject_id, // Replace 'subject_id' with the appropriate variable or method to get the participant ID
+          participant_id: subject_id,
           data: experimentData,
+          assignedCondition: assignedCondition,
         }),
       })
         .then((response) => {
@@ -33,7 +31,29 @@ var jsPsych = initJsPsych({
         });
     };
 
-    // Call sendData to initiate the process
+    // Function to download data as JSON
+    const downloadData = (data, filename) => {
+      const blob = new Blob([data], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+
+    // Trigger data download
+    downloadData(
+      JSON.stringify({
+        participant_id: subject_id,
+        assignedCondition: assignedCondition,
+        data: experimentData,
+      }),
+      `participant_${subject_id}.json`
+    );
+
+    // Call sendData to initiate server upload
     sendData();
   },
 });
