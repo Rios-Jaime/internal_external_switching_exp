@@ -732,13 +732,18 @@ var getResponse = function () {
 const responseMappings = assignedCondition.response_mapping
   .split(", ")
   .reduce((acc, mapping) => {
-    const [meaning, key] = mapping.split(":"); // Split as "smaller:," -> meaning = "smaller", key = ","
-    acc[meaning] = key; // Directly map 'smaller' and 'larger' to their keys
+    const [meaning, key] = mapping.split(":"); // Map 'smaller' and 'larger' to keys
+    acc[meaning] = key;
     return acc;
   }, {});
 
 const internalColor = assignedCondition.internal_color;
 const externalColor = assignedCondition.external_color;
+
+console.log("Internal Color:", internalColor); // Should log the correct value
+console.log("External Color:", externalColor); // Should log the correct value
+console.log("Response Mappings:", responseMappings); // Should log {smaller: ',', larger: '.'}
+
 
 // Add mappings and color assignments to jsPsych data
 jsPsych.data.addProperties({
@@ -988,7 +993,9 @@ var pageInstruct = [
     internalColor === "#1A85FF" ? "internal item" : "external item"
   } (<i>${
     internalColor === "#1A85FF" ? "tennis ball" : "drill"
-  }</i>), you would press the (<b>${responseMappings.larger}</b>) key.
+  }</i>), you would press the (<b>${
+    responseMappings?.larger || "Error: Mapping Missing"
+  }</b>) key.
   </p>
     <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
     ${speedReminder}
