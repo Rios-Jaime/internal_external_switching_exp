@@ -447,7 +447,7 @@ var getResponse = function () {
         return responseMappings.smaller;
       }
 
-    case "buffallo":
+    case "buffalo":
       if (
         [
           "baseball_bat",
