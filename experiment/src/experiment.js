@@ -961,42 +961,38 @@ const promptText = `
   </div>
 `;
 
-const pageInstruct = [
+var pageInstruct = [
   `
   <div class="centerbox">
-    <p class="block-text">
-      During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. 
-      This is followed by a colored fixation cross 
-      (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> 
-      or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>), 
-      and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) 
-      is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; 
-      in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color 
-      (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> 
-      or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>) 
-      of the fixation cross shown on the screen between the memory object and the target screen.
-    </p>
+    <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>), and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>) of the fixation cross shown on the screen between the memory object and the target screen.</p>
     
     <div class="center-image">
       <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
     </div>
 
-    <p class="block-text">
-      Place your right-hand index finger on the <b>${responseMappings.smaller}</b> key for smaller 
-      and your right-hand middle finger on the <b>${responseMappings.larger}</b> key for larger.
-    </p>
+    <p class="block-text">Place your right-hand index finger on the <b>comma key (,)</b> and your right-hand middle finger on the <b>period key (.)</b></p>
 
-    <p class="block-text">
-      If the cue is 
-      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>, 
-      then compare the target to the reference item held in memory (internal item). 
-      If the cue is 
-      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span>, 
-      then compare the target to the reference item shown alongside it on the screen (external item).
-    </p>
+    <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span> then compare the target to the reference item held in memory (internal item). If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> then compare the target to the reference item shown alongside it on the screen (external item).</p>
+
+  </div>
+  `,
+  `
+    <div class="center-image">
+      <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
+    </div>
+
+  <div class="centerbox">
+    <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the cued reference item. The finger mappings are shown below:</p>
+    ${promptTextList}
+
+    <p class="block-text">Looking at the example trial above, the <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span> cue indicates that on this trial you would need to compare the target to the item held in memory. Because the target (insert object name) is larger than the item held in memory (insert object name), you would press the <b>${responseMappings.index}</b> button.</p>
+
+    <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
+    ${speedReminder}
   </div>
   `,
 ];
+
 /* ************************************ */
 /* Set up jsPsych blocks */
 /* ************************************ */
