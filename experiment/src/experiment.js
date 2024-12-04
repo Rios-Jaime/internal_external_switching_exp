@@ -940,8 +940,20 @@ var feedbackText =
 
 var promptTextList = `
   <ul style="text-align:center; font-size:24px;">
-    Press <b>${responseMappings.smaller}</b> if the target is <b>smaller</b> 
-    and <b>${responseMappings.larger}</b> if the target is <b>larger</b>.
+    Press <b>${
+      responseMappings.smaller === ","
+        ? "comma key (,)"
+        : responseMappings.smaller === "."
+        ? "period key (.)"
+        : "Error: Mapping Missing"
+    }</b> if the target is <b>smaller</b> 
+    and <b>${
+      responseMappings.larger === ","
+        ? "comma key (,)"
+        : responseMappings.larger === "."
+        ? "period key (.)"
+        : "Error: Mapping Missing"
+    }</b> if the target is <b>larger</b>.
   </ul>
 `;
 
@@ -954,8 +966,20 @@ const promptText = `
     text-align: left; 
     font-size: 16px; 
     line-height: 1.2;">
-    <p><b>${responseMappings.smaller} key</b> if <b>smaller</b> and 
-    <b>${responseMappings.larger} key</b> if <b>larger</b>.<br> 
+    <p><b>${
+      responseMappings.smaller === ","
+        ? "comma key (,)"
+        : responseMappings.smaller === "."
+        ? "period key (.)"
+        : "Error: Mapping Missing"
+    }</b> if <b>smaller</b> and 
+    <b>${
+      responseMappings.larger === ","
+        ? "comma key (,)"
+        : responseMappings.larger === "."
+        ? "period key (.)"
+        : "Error: Mapping Missing"
+    }</b> if <b>larger</b>.<br> 
     <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span> indicates memory (internal item) and 
     <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> indicates perception (external item).
     </p>
@@ -992,13 +1016,13 @@ var pageInstruct = [
     internalColor === "#1A85FF" ? "internal item" : "external item"
   } (<i>${
     internalColor === "#1A85FF" ? "tennis ball" : "drill"
-  }</i>), you would press the (<b>${
+  }</i>), you would press the <b>${
     responseMappings?.larger === ","
       ? "<b>comma key (,)</b>"
       : responseMappings?.larger === "."
       ? "<b>period key (.)</b>"
       : "Error: Mapping Missing"
-  }</b>) key.
+  }</b> key.
   </p>
   <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
     ${speedReminder}
