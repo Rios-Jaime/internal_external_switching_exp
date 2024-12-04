@@ -744,7 +744,6 @@ console.log("Internal Color:", internalColor); // Should log the correct value
 console.log("External Color:", externalColor); // Should log the correct value
 console.log("Response Mappings:", responseMappings); // Should log {smaller: ',', larger: '.'}
 
-
 // Add mappings and color assignments to jsPsych data
 jsPsych.data.addProperties({
   response_mappings: {
@@ -994,10 +993,14 @@ var pageInstruct = [
   } (<i>${
     internalColor === "#1A85FF" ? "tennis ball" : "drill"
   }</i>), you would press the (<b>${
-    responseMappings?.larger || "Error: Mapping Missing"
+    responseMappings?.larger === ","
+      ? "<b>comma key (,)</b>"
+      : responseMappings?.larger === "."
+      ? "<b>period key (.)</b>"
+      : "Error: Mapping Missing"
   }</b>) key.
   </p>
-    <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
+  <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
     ${speedReminder}
   </div>
   `,
