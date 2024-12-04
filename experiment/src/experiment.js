@@ -830,12 +830,14 @@ var tasks = {
 // Image Variables
 var fileTypeExtension = "png";
 var preFileType =
-  "<img class = center src='/static/internal_external_switching_exp/experiment/images/";
-var trialExample =
-  "/internal_external_switching_exp/experiment/images/trial_example.png";
+  "<img class='center' src='/images/"; // Adjusted to match static file serving
+
+var trialExample = "/images/trial_example/trial_example.png"; // Relative to server root
+
+var trialExamplePath = pathSource + "trial_example/trial_example.png";
 
 // PRE LOAD IMAGES HERE
-var pathSource = "/internal_external_switching_exp/experiment/images/";
+var pathSource = "/images/";
 
 var tool_objects = [
   "axe",
@@ -970,7 +972,7 @@ var pageInstruct = [
     <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross ( <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span>  or  <span style="display: inline-block; width: 20px; height: 20px; background-color: #D41159; margin-bottom: -4px; border: 1px solid black;"></span> ), and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color ( <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span>  or  <span style="display: inline-block; width: 20px; height: 20px; background-color: #D41159; margin-bottom: -4px; border: 1px solid black;"></span> ) of the fixation cross shown on the screen between the memory object and the target screen.</p>
     
     <div class="center-image">
-      <img src="${trialExample}" alt="Memory Object" style="max-width: 1500px; height: auto;">
+      <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
     </div>
 
     <p class="block-text">Place your right-hand index finger on the <b>comma key (,)</b> and your right-hand middle finger on the <b>period key (.)</b></p>
@@ -982,7 +984,7 @@ var pageInstruct = [
   `
 
     <div class="center-image">
-      <img src="${trialExample}" alt="Memory Object" style="max-width: 1500px; height: auto;">
+      <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
     </div>
 
   <div class="centerbox">
