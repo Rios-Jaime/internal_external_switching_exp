@@ -732,31 +732,28 @@ var getResponse = function () {
 const responseMappings = assignedCondition.response_mapping
   .split(", ")
   .reduce((acc, mapping) => {
-    const [key, meaning] = mapping.split(":");
-    acc[meaning] = key; // e.g., acc.smaller = ','; acc.larger = '.'
+    const [meaning, key] = mapping.split(":"); // Split as "smaller:," -> meaning = "smaller", key = ","
+    acc[meaning] = key; // Directly map 'smaller' and 'larger' to their keys
     return acc;
   }, {});
 
 const internalColor = assignedCondition.internal_color;
 const externalColor = assignedCondition.external_color;
 
-console.log("Response Mappings:", responseMappings); // {index: 'smaller', middle: 'larger'}
+// Add mappings and color assignments to jsPsych data
+jsPsych.data.addProperties({
+  response_mappings: {
+    smaller_key: responseMappings.smaller,
+    larger_key: responseMappings.larger,
+  },
+  cue_colors: {
+    internal: internalColor,
+    external: externalColor,
+  },
+});
 
 var expID = "internal_external_switching_task";
 var expStage = "practice";
-
-const possibleResponses = [
-  [
-    "index finger",
-    responseMappings.smaller,
-    `key (${responseMappings.smaller})`,
-  ],
-  [
-    "middle finger",
-    responseMappings.larger,
-    `key (${responseMappings.larger})`,
-  ],
-];
 
 const choices = [responseMappings.smaller, responseMappings.larger];
 
@@ -916,8 +913,8 @@ var speedReminder = `
 
 const responseKeys = `
   <p class='block-text'>
-    Press the <b>${possibleResponses[1][2]}</b> if the target is <b>larger</b> 
-    and the <b>${possibleResponses[0][2]}</b> if the target is <b>smaller</b> 
+    Press the <b>${responseMappings.larger}</b> if the target is <b>larger</b> 
+    and the <b>${responseMappings.smaller}</b> if the target is <b>smaller</b> 
     than the referent object.
   </p>
 `;
@@ -985,7 +982,13 @@ var pageInstruct = [
     <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the cued reference item. The finger mappings are shown below:</p>
     ${promptTextList}
 
-    <p class="block-text"> Looking at the example trial above, the <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span> cue indicates that on this trial you would need to compare the target to the ${internalColor === "#1A85FF" ? "internal item" : "external item"}. Because the target (<i>leopard</i>) is larger than the ${internalColor === "#1A85FF" ? "internal item" : "external item"} (<i>${internalColor === "#1A85FF" ? "tennis ball" : "drill"}</i>), you would press your <b>${responseMappings.larger}</b> finger.
+    <p class="block-text"> Looking at the example trial above, the <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span> cue indicates that on this trial you would need to compare the target to the ${
+      internalColor === "#1A85FF" ? "internal item" : "external item"
+    }. Because the target (<i>leopard</i>) is larger than the ${
+    internalColor === "#1A85FF" ? "internal item" : "external item"
+  } (<i>${
+    internalColor === "#1A85FF" ? "tennis ball" : "drill"
+  }</i>), you would press the (<b>${responseMappings.larger}</b>) key.
   </p>
     <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
     ${speedReminder}
