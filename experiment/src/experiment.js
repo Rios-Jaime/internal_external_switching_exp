@@ -310,7 +310,7 @@ var appendData = function () {
 
 var setStims = function (trial) {
   console.log(trial);
-  
+
   if (trial.cue_cond == "internal") {
     distractor_cond = "external";
   } else {
@@ -321,9 +321,9 @@ var setStims = function (trial) {
     distractor_object = "sports";
   } else {
     distractor_object = "tool";
-}
-  
-  trialType = trial.trial_type
+  }
+
+  trialType = trial.trial_type;
 
   currCue = trial.cue_cond;
   currRefObj = trial.ref_object;
@@ -876,7 +876,7 @@ var practiceThresh = 3;
 var practiceLen = 8;
 var numTestBlocks = 1;
 var numTrialsPerBlock = 8; // should be multiple of 24
-var testLen = numTestBlocks * numTrialsPerBlock
+var testLen = numTestBlocks * numTrialsPerBlock;
 
 // Trial Timing Paramters
 const stimStimulusDuration = 1500;
@@ -893,7 +893,7 @@ var lastTask = "na"; // object that holds the last task, set by setStims()
 var currCue = "na"; // object that holds the current cue, set by setStims()
 var currStim = "na"; // object that holds the current stim, set by setStims()
 var currentTrial = 0;
-var trial_type = "na"
+var trial_type = "na";
 
 // Conditions
 const conditions = [
@@ -1411,8 +1411,9 @@ var practiceNode = {
       //  numTrialsPerBlock / 8
       //);
       //taskSwitches.unshift("na");
-      
-      var { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
+
+      var { trials, conditionCounts } =
+        generateBalancedTrialsFixed(numTrialsPerBlock);
 
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
@@ -1465,8 +1466,9 @@ var practiceNode = {
       //  practiceLen / 8
       //);
       //taskSwitches.unshift("na");
-      
-      { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
+
+      var { trials, conditionCounts } =
+        generateBalancedTrialsFixed(numTrialsPerBlock);
 
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
@@ -1635,21 +1637,18 @@ var testNode = {
     var missedResponses = (totalTrials - sumResponses) / totalTrials;
     var avgRT = sumRT / sumResponses;
 
-    if (
-      testCount === numTestBlocks
-    ) {
+    if (testCount === numTestBlocks) {
       feedbackText = `<div class=centerbox>
         <p class=block-text>Done with this task.</p>
         <p class=centerbox>Press <i>enter</i> to continue.</p>
         </div>`;
-
 
       //taskSwitches = jsPsych.randomization.repeat(
       //  taskSwitchesArr,
       //  numTrialsPerBlock / 8
       //);
       //taskSwitches.unshift("na");
-      
+
       return false;
     } else {
       feedbackText =
@@ -1686,8 +1685,9 @@ var testNode = {
       //  practiceLen / 8
       //);
       //taskSwitches.unshift("na");
-      
-      { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
+
+      var { trials, conditionCounts } =
+        generateBalancedTrialsFixed(numTrialsPerBlock);
 
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
@@ -1735,7 +1735,7 @@ var internal_external_experiment_init = () => {
 
   //taskSwitches = jsPsych.randomization.repeat(taskSwitchesArr, practiceLen / 8);
   //taskSwitches.unshift("na");
-  
+
   var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
 
   console.log("\nGenerated Trials:");
@@ -1753,7 +1753,6 @@ var internal_external_experiment_init = () => {
   } else {
     console.log("\nValidation successful: Conditions are balanced.");
   }
-
 
   internal_external_experiment.push(fullscreen);
   internal_external_experiment.push(instructionNode);
