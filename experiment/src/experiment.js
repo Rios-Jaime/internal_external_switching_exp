@@ -1119,6 +1119,36 @@ var pageInstruct = [
   `,
 ];
 
+var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
+
+// functions to check proportions //
+const conditionCountsFixed = trials.reduce((counts, trial) => {
+  if (trial.trial_type !== "na") {
+    counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+  }
+  return counts;
+}, {});
+
+const isBalanced = Object.values(conditionCountsFixed).every(
+  (count) => count === Math.floor(40 / conditions.length)
+);
+
+console.log("\nGenerated Trials:");
+trials.forEach((trial, index) => {
+  console.log(`Trial ${index + 1}:`, trial);
+});
+
+console.log("\nCondition Counts (Fixed):");
+Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
+  console.log(`${condition}: ${count}`);
+});
+
+if (!isBalanced) {
+  console.error("Conditions are not balanced!", conditionCountsFixed);
+} else {
+  console.log("\nValidation successful: Conditions are balanced.");
+}
+
 /* ************************************ */
 /* Set up jsPsych blocks */
 /* ************************************ */
@@ -1759,36 +1789,6 @@ var internal_external_experiment_init = () => {
 
   //taskSwitches = jsPsych.randomization.repeat(taskSwitchesArr, practiceLen / 8);
   //taskSwitches.unshift("na");
-
-  var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
-
-  // functions to check proportions //
-  const conditionCountsFixed = trials.reduce((counts, trial) => {
-    if (trial.trial_type !== "na") {
-      counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
-    }
-    return counts;
-  }, {});
-
-  const isBalanced = Object.values(conditionCountsFixed).every(
-    (count) => count === Math.floor(40 / conditions.length)
-  );
-
-  console.log("\nGenerated Trials:");
-  trials.forEach((trial, index) => {
-    console.log(`Trial ${index + 1}:`, trial);
-  });
-
-  console.log("\nCondition Counts (Fixed):");
-  Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
-    console.log(`${condition}: ${count}`);
-  });
-
-  if (!isBalanced) {
-    console.error("Conditions are not balanced!", conditionCountsFixed);
-  } else {
-    console.log("\nValidation successful: Conditions are balanced.");
-  }
 
   internal_external_experiment.push(fullscreen);
   internal_external_experiment.push(instructionNode);
