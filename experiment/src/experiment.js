@@ -1184,7 +1184,7 @@ var setStimsBlock = {
     trial_id: "set_stims",
     trial_duration: null,
   },
-  func: setStims,
+  func: setStims(trials[i]),
 };
 
 var feedbackBlock = {
