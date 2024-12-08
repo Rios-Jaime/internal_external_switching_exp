@@ -281,6 +281,7 @@ var appendData = function () {
   jsPsych.data.get().addToLast({
     cue: currCue,
     trial_id: trialID,
+    trial_type: trialType,
     attention_mode_condition: currCue,
     reference_object_category: currRefObj,
     task_condition: taskSwitch,
@@ -307,79 +308,28 @@ var appendData = function () {
   }
 };
 
-var setStims = function () {
-  var tmp;
-  console.log(currStim);
-  switch (taskSwitches[currentTrial]) {
-    case "na":
-      tmp = {
-        cue_cond: randomDraw(["internal", "external"]),
-        ref_object: randomDraw(["tool", "sports"]),
-      };
-
-      if (tmp.cue_cond == "internal") {
-        distractor_cond = "external";
-      } else {
-        distractor_cond = "internal";
-      }
-
-      if (tmp.ref_object == "tool") {
-        distractor_object = "sports";
-      } else {
-        distractor_object = "tool";
-      }
-      break;
-
-    case "stay":
-      console.log("stay trial marker");
-      console.log(cue_conditions);
-      console.log(lastTask);
-      tmp = sampleCueCondition(cue_conditions, lastTask, false);
-      console.log(tmp);
-
-      if (tmp.cue_cond == "internal") {
-        distractor_cond = "external";
-      } else {
-        distractor_cond = "internal";
-      }
-
-      if (tmp.ref_object == "tool") {
-        distractor_object = "sports";
-      } else {
-        distractor_object = "tool";
-      }
-      break;
-
-    case "switch":
-      console.log("switch trial marker");
-      console.log(cue_conditions);
-      console.log(lastTask);
-
-      tmp = sampleCueCondition(cue_conditions, lastTask, true);
-      console.log(tmp);
-
-      if (tmp.cue_cond == "internal") {
-        distractor_cond = "external";
-      } else {
-        distractor_cond = "internal";
-      }
-
-      if (tmp.ref_object == "tool") {
-        distractor_object = "sports";
-      } else {
-        distractor_object = "tool";
-      }
-      break;
+var setStims = function (trial) {
+  console.log(trial);
+  
+  if (trial.cue_cond == "internal") {
+    distractor_cond = "external";
+  } else {
+    distractor_cond = "internal";
   }
 
-  console.log(tmp);
-  console.log(taskSwitches[currentTrial]);
+  if (trial.ref_object == "tool") {
+    distractor_object = "sports";
+  } else {
+    distractor_object = "tool";
+}
+  
+  trialType = trial.trial_type
 
-  lastTask = tmp;
-  currCue = tmp.cue_cond;
-  currRefObj = tmp.ref_object;
+  currCue = trial.cue_cond;
+  currRefObj = trial.ref_object;
 
   console.log(currRefObj);
+  task_switch = trial.task_switch;
 
   currStim = getRandomObject(currRefObj);
   currDistractorCond = distractor_cond;
@@ -391,6 +341,84 @@ var setStims = function () {
   correctResponse = getResponse();
   correct = false;
 };
+
+function generateBalancedTrialsFixed(numTrials = 40) {
+  // Initialize the condition pool with equal counts for each condition
+  const conditionCounts = {};
+  conditions.forEach(
+    (condition) =>
+      (conditionCounts[condition] = Math.floor(numTrials / conditions.length))
+  );
+
+  const trials = [];
+  let lastCueCond = null;
+  let lastRefObject = null;
+
+  // Generate the first trial (na)
+  const naTrial = {
+    trial_type: "na",
+    cue_cond: ["internal", "external"][Math.floor(Math.random() * 2)],
+    ref_object: ["sport", "tool"][Math.floor(Math.random() * 2)],
+    task_switch: "na",
+  };
+  trials.push(naTrial);
+  lastCueCond = naTrial.cue_cond;
+  lastRefObject = naTrial.ref_object;
+
+  for (let i = 0; i < numTrials; i++) {
+    let validConditions = [];
+
+    // Filter conditions based on "switch" or "repeat"
+    conditions.forEach((condition) => {
+      if (conditionCounts[condition] > 0) {
+        const [taskSwitch, cueCond, refObject] = condition.split("_");
+        if (
+          (taskSwitch === "repeat" &&
+            cueCond === lastCueCond &&
+            refObject === lastRefObject) ||
+          (taskSwitch === "switch" && cueCond !== lastCueCond)
+        ) {
+          validConditions.push(condition);
+        }
+      }
+    });
+
+    if (validConditions.length === 0) {
+      console.log("No valid conditions left. Relaxing constraints...");
+      // Relax the constraints and sample from any remaining conditions
+      validConditions = conditions.filter(
+        (condition) => conditionCounts[condition] > 0
+      );
+    }
+
+    if (validConditions.length === 0) {
+      throw new Error(
+        "No valid conditions left, even after relaxing constraints."
+      );
+    }
+
+    // Randomly select a valid condition
+    const selectedCondition =
+      validConditions[Math.floor(Math.random() * validConditions.length)];
+    conditionCounts[selectedCondition] -= 1;
+
+    // Parse the selected condition
+    const [taskSwitch, cueCond, refObject] = selectedCondition.split("_");
+    const trial = {
+      trial_type: selectedCondition,
+      cue_cond: cueCond,
+      ref_object: refObject,
+      task_switch: taskSwitch,
+    };
+    trials.push(trial);
+
+    // Update the last trial info
+    lastCueCond = cueCond;
+    lastRefObject = refObject;
+  }
+
+  return { trials, conditionCounts };
+}
 
 // obtains correct response depending on target
 var getResponse = function () {
@@ -620,7 +648,7 @@ var getResponse = function () {
         return responseMappings.smaller;
       }
 
-      case "elephant":
+    case "elephant":
       if (
         [
           "baseball_bat",
@@ -659,7 +687,7 @@ var getResponse = function () {
         return responseMappings.smaller;
       }
 
-      case "horse":
+    case "horse":
       if (
         [
           "baseball_bat",
@@ -698,7 +726,7 @@ var getResponse = function () {
         return responseMappings.smaller;
       }
 
-      case "giraffe":
+    case "giraffe":
       if (
         [
           "baseball_bat",
@@ -737,7 +765,7 @@ var getResponse = function () {
         return responseMappings.smaller;
       }
 
-      case "rhinoceros":
+    case "rhinoceros":
       if (
         [
           "baseball_bat",
@@ -778,9 +806,22 @@ var getResponse = function () {
 
     default:
       console.log(currTarget);
-      throw new Error("Invalid target: " + currTarget + ', ' + currStim);
+      throw new Error("Invalid target: " + currTarget + ", " + currStim);
   }
 };
+
+// functions to check proportions //
+const conditionCountsFixed = trials.reduce((counts, trial) => {
+  if (trial.trial_type !== "na") {
+    counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+  }
+  return counts;
+}, {});
+
+const isBalanced = Object.values(conditionCountsFixed).every(
+  (count) => count === Math.floor(40 / conditions.length)
+);
+
 /* ************************************ */
 /* Define experimental variables */
 /* ************************************ */
@@ -834,7 +875,8 @@ var practiceThresh = 3;
 // Task Length Parameters
 var practiceLen = 8;
 var numTestBlocks = 1;
-var numTrialsPerBlock = 8; // should be multiple of 24
+var numTrialsPerBlock = 40; // should be multiple of 24
+var testLen = numTestBlocks * numTrialsPerBlock
 
 // Trial Timing Paramters
 const stimStimulusDuration = 1500;
@@ -849,12 +891,24 @@ var CTI = 250;
 // Trial Stimulus Variables
 var lastTask = "na"; // object that holds the last task, set by setStims()
 var currCue = "na"; // object that holds the current cue, set by setStims()
-var cueI = randomDraw([0, 1]); // index for one of two cues of the current task
 var currStim = "na"; // object that holds the current stim, set by setStims()
 var currentTrial = 0;
+var trial_type = "na"
 
-let taskSwitchesArr = Array(4).fill("stay").concat(Array(4).fill("switch"));
-taskSwitchesArr = shuffleArray(taskSwitchesArr);
+// Conditions
+const conditions = [
+  "switch_internal_sport",
+  "switch_external_sport",
+  "switch_internal_tool",
+  "switch_external_tool",
+  "repeat_internal_sport",
+  "repeat_external_sport",
+  "repeat_internal_tool",
+  "repeat_external_tool",
+];
+
+//let taskSwitchesArr = Array(4).fill("stay").concat(Array(4).fill("switch"));
+//taskSwitchesArr = shuffleArray(taskSwitchesArr);
 
 let originalCueConditions = [
   { cue_cond: "internal", ref_object: "sports" },
@@ -1363,11 +1417,30 @@ var practiceNode = {
         </div>
       `;
 
-      taskSwitches = jsPsych.randomization.repeat(
-        taskSwitchesArr,
-        numTrialsPerBlock / 8
-      );
-      taskSwitches.unshift("na");
+      //taskSwitches = jsPsych.randomization.repeat(
+      //  taskSwitchesArr,
+      //  numTrialsPerBlock / 8
+      //);
+      //taskSwitches.unshift("na");
+      
+      { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
+
+      console.log("\nGenerated Trials:");
+      trials.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
+      });
+
+      console.log("\nCondition Counts (Fixed):");
+      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
+        console.log(`${condition}: ${count}`);
+      });
+
+      if (!isBalanced) {
+        console.error("Conditions are not balanced!", conditionCountsFixed);
+      } else {
+        console.log("\nValidation successful: Conditions are balanced.");
+      }
+
       expStage = "test";
       return false;
     } else {
@@ -1398,14 +1471,257 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      taskSwitches = jsPsych.randomization.repeat(
-        taskSwitchesArr,
-        practiceLen / 8
-      );
-      taskSwitches.unshift("na");
+      //taskSwitches = jsPsych.randomization.repeat(
+      //  taskSwitchesArr,
+      //  practiceLen / 8
+      //);
+      //taskSwitches.unshift("na");
+      
+      { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
+
+      console.log("\nGenerated Trials:");
+      trials.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
+      });
+
+      console.log("\nCondition Counts (Fixed):");
+      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
+        console.log(`${condition}: ${count}`);
+      });
+
+      if (!isBalanced) {
+        console.error("Conditions are not balanced!", conditionCountsFixed);
+      } else {
+        console.log("\nValidation successful: Conditions are balanced.");
+      }
+
       return true;
     }
   },
+};
+
+var testTrials = [];
+for (var i = 0; i < testLen + 1; i++) {
+  var testFixationBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: fixation,
+    choices: ["NO_KEYS"],
+    data: {
+      trial_id: "test_fixation",
+      exp_stage: "test",
+      trial_duration: fixationDuration,
+      stimulus_duration: fixationDuration,
+    },
+    stimulus_duration: fixationDuration, // 500
+    trial_duration: fixationDuration, // 500
+    on_finish: function (data) {
+      data["block_num"] = testCount;
+    },
+  };
+
+  var testCueBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: getCue,
+    choices: ["NO_KEYS"],
+    data: {
+      trial_id: "test_cue",
+      exp_stage: "test",
+      trial_duration: getCTI(),
+      stimulus_duration: getCTI(),
+    },
+    trial_duration: getCTI,
+    stimulus_duration: getCTI,
+
+    on_finish: appendData,
+  };
+
+  var testEncodigBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: getEncodingStim,
+    choices: ["NO_KEYS"],
+    data: {
+      trial_id: "test_cue",
+      exp_stage: "test",
+      trial_duration: encodingPhaseDuration,
+      stimulus_duration: memorandaDuration,
+    },
+    trial_duration: encodingPhaseDuration,
+    stimulus_duration: memorandaDuration,
+
+    on_finish: appendData,
+  };
+
+  var ITIms = null;
+
+  // *** ITI *** //
+  var ITIBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: fixation,
+    is_html: true,
+    choices: ["NO_KEYS"],
+    data: function () {
+      const stage = getExpStage();
+      return {
+        trial_id: `${stage}_ITI`,
+        ITIParams: {
+          min: 0,
+          max: 5,
+          mean: 0.5,
+        },
+        block_num: stage === "test" ? testCount : testCount,
+        exp_stage: stage,
+      };
+    },
+
+    trial_duration: function () {
+      ITIms = sampleFromDecayingExponential();
+      return ITIms * 1000;
+    },
+    prompt: function () {
+      return getExpStage() === "test" ? promptText : "";
+    },
+    on_finish: function (data) {
+      data["trial_duration"] = ITIms * 1000;
+      data["stimulus_duration"] = ITIms * 1000;
+    },
+  };
+
+  var testTrial = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: getDecisionStim,
+    choices: choices,
+    data: {
+      exp_stage: "test",
+      trial_id: "test_trial",
+      choices: choices,
+      trial_duration: stimTrialDuration,
+      stimulus_duration: stimStimulusDuration,
+    },
+
+    stimulus_duration: stimStimulusDuration, // 1000
+    trial_duration: stimTrialDuration, // 1500
+    response_ends_trial: false,
+    on_finish: appendData,
+  };
+
+  testTrials.push(
+    setStimsBlock,
+    testFixationBlock,
+    testEncodigBlock,
+    testCueBlock,
+    testTrial,
+    ITIBlock
+  );
+}
+
+var testCount = 0;
+var testNode = {
+  timeline: [feedbackBlock].concat(testTrials),
+  loop_function: function (data) {
+    testCount += 1;
+    currentTrial = 0;
+
+    var sumRT = 0;
+    var sumResponses = 0;
+    var correct = 0;
+    var totalTrials = 0;
+
+    for (var i = 0; i < data.trials.length; i++) {
+      if (
+        data.trials[i].trial_id == "test_trial" &&
+        data.trials[i].block_num == getCurrBlockNum() - 1
+      ) {
+        totalTrials += 1;
+        if (data.trials[i].rt != null) {
+          sumRT += data.trials[i].rt;
+          sumResponses += 1;
+          if (data.trials[i].response == data.trials[i].correct_response) {
+            correct += 1;
+          }
+        }
+      }
+    }
+
+    var accuracy = correct / totalTrials;
+    var missedResponses = (totalTrials - sumResponses) / totalTrials;
+    var avgRT = sumRT / sumResponses;
+
+    if (
+      testCount === numTestBlocks
+    ) {
+      feedbackText = `<div class=centerbox>
+        <p class=block-text>Done with this task.</p>
+        <p class=centerbox>Press <i>enter</i> to continue.</p>
+        </div>`;
+
+
+      //taskSwitches = jsPsych.randomization.repeat(
+      //  taskSwitchesArr,
+      //  numTrialsPerBlock / 8
+      //);
+      //taskSwitches.unshift("na");
+      
+      return false;
+    } else {
+      feedbackText =
+        "<div class = centerbox><p class = block-text>Please take this time to read your feedback! This screen will advance automatically in 1 minute.</p>";
+
+      feedbackText += `<p class=block-text>You have completed ${testCount} out of ${numTestBlocks} blocks of trials.</p>`;
+
+      if (accuracy < accuracyThresh) {
+        feedbackText += `
+          <p class="block-text">Your accuracy is low. Remember:</p>
+          ${promptTextList}
+        `;
+      }
+
+      if (avgRT > rtThresh) {
+        feedbackText += `
+          <p class="block-text">You have been responding too slowly.</p>
+          ${speedReminder}
+        `;
+      }
+
+      if (missedResponses > missedResponseThresh) {
+        feedbackText += `
+          <p class="block-text">You have not been responding to some trials. Please respond on every trial that requires a response.</p>
+        `;
+      }
+
+      feedbackText +=
+        `<p class="block-text">We are now going to repeat the practice round.</p>` +
+        `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
+
+      //taskSwitches = jsPsych.randomization.repeat(
+      //  taskSwitchesArr,
+      //  practiceLen / 8
+      //);
+      //taskSwitches.unshift("na");
+      
+      { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
+
+      console.log("\nGenerated Trials:");
+      trials.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
+      });
+
+      console.log("\nCondition Counts (Fixed):");
+      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
+        console.log(`${condition}: ${count}`);
+      });
+
+      if (!isBalanced) {
+        console.error("Conditions are not balanced!", conditionCountsFixed);
+      } else {
+        console.log("\nValidation successful: Conditions are balanced.");
+      }
+
+      return true;
+    }
+  },
+  //on_timeline_finish: function () {
+  //  window.dataSync();
+  //},
 };
 
 var endBlock = {
@@ -1428,15 +1744,32 @@ var internal_external_experiment_init = () => {
 
   jsPsych.pluginAPI.preloadImages(imageUrls);
 
-  taskSwitches = jsPsych.randomization.repeat(taskSwitchesArr, practiceLen / 8);
-  taskSwitches.unshift("na");
+  //taskSwitches = jsPsych.randomization.repeat(taskSwitchesArr, practiceLen / 8);
+  //taskSwitches.unshift("na");
+  
+  { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
 
-  console.log(taskSwitches);
+  console.log("\nGenerated Trials:");
+  trials.forEach((trial, index) => {
+    console.log(`Trial ${index + 1}:`, trial);
+  });
+
+  console.log("\nCondition Counts (Fixed):");
+  Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
+    console.log(`${condition}: ${count}`);
+  });
+
+  if (!isBalanced) {
+    console.error("Conditions are not balanced!", conditionCountsFixed);
+  } else {
+    console.log("\nValidation successful: Conditions are balanced.");
+  }
+
 
   internal_external_experiment.push(fullscreen);
   internal_external_experiment.push(instructionNode);
   internal_external_experiment.push(practiceNode);
-  //internal_external_experiment.push(testNode);
+  internal_external_experiment.push(testNode);
   internal_external_experiment.push(endBlock);
   internal_external_experiment.push(exitFullscreen);
 };
