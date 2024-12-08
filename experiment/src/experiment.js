@@ -875,7 +875,7 @@ var practiceThresh = 3;
 // Task Length Parameters
 var practiceLen = 8;
 var numTestBlocks = 1;
-var numTrialsPerBlock = 40; // should be multiple of 24
+var numTrialsPerBlock = 8; // should be multiple of 24
 var testLen = numTestBlocks * numTrialsPerBlock
 
 // Trial Timing Paramters
@@ -925,17 +925,6 @@ let originalCueConditions = [
 let cue_conditions = shuffleArray([...originalCueConditions]);
 
 console.log(cue_conditions);
-
-var tasks = {
-  internal: {
-    task: "internal",
-    cue: "internal",
-  },
-  external: {
-    task: "external",
-    cue: "external",
-  },
-};
 
 // Image Variables
 var fileTypeExtension = "png";
@@ -1423,7 +1412,7 @@ var practiceNode = {
       //);
       //taskSwitches.unshift("na");
       
-      { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
+      var { trials, conditionCounts } = generateBalancedTrialsFixed(numTrialsPerBlock);
 
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
@@ -1747,7 +1736,7 @@ var internal_external_experiment_init = () => {
   //taskSwitches = jsPsych.randomization.repeat(taskSwitchesArr, practiceLen / 8);
   //taskSwitches.unshift("na");
   
-  { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
+  var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
 
   console.log("\nGenerated Trials:");
   trials.forEach((trial, index) => {
