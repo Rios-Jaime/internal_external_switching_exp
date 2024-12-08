@@ -810,18 +810,6 @@ var getResponse = function () {
   }
 };
 
-// functions to check proportions //
-const conditionCountsFixed = trials.reduce((counts, trial) => {
-  if (trial.trial_type !== "na") {
-    counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
-  }
-  return counts;
-}, {});
-
-const isBalanced = Object.values(conditionCountsFixed).every(
-  (count) => count === Math.floor(40 / conditions.length)
-);
-
 /* ************************************ */
 /* Define experimental variables */
 /* ************************************ */
@@ -1415,6 +1403,18 @@ var practiceNode = {
       var { trials, conditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
+      // functions to check proportions //
+      const conditionCountsFixed = trials.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+        }
+        return counts;
+      }, {});
+
+      const isBalanced = Object.values(conditionCountsFixed).every(
+        (count) => count === Math.floor(40 / conditions.length)
+      );
+
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, trial);
@@ -1469,6 +1469,18 @@ var practiceNode = {
 
       var { trials, conditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
+
+      // functions to check proportions //
+      const conditionCountsFixed = trials.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+        }
+        return counts;
+      }, {});
+
+      const isBalanced = Object.values(conditionCountsFixed).every(
+        (count) => count === Math.floor(40 / conditions.length)
+      );
 
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
@@ -1689,6 +1701,18 @@ var testNode = {
       var { trials, conditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
+      // functions to check proportions //
+      const conditionCountsFixed = trials.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+        }
+        return counts;
+      }, {});
+
+      const isBalanced = Object.values(conditionCountsFixed).every(
+        (count) => count === Math.floor(40 / conditions.length)
+      );
+
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, trial);
@@ -1737,6 +1761,18 @@ var internal_external_experiment_init = () => {
   //taskSwitches.unshift("na");
 
   var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
+
+  // functions to check proportions //
+  const conditionCountsFixed = trials.reduce((counts, trial) => {
+    if (trial.trial_type !== "na") {
+      counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+    }
+    return counts;
+  }, {});
+
+  const isBalanced = Object.values(conditionCountsFixed).every(
+    (count) => count === Math.floor(40 / conditions.length)
+  );
 
   console.log("\nGenerated Trials:");
   trials.forEach((trial, index) => {
