@@ -1130,7 +1130,7 @@ const conditionCountsFixed = trials.reduce((counts, trial) => {
 }, {});
 
 const isBalanced = Object.values(conditionCountsFixed).every(
-  (count) => count === Math.floor(40 / conditions.length)
+  (count) => count === Math.floor(practiceLen / conditions.length)
 );
 
 console.log("\nGenerated Trials:");
@@ -1431,7 +1431,7 @@ var practiceNode = {
       //taskSwitches.unshift("na");
 
       var { trials, conditionCounts } =
-        generateBalancedTrialsFixed(numTrialsPerBlock);
+        generateBalancedTrialsFixed(practiceLen);
 
       // functions to check proportions //
       const conditionCountsFixed = trials.reduce((counts, trial) => {
@@ -1442,7 +1442,7 @@ var practiceNode = {
       }, {});
 
       const isBalanced = Object.values(conditionCountsFixed).every(
-        (count) => count === Math.floor(40 / conditions.length)
+        (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
@@ -1509,7 +1509,7 @@ var practiceNode = {
       }, {});
 
       const isBalanced = Object.values(conditionCountsFixed).every(
-        (count) => count === Math.floor(40 / conditions.length)
+        (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
@@ -1740,7 +1740,7 @@ var testNode = {
       }, {});
 
       const isBalanced = Object.values(conditionCountsFixed).every(
-        (count) => count === Math.floor(40 / conditions.length)
+        (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
