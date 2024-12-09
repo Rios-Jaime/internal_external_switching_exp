@@ -274,10 +274,6 @@ var appendData = function () {
   var trialID = jsPsych.data.get().filter({ trial_index: currTrial })
     .trials[0].trial_id;
   var trialNum = currentTrial - 1; // currentTrial has already been updated with setStims, so subtract one to record data
-  var taskSwitch = taskSwitches[trialNum];
-
-  let combinedCondition =
-    "task_" + taskSwitch.task_switch + "_cue_" + taskSwitch.cue_switch;
 
   jsPsych.data.get().addToLast({
     cue: currCue,
@@ -285,7 +281,7 @@ var appendData = function () {
     trial_type: trialType,
     attention_mode_condition: currCue,
     reference_object_category: currRefObj,
-    task_condition: taskSwitch,
+    task_condition: task_switch,
     reference_item: currStim,
     distractor_attention_mode: currDistractorCond,
     distractor_object_category: currDistractorObj,
