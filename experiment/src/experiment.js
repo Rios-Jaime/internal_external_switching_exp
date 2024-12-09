@@ -1236,7 +1236,9 @@ for (var i = 0; i < practiceLen + 1; i++) {
       trial_id: "set_stims",
       trial_duration: null,
     },
-    func: setStims(trials[i]),
+    function() {
+      setStims(trials[i]);
+    },
   };
 
   var practiceFixationBlock = {
@@ -1538,14 +1540,15 @@ var practiceNode = {
 
 var testTrials = [];
 for (var i = 0; i < testLen + 1; i++) {
-  /* define practice and test blocks */
   var setStimsBlock = {
     type: jsPsychCallFunction,
     data: {
       trial_id: "set_stims",
       trial_duration: null,
     },
-    func: setStims(trials[i]),
+    function() {
+      setStims(trials[i]);
+    },
   };
 
   var testFixationBlock = {
