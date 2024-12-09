@@ -1229,15 +1229,14 @@ var feedbackBlock = {
 
 var practiceTrials = [];
 for (var i = 0; i < practiceLen + 1; i++) {
-  /* define practice and test blocks */
   var setStimsBlock = {
     type: jsPsychCallFunction,
     data: {
       trial_id: "set_stims",
       trial_duration: null,
     },
-    function() {
-      setStims(trials[i]);
+    func: () => {
+      setStims(trials[i]); // Correctly passing a function reference
     },
   };
 
@@ -1546,8 +1545,8 @@ for (var i = 0; i < testLen + 1; i++) {
       trial_id: "set_stims",
       trial_duration: null,
     },
-    function() {
-      setStims(trials[i]);
+    func: () => {
+      setStims(trials[i]); // Correctly passing a function reference
     },
   };
 
