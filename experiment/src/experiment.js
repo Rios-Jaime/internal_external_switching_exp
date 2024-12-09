@@ -1432,9 +1432,28 @@ var practiceNode = {
     ) {
       feedbackText = `
         <div class="centerbox">
-          <p class="center-block-text">We will now start the test portion.</p>
-          <p class="block-text">Keep your <b>index finger</b> on the <b>comma key (,)</b> and your <b>middle finger</b> on the <b>period key (.)</b></p>
-          <p class="block-text">Press <i>enter</i> to continue.</p>
+          <p class="center-block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
+          <p class="block-text">During this task, you will be presented with a reference item (internal) to commit to memory followed by a colored cue, then a target indicated by a black frame and a second reference item (external). Your task is to compare the size of the target and the reference item indicated by the cue.</p>
+          <p class="block-text">
+              <b>${
+                responseMappings.larger === ","
+                  ? "comma key (,)"
+                  : responseMappings.larger === "."
+                  ? "period key (.)"
+                  : "Error: Mapping Missing"
+              }</b> if <b>the target is larger</b>, and 
+              <b>${
+                responseMappings.smaller === ","
+                  ? "comma key (,)"
+                  : responseMappings.smaller === "."
+                  ? "period key (.)"
+                  : "Error: Mapping Missing"
+              }</b> if <b>the target is smaller</b> than the cued reference item.
+          </p>
+          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; border: 1px solid black;"></span>, then compare the target to the item held in memory (internal item).</p>
+          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; border: 1px solid black;"></span>, then compare the target to the item shown alongside it on the screen (external item).</p>
+          <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
+          <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
       `;
 
@@ -1480,6 +1499,28 @@ var practiceNode = {
     } else {
       feedbackText =
         "<div class = centerbox><p class = block-text>Please take this time to read your feedback! This screen will advance automatically in 1 minute.</p>";
+
+      feedbackText +=
+        '<p class=block-text>Time remaining: <span id="countdown-timer">60</span> seconds</p>';
+
+      // Add a timer script to update the countdown
+      setTimeout(() => {
+        let countdown = 60; // Countdown time in seconds
+        const timerElement = document.getElementById("countdown-timer");
+
+        // Update the countdown every second
+        const intervalId = setInterval(() => {
+          countdown -= 1;
+          if (timerElement) {
+            timerElement.textContent = countdown;
+          }
+
+          // Clear the interval when the countdown reaches zero
+          if (countdown <= 0) {
+            clearInterval(intervalId);
+          }
+        }, 1000);
+      }, 0);
 
       if (accuracy < practiceAccuracyThresh) {
         feedbackText += `
