@@ -359,7 +359,7 @@ function generateBalancedTrialsFixed(numTrials = 40) {
   const naTrial = {
     trial_type: "na",
     cue_cond: ["internal", "external"][Math.floor(Math.random() * 2)],
-    ref_object: ["sport", "tool"][Math.floor(Math.random() * 2)],
+    ref_object: ["sports", "tool"][Math.floor(Math.random() * 2)],
     task_switch: "na",
   };
   trials.push(naTrial);
