@@ -312,25 +312,25 @@ var appendData = function () {
 var setStims = function (trial) {
   console.log(trial);
 
-  if (trial.cue_cond == "internal") {
+  if (trial["cue_cond"] == "internal") {
     distractor_cond = "external";
   } else {
     distractor_cond = "internal";
   }
 
-  if (trial.ref_object == "tool") {
+  if (trial["ref_object"] == "tool") {
     distractor_object = "sports";
   } else {
     distractor_object = "tool";
   }
 
-  trialType = trial.trial_type;
+  trialType = trial["trial_type"];
 
-  currCue = trial.cue_cond;
-  currRefObj = trial.ref_object;
+  currCue = trial["cue_cond"];
+  currRefObj = trial["ref_object"];
 
   console.log(currRefObj);
-  task_switch = trial.task_switch;
+  task_switch = trial["task_switch"];
 
   currStim = getRandomObject(currRefObj);
   currDistractorCond = distractor_cond;
