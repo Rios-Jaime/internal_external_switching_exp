@@ -312,25 +312,25 @@ var appendData = function () {
 var setStims = function (trial) {
   console.log(trial);
 
-  if (trial["cue_cond"] == "internal") {
+  if (trial.cue_cond == "internal") {
     distractor_cond = "external";
   } else {
     distractor_cond = "internal";
   }
 
-  if (trial["ref_object"] == "tool") {
+  if (trial.ref_object == "tool") {
     distractor_object = "sports";
   } else {
     distractor_object = "tool";
   }
 
-  trialType = trial["trial_type"];
+  trialType = trial.trial_type;
 
-  currCue = trial["cue_cond"];
-  currRefObj = trial["ref_object"];
+  currCue = trial.cue_cond;
+  currRefObj = trial.ref_object;
 
   console.log(currRefObj);
-  task_switch = trial["task_switch"];
+  task_switch = trial.task_switch;
 
   currStim = getRandomObject(currRefObj);
   currDistractorCond = distractor_cond;
@@ -1804,9 +1804,12 @@ var internal_external_experiment_init = () => {
   //taskSwitches.unshift("na");
 
   internal_external_experiment.push(fullscreen);
+  console.log("1");
   internal_external_experiment.push(instructionNode);
+  console.log("2");
   internal_external_experiment.push(practiceNode);
-  internal_external_experiment.push(testNode);
+  console.log("3");
+  //internal_external_experiment.push(testNode);
   internal_external_experiment.push(endBlock);
   internal_external_experiment.push(exitFullscreen);
 };
