@@ -886,12 +886,12 @@ var trial_type = "na";
 
 // Conditions
 const conditions = [
-  "switch_internal_sport",
-  "switch_external_sport",
+  "switch_internal_sports",
+  "switch_external_sports",
   "switch_internal_tool",
   "switch_external_tool",
-  "repeat_internal_sport",
-  "repeat_external_sport",
+  "repeat_internal_sports",
+  "repeat_external_sports",
   "repeat_internal_tool",
   "repeat_external_tool",
 ];
@@ -941,6 +941,7 @@ var tool_objects = [
   "sickle",
   "wrench",
 ];
+
 var sports_objects = [
   "baseball_bat",
   "basketball",
@@ -959,6 +960,7 @@ var sports_objects = [
   "soccerball",
   "surfboard",
 ];
+
 var animate_objects = [
   "ant",
   "elephant",
