@@ -163,6 +163,7 @@ function getRandomObject(ref_object) {
     case "animate":
       return randomDraw(animate_objects);
     default:
+      console.log(ref_object);
       throw new Error("Invalid ref_object value");
   }
 }
