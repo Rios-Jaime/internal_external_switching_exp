@@ -1027,22 +1027,36 @@ var feedbackText =
   "<div class = centerbox><p class = center-block-text>Press <i>enter</i> to begin practice.</p></div>";
 
 var promptTextList = `
-  <ul style="text-align:center; font-size:24px;">
-    Press <b>${
-      responseMappings.smaller === ","
-        ? "comma key (,)"
-        : responseMappings.smaller === "."
-        ? "period key (.)"
-        : "Error: Mapping Missing"
-    }</b> if the target is <b>smaller</b> 
-    and <b>${
-      responseMappings.larger === ","
-        ? "comma key (,)"
-        : responseMappings.larger === "."
-        ? "period key (.)"
-        : "Error: Mapping Missing"
-    }</b> if the target is <b>larger</b>.
+  <ul style="text-align:center; font-size:24px; margin-bottom: 10px;">
+    <li>
+      Press <b>${
+        responseMappings.smaller === ","
+          ? "comma key (,)"
+          : responseMappings.smaller === "."
+          ? "period key (.)"
+          : "Error: Mapping Missing"
+      }</b> if the target is <b>smaller</b>.
+    </li>
+    <li>
+      Press <b>${
+        responseMappings.larger === ","
+          ? "comma key (,)"
+          : responseMappings.larger === "."
+          ? "period key (.)"
+          : "Error: Mapping Missing"
+      }</b> if the target is <b>larger</b>.
+    </li>
   </ul>
+  <div style="text-align:center; margin-top:10px;">
+    <p>
+      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>
+      indicates memory (<b>internal item</b>).
+    </p>
+    <p>
+      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span>
+      indicates perception (<b>external item</b>).
+    </p>
+  </div>
 `;
 
 const promptText = `
@@ -1534,7 +1548,7 @@ var practiceNode = {
 };
 
 var testTrials = [];
-for (var i = 0; i < testLen + 1; i++) {
+for (var i = 0; i < numTrialsPerBlock + 1; i++) {
   var setStimsBlock = {
     type: jsPsychCallFunction,
     data: {
@@ -1622,9 +1636,6 @@ for (var i = 0; i < testLen + 1; i++) {
       ITIms = sampleFromDecayingExponential();
       return ITIms * 1000;
     },
-    prompt: function () {
-      return getExpStage() === "test" ? promptText : "";
-    },
     on_finish: function (data) {
       data["trial_duration"] = ITIms * 1000;
       data["stimulus_duration"] = ITIms * 1000;
@@ -1665,6 +1676,8 @@ var testNode = {
   loop_function: function (data) {
     testCount += 1;
     currentTrial = 0;
+
+    console.log("Block ${testCount} of ${numTestBlocks}");
 
     var sumRT = 0;
     var sumResponses = 0;
@@ -1710,6 +1723,28 @@ var testNode = {
 
       feedbackText += `<p class=block-text>You have completed ${testCount} out of ${numTestBlocks} blocks of trials.</p>`;
 
+      feedbackText += '<p class="block-text">Time remaining: <span id="countdown-timer">60</span> seconds</p>`;
+
+      // Add a timer script to update the countdown
+      setTimeout(() => {
+        let countdown = 60; // Countdown time in seconds
+        const timerElement = document.getElementById("countdown-timer");
+
+        // Update the countdown every second
+        const intervalId = setInterval(() => {
+          countdown -= 1;
+          if (timerElement) {
+            timerElement.textContent = countdown;
+          }
+
+          // Clear the interval when the countdown reaches zero
+          if (countdown <= 0) {
+            clearInterval(intervalId);
+          }
+        }, 1000);
+      }, 0);
+
+    
       if (accuracy < accuracyThresh) {
         feedbackText += `
           <p class="block-text">Your accuracy is low. Remember:</p>
@@ -1730,9 +1765,7 @@ var testNode = {
         `;
       }
 
-      feedbackText +=
-        `<p class="block-text">We are now going to repeat the practice round.</p>` +
-        `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
+      feedbackText += `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
       //taskSwitches = jsPsych.randomization.repeat(
       //  taskSwitchesArr,
