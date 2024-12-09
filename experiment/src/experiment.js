@@ -1207,16 +1207,6 @@ var instructionNode = {
   },
 };
 
-/* define practice and test blocks */
-var setStimsBlock = {
-  type: jsPsychCallFunction,
-  data: {
-    trial_id: "set_stims",
-    trial_duration: null,
-  },
-  func: setStims(trials[i]),
-};
-
 var feedbackBlock = {
   type: jsPsychHtmlKeyboardResponse,
   data: function () {
@@ -1236,6 +1226,16 @@ var feedbackBlock = {
 
 var practiceTrials = [];
 for (var i = 0; i < practiceLen + 1; i++) {
+  /* define practice and test blocks */
+  var setStimsBlock = {
+    type: jsPsychCallFunction,
+    data: {
+      trial_id: "set_stims",
+      trial_duration: null,
+    },
+    func: setStims(trials[i]),
+  };
+
   var practiceFixationBlock = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: fixation,
@@ -1535,6 +1535,16 @@ var practiceNode = {
 
 var testTrials = [];
 for (var i = 0; i < testLen + 1; i++) {
+  /* define practice and test blocks */
+  var setStimsBlock = {
+    type: jsPsychCallFunction,
+    data: {
+      trial_id: "set_stims",
+      trial_duration: null,
+    },
+    func: setStims(trials[i]),
+  };
+
   var testFixationBlock = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: fixation,
