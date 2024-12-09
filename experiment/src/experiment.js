@@ -859,7 +859,7 @@ var practiceThresh = 3;
 
 // Task Length Parameters
 var practiceLen = 8;
-var numTestBlocks = 1;
+var numTestBlocks = 2;
 var numTrialsPerBlock = 8; // should be multiple of 24
 var testLen = numTestBlocks * numTrialsPerBlock;
 
@@ -1231,11 +1231,11 @@ for (var i = 0; i < practiceLen + 1; i++) {
       trial_id: "set_stims",
       trial_duration: null,
     },
-    func: () => {
-      setStims(trials[i]); // Correctly passing a function reference
-    },
+    func: ((trialIndex) => () => {
+      console.log(`Setting trial: ${trialIndex + 1}`);
+      setStims(trials[trialIndex]);
+    })(i), // Use an immediately invoked function to bind the correct trial index
   };
-
   var practiceFixationBlock = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: fixation,
@@ -1541,9 +1541,10 @@ for (var i = 0; i < testLen + 1; i++) {
       trial_id: "set_stims",
       trial_duration: null,
     },
-    func: () => {
-      setStims(trials[i]); // Correctly passing a function reference
-    },
+    func: ((trialIndex) => () => {
+      console.log(`Setting trial: ${trialIndex + 1}`);
+      setStims(trials[trialIndex]);
+    })(i), // Use an immediately invoked function to bind the correct trial index
   };
 
   var testFixationBlock = {
@@ -1807,7 +1808,7 @@ var internal_external_experiment_init = () => {
   console.log("2");
   internal_external_experiment.push(practiceNode);
   console.log("3");
-  //internal_external_experiment.push(testNode);
+  internal_external_experiment.push(testNode);
   internal_external_experiment.push(endBlock);
   console.log("4");
   internal_external_experiment.push(exitFullscreen);
