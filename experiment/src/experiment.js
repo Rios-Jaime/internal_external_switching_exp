@@ -1723,7 +1723,8 @@ var testNode = {
 
       feedbackText += `<p class=block-text>You have completed ${testCount} out of ${numTestBlocks} blocks of trials.</p>`;
 
-      feedbackText += '<p class=block-text>Time remaining: <span id="countdown-timer">60</span> seconds</p>`;
+      feedbackText +=
+        '<p class=block-text>Time remaining: <span id="countdown-timer">60</span> seconds</p>';
 
       // Add a timer script to update the countdown
       setTimeout(() => {
@@ -1744,7 +1745,6 @@ var testNode = {
         }, 1000);
       }, 0);
 
-    
       if (accuracy < accuracyThresh) {
         feedbackText += `
           <p class="block-text">Your accuracy is low. Remember:</p>
