@@ -1723,7 +1723,7 @@ var testNode = {
 
       feedbackText += `<p class=block-text>You have completed ${testCount} out of ${numTestBlocks} blocks of trials.</p>`;
 
-      feedbackText += '<p class="block-text">Time remaining: <span id="countdown-timer">60</span> seconds</p>`;
+      feedbackText += '<p class=block-text>Time remaining: <span id="countdown-timer">60</span> seconds</p>`;
 
       // Add a timer script to update the countdown
       setTimeout(() => {
