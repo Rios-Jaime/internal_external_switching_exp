@@ -1807,11 +1807,13 @@ var internal_external_experiment_init = () => {
   console.log("1");
   internal_external_experiment.push(instructionNode);
   console.log("2");
-  internal_external_experiment.push(practiceNode);
+  //internal_external_experiment.push(practiceNode);
   console.log("3");
   //internal_external_experiment.push(testNode);
   internal_external_experiment.push(endBlock);
+  console.log("4");
   internal_external_experiment.push(exitFullscreen);
+  console.log("5");
 };
 
 // Call to initialize the experiment
