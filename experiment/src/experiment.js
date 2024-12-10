@@ -1351,14 +1351,11 @@ var practiceNode = {
 
       // Clear and rebuild practiceTrials dynamically
       practiceTrials = [];
-      for (var i = 0; i < practiceTrialsData.length; i++) {
+      for (var i = 0; i < newTrials.length; i++) {
         practiceTrials.push(
           {
             type: jsPsychCallFunction,
-            func: ((trial) => () => {
-              console.log("Setting new trial:", trial);
-              setStims(trial);
-            })(newTrials[i]), // IIFE ensures the correct trial is bound
+            func: (() => setStims(testTrialsData[i]))(),
             data: { trial_id: "set_stims" },
           },
           {
@@ -1407,7 +1404,6 @@ var practiceNode = {
           }
         );
       }
-
       practiceNode.timeline = [feedbackBlock].concat(practiceTrials);
       console.log("Updated practiceNode.timeline:", practiceNode.timeline);
       return true;
