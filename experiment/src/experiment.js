@@ -1163,7 +1163,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
 
 var practiceCount = 0;
 var practiceNode = {
-  timeline: [feedbackBlock].concat(practiceTrials),
+  timeline: [],
   loop_function: function (data) {
     practiceCount += 1;
     currentTrial = 0;
@@ -1226,12 +1226,6 @@ var practiceNode = {
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
       `;
-
-      //taskSwitches = jsPsych.randomization.repeat(
-      //  taskSwitchesArr,
-      //  numTrialsPerBlock / 8
-      //);
-      //taskSwitches.unshift("na");
 
       var { trials, conditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
@@ -1347,6 +1341,63 @@ var practiceNode = {
         console.log("\nValidation successful: Conditions are balanced.");
       }
 
+      // Clear and rebuild practiceTrials dynamically
+      practiceTrials = [];
+      for (var i = 0; i < newTrials.length; i++) {
+        practiceTrials.push(
+          {
+            type: jsPsychCallFunction,
+            func: (() => setStims(newTrials[i]))(),
+            data: { trial_id: "set_stims" },
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: fixation,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "practice_fixation", block_num: practiceCount },
+            trial_duration: fixationDuration,
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: getCue,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "practice_cue", block_num: practiceCount },
+            trial_duration: getCTI(),
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: getEncodingStim,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "practice_encoding", block_num: practiceCount },
+            trial_duration: encodingPhaseDuration,
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: getDecisionStim,
+            choices: choices,
+            data: {
+              trial_id: "practice_trial",
+              block_num: practiceCount,
+              exp_stage: "practice",
+            },
+            trial_duration: stimTrialDuration,
+            on_finish: appendData,
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: () => {
+              var last = jsPsych.data.get().last(1).values()[0];
+              if (last.response == null) return "Respond Faster!";
+              if (last.correct_trial === 1) return "Correct!";
+              return "Incorrect";
+            },
+            data: { trial_id: "practice_feedback", block_num: practiceCount },
+            trial_duration: 500,
+          }
+        );
+      }
+
+      practiceNode.timeline = [feedbackBlock].concat(practiceTrials);
       return true;
     }
   },
