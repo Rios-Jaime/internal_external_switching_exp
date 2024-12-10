@@ -899,6 +899,9 @@ var pageInstruct = [
   `,
 ];
 
+let practiceTrialsData = [];
+let testTrialsData = [];
+
 var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
 
 // functions to check proportions //
