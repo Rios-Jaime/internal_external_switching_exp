@@ -899,7 +899,8 @@ var pageInstruct = [
   `,
 ];
 
-var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
+var { trials: practiceTrialsData, conditionCounts: practiceConditionCounts } =
+  generateBalancedTrialsFixed(practiceLen);
 
 // functions to check proportions //
 const conditionCountsFixed = trials.reduce((counts, trial) => {
@@ -1163,7 +1164,21 @@ for (var i = 0; i < practiceLen + 1; i++) {
 
 var practiceCount = 0;
 var practiceNode = {
-  timeline: [feedbackBlock].concat(practiceTrials),
+  timeline: [feedbackBlock].concat(
+    practiceTrialsData.map((trial, index) => {
+      return {
+        type: jsPsychCallFunction,
+        data: {
+          trial_id: "set_stims",
+          trial_duration: null,
+        },
+        func: () => {
+          console.log(`Setting practice trial ${index + 1}`);
+          setStims(trial); // Pass the current trial object to setStims
+        },
+      };
+    })
+  ),
   loop_function: function (data) {
     practiceCount += 1;
     currentTrial = 0;
@@ -1227,13 +1242,7 @@ var practiceNode = {
         </div>
       `;
 
-      //taskSwitches = jsPsych.randomization.repeat(
-      //  taskSwitchesArr,
-      //  numTrialsPerBlock / 8
-      //);
-      //taskSwitches.unshift("na");
-
-      var { trials, conditionCounts } =
+      var { trials: testTrialsData, conditionCounts: testConditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
       // functions to check proportions //
@@ -1316,8 +1325,10 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var { trials, conditionCounts } =
-        generateBalancedTrialsFixed(practiceLen);
+      var {
+        trials: practiceTrialsData,
+        conditionCounts: practiceConditionCounts,
+      } = generateBalancedTrialsFixed(practiceLen);
 
       // functions to check proportions //
       const conditionCountsFixed = trials.reduce((counts, trial) => {
@@ -1477,7 +1488,7 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
 
 var testCount = 0;
 var testNode = {
-  timeline: [feedbackBlock].concat(testTrials),
+  timeline: [],
   loop_function: function (data) {
     testCount += 1;
     currentTrial = 0;
@@ -1566,7 +1577,7 @@ var testNode = {
 
       feedbackText += `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var { trials, conditionCounts } =
+      var { trials: testTrialsData, conditionCounts: testConditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
       // functions to check proportions //
@@ -1596,6 +1607,21 @@ var testNode = {
       } else {
         console.log("\nValidation successful: Conditions are balanced.");
       }
+
+      // Dynamically build the timeline for the next block
+      testNode.timeline = [feedbackBlock].concat(
+        testTrialsData.map((trial, index) => ({
+          type: jsPsychCallFunction,
+          data: {
+            trial_id: "set_stims",
+            trial_duration: null,
+          },
+          func: () => {
+            console.log(`Setting test trial ${index + 1}`);
+            setStims(trial); // Set stimuli for the current trial
+          },
+        }))
+      );
 
       return true;
     }
