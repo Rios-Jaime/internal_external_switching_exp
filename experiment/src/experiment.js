@@ -916,7 +916,7 @@ const isBalanced = Object.values(conditionCountsFixed).every(
 );
 
 console.log("\nGenerated Trials:");
-trials.forEach((trial, index) => {
+practiceTrialsData.forEach((trial, index) => {
   console.log(`Trial ${index + 1}:`, practiceTrialsData);
 });
 
@@ -1260,7 +1260,7 @@ var practiceNode = {
       );
 
       console.log("\nGenerated Trials:");
-      trials.forEach((trial, index) => {
+      testTrialsData.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, testTrialsData);
       });
 
@@ -1600,7 +1600,7 @@ var testNode = {
       );
 
       console.log("\nGenerated Trials:");
-      trials.forEach((trial, index) => {
+      testTrialsData.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, testTrialsData);
       });
 
