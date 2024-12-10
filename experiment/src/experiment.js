@@ -903,9 +903,10 @@ var { trials: practiceTrialsData, conditionCounts: practiceConditionCounts } =
   generateBalancedTrialsFixed(practiceLen);
 
 // functions to check proportions //
-const conditionCountsFixed = trials.reduce((counts, trial) => {
-  if (trial.trial_type !== "na") {
-    counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+const conditionCountsFixed = practiceTrialsData.reduce((counts, trial) => {
+  if (practiceTrialsData.trial_type !== "na") {
+    counts[practiceTrialsData.trial_type] =
+      (counts[practiceTrialsData.trial_type] || 0) + 1;
   }
   return counts;
 }, {});
@@ -916,7 +917,7 @@ const isBalanced = Object.values(conditionCountsFixed).every(
 
 console.log("\nGenerated Trials:");
 trials.forEach((trial, index) => {
-  console.log(`Trial ${index + 1}:`, trial);
+  console.log(`Trial ${index + 1}:`, practiceTrialsData);
 });
 
 console.log("\nCondition Counts (Fixed):");
@@ -1015,7 +1016,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(trials[trialIndex]);
+      setStims(practiceTrialsData[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
   var practiceFixationBlock = {
@@ -1246,9 +1247,10 @@ var practiceNode = {
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
       // functions to check proportions //
-      const conditionCountsFixed = trials.reduce((counts, trial) => {
-        if (trial.trial_type !== "na") {
-          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+      const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
+        if (testTrialsData.trial_type !== "na") {
+          counts[testTrialsData.trial_type] =
+            (counts[testTrialsData.trial_type] || 0) + 1;
         }
         return counts;
       }, {});
@@ -1259,7 +1261,7 @@ var practiceNode = {
 
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
+        console.log(`Trial ${index + 1}:`, testTrialsData);
       });
 
       console.log("\nCondition Counts (Fixed):");
@@ -1331,20 +1333,24 @@ var practiceNode = {
       } = generateBalancedTrialsFixed(practiceLen);
 
       // functions to check proportions //
-      const conditionCountsFixed = trials.reduce((counts, trial) => {
-        if (trial.trial_type !== "na") {
-          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
-        }
-        return counts;
-      }, {});
+      const conditionCountsFixed = practiceTrialsData.reduce(
+        (counts, trial) => {
+          if (practiceTrialsData.trial_type !== "na") {
+            counts[practiceTrialsData.trial_type] =
+              (counts[practiceTrialsData.trial_type] || 0) + 1;
+          }
+          return counts;
+        },
+        {}
+      );
 
       const isBalanced = Object.values(conditionCountsFixed).every(
         (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
-      trials.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
+      practiceTrialsData.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, practiceTrialsData);
       });
 
       console.log("\nCondition Counts (Fixed):");
@@ -1373,7 +1379,7 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(trials[trialIndex]);
+      setStims(testTrialsData[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
 
@@ -1581,9 +1587,10 @@ var testNode = {
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
       // functions to check proportions //
-      const conditionCountsFixed = trials.reduce((counts, trial) => {
-        if (trial.trial_type !== "na") {
-          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+      const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
+        if (testTrialsData.trial_type !== "na") {
+          counts[testTrialsData.trial_type] =
+            (counts[testTrialsData.trial_type] || 0) + 1;
         }
         return counts;
       }, {});
@@ -1594,7 +1601,7 @@ var testNode = {
 
       console.log("\nGenerated Trials:");
       trials.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
+        console.log(`Trial ${index + 1}:`, testTrialsData);
       });
 
       console.log("\nCondition Counts (Fixed):");
