@@ -900,7 +900,7 @@ var pageInstruct = [
 ];
 
 let testTrialsData = [];
-let practiceTrialsData = [];
+let newTrials = [];
 
 var { practiceTrialsData, conditionCounts } =
   generateBalancedTrialsFixed(practiceLen);
@@ -1318,19 +1318,16 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var { trials: practiceTrialsData, conditionCounts } =
-        generateBalancedTrialsFixed(practiceLen);
+      ({ trials: newTrials, conditionCounts: testConditionCounts } =
+        generateBalancedTrialsFixed(practiceLen));
 
       // functions to check proportions //
-      const conditionCountsFixed = practiceTrialsData.reduce(
-        (counts, trial) => {
-          if (trial.trial_type !== "na") {
-            counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
-          }
-          return counts;
-        },
-        {}
-      );
+      const conditionCountsFixed = newTrials.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+        }
+        return counts;
+      }, {});
 
       const isBalanced = Object.values(conditionCountsFixed).every(
         (count) => count === Math.floor(practiceLen / conditions.length)
@@ -1361,7 +1358,7 @@ var practiceNode = {
             func: ((trial) => () => {
               console.log("Setting new trial:", trial);
               setStims(trial);
-            })(practiceTrialsData[i]), // IIFE ensures the correct trial is bound
+            })(newTrials[i]), // IIFE ensures the correct trial is bound
             data: { trial_id: "set_stims" },
           },
           {
