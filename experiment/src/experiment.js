@@ -901,6 +901,7 @@ var pageInstruct = [
 
 let practiceTrialsData = [];
 let testTrialsData = [];
+let newTrials = [];
 
 var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
 
@@ -1354,7 +1355,10 @@ var practiceNode = {
         practiceTrials.push(
           {
             type: jsPsychCallFunction,
-            func: (() => setStims(newTrials[i]))(),
+            func: ((trial) => () => {
+              console.log("Setting new trial:", trial);
+              setStims(trial);
+            })(newTrials[i]), // IIFE ensures the correct trial is bound
             data: { trial_id: "set_stims" },
           },
           {
