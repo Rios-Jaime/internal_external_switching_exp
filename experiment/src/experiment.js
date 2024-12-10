@@ -899,14 +899,12 @@ var pageInstruct = [
   `,
 ];
 
-var { trials: practiceTrialsData, conditionCounts: practiceConditionCounts } =
-  generateBalancedTrialsFixed(practiceLen);
+var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
 
 // functions to check proportions //
-const conditionCountsFixed = practiceTrialsData.reduce((counts, trial) => {
-  if (practiceTrialsData.trial_type !== "na") {
-    counts[practiceTrialsData.trial_type] =
-      (counts[practiceTrialsData.trial_type] || 0) + 1;
+const conditionCountsFixed = trials.reduce((counts, trial) => {
+  if (trial.trial_type !== "na") {
+    counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
   }
   return counts;
 }, {});
@@ -916,8 +914,8 @@ const isBalanced = Object.values(conditionCountsFixed).every(
 );
 
 console.log("\nGenerated Trials:");
-practiceTrialsData.forEach((trial, index) => {
-  console.log(`Trial ${index + 1}:`, practiceTrialsData);
+trials.forEach((trial, index) => {
+  console.log(`Trial ${index + 1}:`, trial);
 });
 
 console.log("\nCondition Counts (Fixed):");
@@ -1016,7 +1014,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(practiceTrialsData[trialIndex]);
+      setStims(trials[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
   var practiceFixationBlock = {
@@ -1165,28 +1163,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
 
 var practiceCount = 0;
 var practiceNode = {
-  timeline: [], // Start with an empty timeline
-  on_timeline_start: function () {
-    // Generate new trials for practice
-    var { trials: newPracticeTrials } =
-      generateBalancedTrialsFixed(practiceLen);
-    console.log("Generated Practice Trials:", newPracticeTrials);
-
-    // Dynamically create timeline for practice trials
-    practiceNode.timeline = newPracticeTrials
-      .map((trial, index) => {
-        return {
-          type: jsPsychCallFunction,
-          func: () => {
-            console.log(`Setting Practice Trial ${index + 1}`);
-            setStims(trial);
-          },
-        };
-      })
-      .concat([
-        feedbackBlock, // Include feedback after trials
-      ]);
-  },
+  timeline: [feedbackBlock].concat(practiceTrials),
   loop_function: function (data) {
     practiceCount += 1;
     currentTrial = 0;
@@ -1250,14 +1227,19 @@ var practiceNode = {
         </div>
       `;
 
-      var { trials: testTrialsData, conditionCounts: testConditionCounts } =
+      //taskSwitches = jsPsych.randomization.repeat(
+      //  taskSwitchesArr,
+      //  numTrialsPerBlock / 8
+      //);
+      //taskSwitches.unshift("na");
+
+      var { trials, conditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
       // functions to check proportions //
-      const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
-        if (testTrialsData.trial_type !== "na") {
-          counts[testTrialsData.trial_type] =
-            (counts[testTrialsData.trial_type] || 0) + 1;
+      const conditionCountsFixed = trials.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
         }
         return counts;
       }, {});
@@ -1267,8 +1249,8 @@ var practiceNode = {
       );
 
       console.log("\nGenerated Trials:");
-      testTrialsData.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, testTrialsData);
+      trials.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
       });
 
       console.log("\nCondition Counts (Fixed):");
@@ -1334,30 +1316,24 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var {
-        trials: practiceTrialsData,
-        conditionCounts: practiceConditionCounts,
-      } = generateBalancedTrialsFixed(practiceLen);
+      var { trials, conditionCounts } =
+        generateBalancedTrialsFixed(practiceLen);
 
       // functions to check proportions //
-      const conditionCountsFixed = practiceTrialsData.reduce(
-        (counts, trial) => {
-          if (practiceTrialsData.trial_type !== "na") {
-            counts[practiceTrialsData.trial_type] =
-              (counts[practiceTrialsData.trial_type] || 0) + 1;
-          }
-          return counts;
-        },
-        {}
-      );
+      const conditionCountsFixed = trials.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+        }
+        return counts;
+      }, {});
 
       const isBalanced = Object.values(conditionCountsFixed).every(
         (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
-      practiceTrialsData.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, practiceTrialsData);
+      trials.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
       });
 
       console.log("\nCondition Counts (Fixed):");
@@ -1386,7 +1362,7 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(testTrialsData[trialIndex]);
+      setStims(trials[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
 
@@ -1501,28 +1477,7 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
 
 var testCount = 0;
 var testNode = {
-  timeline: [], // Start with an empty timeline
-  on_timeline_start: function () {
-    // Generate new trials for test
-    var { trials: newTestTrials } =
-      generateBalancedTrialsFixed(numTrialsPerBlock);
-    console.log("Generated Test Trials:", newTestTrials);
-
-    // Dynamically create timeline for test trials
-    testNode.timeline = newTestTrials
-      .map((trial, index) => {
-        return {
-          type: jsPsychCallFunction,
-          func: () => {
-            console.log(`Setting Test Trial ${index + 1}`);
-            setStims(trial);
-          },
-        };
-      })
-      .concat([
-        feedbackBlock, // Include feedback after trials
-      ]);
-  },
+  timeline: [feedbackBlock].concat(testTrials),
   loop_function: function (data) {
     testCount += 1;
     currentTrial = 0;
@@ -1611,14 +1566,13 @@ var testNode = {
 
       feedbackText += `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var { trials: testTrialsData, conditionCounts: testConditionCounts } =
+      var { trials, conditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
 
       // functions to check proportions //
-      const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
-        if (testTrialsData.trial_type !== "na") {
-          counts[testTrialsData.trial_type] =
-            (counts[testTrialsData.trial_type] || 0) + 1;
+      const conditionCountsFixed = trials.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
         }
         return counts;
       }, {});
@@ -1628,8 +1582,8 @@ var testNode = {
       );
 
       console.log("\nGenerated Trials:");
-      testTrialsData.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, testTrialsData);
+      trials.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
       });
 
       console.log("\nCondition Counts (Fixed):");
