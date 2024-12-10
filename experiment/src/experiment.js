@@ -1227,11 +1227,14 @@ var practiceNode = {
         </div>
       `;
 
-      var { trials, conditionCounts } =
-        generateBalancedTrialsFixed(numTrialsPerBlock);
+      // Generate test trials for the testing phase
+      ({ trials: testTrialsData, conditionCounts: testConditionCounts } =
+        generateBalancedTrialsFixed(numTrialsPerBlock));
+
+      console.log("Generated test trials:", testTrialsData);
 
       // functions to check proportions //
-      const conditionCountsFixed = trials.reduce((counts, trial) => {
+      const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
         if (trial.trial_type !== "na") {
           counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
         }
@@ -1243,7 +1246,7 @@ var practiceNode = {
       );
 
       console.log("\nGenerated Trials:");
-      trials.forEach((trial, index) => {
+      testTrialsData.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, trial);
       });
 
@@ -1261,6 +1264,7 @@ var practiceNode = {
       expStage = "test";
       return false;
     } else {
+      console.log("practice running again: " + practiceCount);
       feedbackText =
         "<div class = centerbox><p class = block-text>Please take this time to read your feedback! This screen will advance automatically in 1 minute.</p>";
 
@@ -1315,9 +1319,8 @@ var practiceNode = {
 
       // functions to check proportions //
       const conditionCountsFixed = newTrials.reduce((counts, trial) => {
-        if (newTrials.trial_type !== "na") {
-          counts[newTrials.trial_type] =
-            (counts[newTrials.trial_type] || 0) + 1;
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
         }
         return counts;
       }, {});
@@ -1414,7 +1417,7 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(trials[trialIndex]);
+      setStims(testTrialsData[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
 
@@ -1529,7 +1532,7 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
 
 var testCount = 0;
 var testNode = {
-  timeline: [feedbackBlock].concat(testTrials),
+  timeline: [],
   loop_function: function (data) {
     testCount += 1;
     currentTrial = 0;
@@ -1618,11 +1621,11 @@ var testNode = {
 
       feedbackText += `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var { trials, conditionCounts } =
-        generateBalancedTrialsFixed(numTrialsPerBlock);
-
+      // Generate test trials for the testing phase
+      ({ trials: testTrialsData, conditionCounts: testConditionCounts } =
+        generateBalancedTrialsFixed(numTrialsPerBlock));
       // functions to check proportions //
-      const conditionCountsFixed = trials.reduce((counts, trial) => {
+      const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
         if (trial.trial_type !== "na") {
           counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
         }
@@ -1634,7 +1637,7 @@ var testNode = {
       );
 
       console.log("\nGenerated Trials:");
-      trials.forEach((trial, index) => {
+      testTrialsData.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, trial);
       });
 
@@ -1649,12 +1652,55 @@ var testNode = {
         console.log("\nValidation successful: Conditions are balanced.");
       }
 
+      // Build new test timeline dynamically
+      testTrials = [];
+      for (var i = 0; i < testTrialsData.length; i++) {
+        testTrials.push(
+          {
+            type: jsPsychCallFunction,
+            func: (() => setStims(testTrialsData[i]))(),
+            data: { trial_id: "set_stims" },
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: fixation,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "test_fixation", block_num: testCount },
+            trial_duration: fixationDuration,
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: getCue,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "test_cue", block_num: testCount },
+            trial_duration: getCTI(),
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: getEncodingStim,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "test_encoding", block_num: testCount },
+            trial_duration: encodingPhaseDuration,
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: getDecisionStim,
+            choices: choices,
+            data: {
+              trial_id: "test_trial",
+              block_num: testCount,
+              exp_stage: "test",
+            },
+            trial_duration: stimTrialDuration,
+            on_finish: appendData,
+          }
+        );
+      }
+
+      testNode.timeline = [feedbackBlock].concat(testTrials);
       return true;
     }
   },
-  //on_timeline_finish: function () {
-  //  window.dataSync();
-  //},
 };
 
 var endBlock = {
