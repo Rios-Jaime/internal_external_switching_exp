@@ -1018,7 +1018,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(newTrials[trialIndex]);
+      setStims(practiceTrialsData[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
   var practiceFixationBlock = {
@@ -1351,14 +1351,15 @@ var practiceNode = {
 
       // Clear and rebuild practiceTrials dynamically
       practiceTrials = [];
-      for (var i = 0; i < practiceTrialsData.length; i++) {
+      for (var i = 0; i < newTrials.length; i++) {
         practiceTrials.push(
           {
             type: jsPsychCallFunction,
-            func: ((trial) => () => {
-              console.log("Setting new trial:", trial);
-              setStims(trial);
-            })(newTrials[i]), // IIFE ensures the correct trial is bound
+            func: ((index) => () => {
+              // Reference `newTrials` dynamically at execution time
+              console.log("Setting new trial dynamically:", newTrials[index]);
+              setStims(newTrials[index]);
+            })(i), // Use IIFE to bind `i` for the closure
             data: { trial_id: "set_stims" },
           },
           {
