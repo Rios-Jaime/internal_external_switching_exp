@@ -274,34 +274,6 @@ const getDecisionStim = () => {
     </div>
   `;
 };
-const getDecisionStim = () => {
-  // Determine the external stimulus based on currCue
-  const externalStimImage =
-    currCue === "external"
-      ? getImageUrl(currStim)
-      : getImageUrl(currDistractorStim);
-  const targetImage = getImageUrl(currTarget);
-
-  // Randomly decide if the target is on the left or right
-  const targetPosition = Math.random() < 0.5 ? "left" : "right";
-
-  // Generate HTML for the stimuli with consistent sizes
-  const targetHtml = `<img src="${targetImage}" alt="${currTarget}" style="width: 200px; height: auto; border: 3px solid black;">`;
-  const externalHtml = `<img src="${externalStimImage}" alt="external" style="width: 200px; height: auto;">`;
-
-  // Generate the HTML structure with consistent fixation
-  return `
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-      <div style="display: flex; justify-content: center; align-items: center; margin-right: 40px;">
-        ${targetPosition === "left" ? targetHtml : externalHtml}
-      </div>
-      <div>${getCue()}</div>
-      <div style="display: flex; justify-content: center; align-items: center; margin-left: 40px;">
-        ${targetPosition === "left" ? externalHtml : targetHtml}
-      </div>
-    </div>
-  `;
-};
 
 const getCurrBlockNum = () =>
   getExpStage() === "practice" ? practiceCount : testCount;
