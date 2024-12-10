@@ -1097,14 +1097,14 @@ for (var i = 0; i < practiceLen + 1; i++) {
 
     trial_duration: function () {
       ITIms = sampleFromDecayingExponential();
-      return ITIms * 1000;
+      return 500;
     },
     prompt: function () {
       return getExpStage() === "practice" ? promptText : "";
     },
     on_finish: function (data) {
-      data["trial_duration"] = ITIms * 1000;
-      data["stimulus_duration"] = ITIms * 1000;
+      data["trial_duration"] = 500;
+      data["stimulus_duration"] = 500;
     },
   };
 
@@ -1503,11 +1503,11 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
 
     trial_duration: function () {
       ITIms = sampleFromDecayingExponential();
-      return ITIms * 1000;
+      return 500;
     },
     on_finish: function (data) {
-      data["trial_duration"] = ITIms * 1000;
-      data["stimulus_duration"] = ITIms * 1000;
+      data["trial_duration"] = 500;
+      data["stimulus_duration"] = 500;
     },
   };
 
