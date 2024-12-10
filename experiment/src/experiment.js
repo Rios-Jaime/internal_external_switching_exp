@@ -593,8 +593,8 @@ var runAttentionChecks = false;
 // Threshold Parameters
 var sumInstructTime = 0; // ms
 var instructTimeThresh = 5; // in seconds
-var accuracyThresh = 0.8;
-var practiceAccuracyThresh = 0.8; //
+var accuracyThresh = 0.75;
+var practiceAccuracyThresh = 0.75; //
 var rtThresh = 1000;
 var missedResponseThresh = 0.1;
 var practiceThresh = 3;
@@ -1210,7 +1210,7 @@ var practiceNode = {
       //taskSwitches.unshift("na");
 
       var { trials, conditionCounts } =
-        generateBalancedTrialsFixed(practiceLen);
+        generateBalancedTrialsFixed(numTrialsPerBlock);
 
       // functions to check proportions //
       const conditionCountsFixed = trials.reduce((counts, trial) => {
@@ -1299,7 +1299,7 @@ var practiceNode = {
       //taskSwitches.unshift("na");
 
       var { trials, conditionCounts } =
-        generateBalancedTrialsFixed(numTrialsPerBlock);
+        generateBalancedTrialsFixed(practiceLen);
 
       // functions to check proportions //
       const conditionCountsFixed = trials.reduce((counts, trial) => {
