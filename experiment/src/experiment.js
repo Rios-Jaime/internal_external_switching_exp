@@ -278,7 +278,7 @@ var appendData = function () {
   jsPsych.data.get().addToLast({
     cue: currCue,
     trial_id: trialID,
-    trial_type: trialType,
+    trialType: trialType,
     attention_mode_condition: currCue,
     reference_object_category: currRefObj,
     task_condition: task_switch,
@@ -430,43 +430,22 @@ var getResponse = function () {
     case "bear":
       if (
         [
-          "baseball_bat",
-          "basketball",
-          "bowling_ball",
           "boxing_gloves",
-          "football",
-          "golf_club",
-          "hockey_stick",
           "ice_skate",
-          "raquet",
           "shuttlecock",
           "skateboard",
           "soccerball",
-          "axe",
           "chainsaw",
-          "chisel",
           "crowbar",
           "drill",
-          "electric_saw",
           "hammer",
-          "hand_saw",
-          "hoe",
           "mallet",
           "screwdriver",
-          "scythe",
-          "shear",
-          "shovel",
-          "sickle",
           "wrench",
+          "golf_ball",
+          "wheelbarrow",
         ].includes(currStim)
       ) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
-    case "bluebird":
-      if ([].includes(currStim)) {
         return responseMappings.larger;
       } else {
         return responseMappings.smaller;
@@ -475,36 +454,20 @@ var getResponse = function () {
     case "buffalo":
       if (
         [
-          "baseball_bat",
-          "basketball",
-          "bicycle",
-          "bowling_ball",
           "boxing_gloves",
-          "football",
-          "hockey_stick",
-          "golf_club",
           "ice_skate",
-          "raquet",
           "shuttlecock",
           "skateboard",
-          "ski",
           "soccerball",
-          "axe",
           "chainsaw",
-          "chisel",
           "crowbar",
           "drill",
-          "electric_saw",
           "hammer",
-          "hand_saw",
-          "hoe",
           "mallet",
           "screwdriver",
-          "scythe",
-          "shear",
-          "shovel",
-          "sickle",
           "wrench",
+          "golf_ball",
+          "wheelbarrow",
         ].includes(currStim)
       ) {
         return responseMappings.larger;
@@ -513,7 +476,7 @@ var getResponse = function () {
       }
 
     case "butterfly":
-      if ([].includes(currStim)) {
+      if (["golf_ball"].includes(currStim)) {
         return responseMappings.larger;
       } else {
         return responseMappings.smaller;
@@ -526,70 +489,23 @@ var getResponse = function () {
         return responseMappings.smaller;
       }
 
-    case "cockroach":
-      if ([].includes(currStim)) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
     case "gorilla":
       if (
         [
-          "baseball_bat",
-          "basketball",
-          "bicycle",
-          "bowling_ball",
           "boxing_gloves",
-          "football",
-          "golf_club",
-          "hockey_stick",
           "ice_skate",
-          "raquet",
           "shuttlecock",
           "skateboard",
-          "ski",
           "soccerball",
-          "axe",
           "chainsaw",
-          "chisel",
           "crowbar",
           "drill",
-          "electric_saw",
           "hammer",
-          "hand_saw",
-          "hoe",
           "mallet",
           "screwdriver",
-          "shear",
-          "shovel",
-          "sickle",
           "wrench",
-        ].includes(currStim)
-      ) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
-    case "rabbit":
-      if (
-        [
-          "basketball",
-          "bowling_ball",
-          "boxing_gloves",
-          "football",
-          "ice_skate",
-          "shuttlecock",
-          "soccerball",
-          "chisel",
-          "drill",
-          "hammer",
-          "hand_saw",
-          "mallet",
-          "screwdriver",
-          "shear",
-          "wrench",
+          "golf_ball",
+          "wheelbarrow",
         ].includes(currStim)
       ) {
         return responseMappings.larger;
@@ -598,14 +514,7 @@ var getResponse = function () {
       }
 
     case "scorpion":
-      if ([].includes(currStim)) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
-    case "seahorse":
-      if (["shuttlecock", "chisel"].includes(currStim)) {
+      if (["golf_ball"].includes(currStim)) {
         return responseMappings.larger;
       } else {
         return responseMappings.smaller;
@@ -614,186 +523,19 @@ var getResponse = function () {
     case "sombra":
       if (
         [
-          "baseball_bat",
-          "basketball",
-          "bowling_ball",
           "boxing_gloves",
-          "football",
           "ice_skate",
-          "raquet",
           "shuttlecock",
           "skateboard",
           "soccerball",
-          "axe",
           "chainsaw",
-          "chisel",
           "crowbar",
           "drill",
-          "electric_saw",
           "hammer",
-          "hand_saw",
           "mallet",
           "screwdriver",
-          "shear",
-          "shovel",
-          "sickle",
           "wrench",
-        ].includes(currStim)
-      ) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
-    case "elephant":
-      if (
-        [
-          "baseball_bat",
-          "basketball",
-          "bicycle",
-          "bowling_ball",
-          "boxing_gloves",
-          "football",
-          "golf_club",
-          "hockey_stick",
-          "ice_skate",
-          "raquet",
-          "shuttlecock",
-          "skateboard",
-          "ski",
-          "soccerball",
-          "axe",
-          "chainsaw",
-          "chisel",
-          "crowbar",
-          "drill",
-          "electric_saw",
-          "hammer",
-          "hand_saw",
-          "hoe",
-          "mallet",
-          "screwdriver",
-          "shear",
-          "shovel",
-          "sickle",
-          "wrench",
-        ].includes(currStim)
-      ) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
-    case "horse":
-      if (
-        [
-          "baseball_bat",
-          "basketball",
-          "bicycle",
-          "bowling_ball",
-          "boxing_gloves",
-          "football",
-          "golf_club",
-          "hockey_stick",
-          "ice_skate",
-          "raquet",
-          "shuttlecock",
-          "skateboard",
-          "ski",
-          "soccerball",
-          "axe",
-          "chainsaw",
-          "chisel",
-          "crowbar",
-          "drill",
-          "electric_saw",
-          "hammer",
-          "hand_saw",
-          "hoe",
-          "mallet",
-          "screwdriver",
-          "shear",
-          "shovel",
-          "sickle",
-          "wrench",
-        ].includes(currStim)
-      ) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
-    case "giraffe":
-      if (
-        [
-          "baseball_bat",
-          "basketball",
-          "bicycle",
-          "bowling_ball",
-          "boxing_gloves",
-          "football",
-          "golf_club",
-          "hockey_stick",
-          "ice_skate",
-          "raquet",
-          "shuttlecock",
-          "skateboard",
-          "ski",
-          "soccerball",
-          "axe",
-          "chainsaw",
-          "chisel",
-          "crowbar",
-          "drill",
-          "electric_saw",
-          "hammer",
-          "hand_saw",
-          "hoe",
-          "mallet",
-          "screwdriver",
-          "shear",
-          "shovel",
-          "sickle",
-          "wrench",
-        ].includes(currStim)
-      ) {
-        return responseMappings.larger;
-      } else {
-        return responseMappings.smaller;
-      }
-
-    case "rhinoceros":
-      if (
-        [
-          "baseball_bat",
-          "basketball",
-          "bicycle",
-          "bowling_ball",
-          "boxing_gloves",
-          "football",
-          "golf_club",
-          "hockey_stick",
-          "ice_skate",
-          "raquet",
-          "shuttlecock",
-          "skateboard",
-          "ski",
-          "soccerball",
-          "axe",
-          "chainsaw",
-          "chisel",
-          "crowbar",
-          "drill",
-          "electric_saw",
-          "hammer",
-          "hand_saw",
-          "hoe",
-          "mallet",
-          "screwdriver",
-          "shear",
-          "shovel",
-          "sickle",
-          "wrench",
+          "golf_ball",
         ].includes(currStim)
       ) {
         return responseMappings.larger;
@@ -920,59 +662,60 @@ var pathSource = "/images/";
 var trialExamplePath = pathSource + "trial_example/trial_example.png";
 
 var tool_objects = [
-  "axe",
+  //"axe",
   "chainsaw",
-  "chisel",
+  //"chisel",
   "crowbar",
   "drill",
-  "electric_saw",
+  //"electric_saw",
   "hammer",
-  "hand_saw",
-  "hoe",
+  //"hand_saw",
+  //"hoe",
   "mallet",
   "screwdriver",
-  "scythe",
-  "shear",
-  "shovel",
-  "sickle",
+  //"scythe",
+  //"shear",
+  //"shovel",
+  //"sickle",
   "wrench",
+  "wheelbarrow",
 ];
 
 var sports_objects = [
-  "baseball_bat",
-  "basketball",
-  "bicycle",
-  "bowling_ball",
+  //"baseball_bat",
+  //"basketball",
+  //"bicycle",
+  //"bowling_ball",
   "boxing_gloves",
   "canoe",
-  "football",
-  "golf_club",
-  "hockey_stick",
+  //"football",
+  "golf_ball",
+  //"hockey_stick",
   "ice_skate",
-  "raquet",
+  //"raquet",
   "shuttlecock",
   "skateboard",
-  "ski",
+  //"ski",
   "soccerball",
   "surfboard",
 ];
 
 var animate_objects = [
   "ant",
-  "elephant",
+  //"elephant",
   "bear",
-  "bluebird",
+  //"bluebird",
   "buffalo",
   "butterfly",
-  "horse",
+  //"horse",
   "caterpillar",
-  "cockroach",
-  "giraffe",
+  //"cockroach",
+  //"giraffe",
   "gorilla",
-  "rhinoceros",
-  "rabbit",
+  //"rhinoceros",
+  //"rabbit",
   "scorpion",
-  "seahorse",
+  //"seahorse",
   "sombra",
 ];
 
