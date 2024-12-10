@@ -1166,7 +1166,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
 
 var practiceCount = 0;
 var practiceNode = {
-  timeline: [],
+  timeline: [feedbackBlock].concat(practiceTrials),
   loop_function: function (data) {
     practiceCount += 1;
     currentTrial = 0;
@@ -1535,7 +1535,7 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
 
 var testCount = 0;
 var testNode = {
-  timeline: [],
+  timeline: [feedbackBlock].concat(testTrials),
   loop_function: function (data) {
     testCount += 1;
     currentTrial = 0;
