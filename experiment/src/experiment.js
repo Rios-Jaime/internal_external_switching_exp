@@ -1165,21 +1165,28 @@ for (var i = 0; i < practiceLen + 1; i++) {
 
 var practiceCount = 0;
 var practiceNode = {
-  timeline: [feedbackBlock].concat(
-    practiceTrialsData.map((trial, index) => {
-      return {
-        type: jsPsychCallFunction,
-        data: {
-          trial_id: "set_stims",
-          trial_duration: null,
-        },
-        func: () => {
-          console.log(`Setting practice trial ${index + 1}`);
-          setStims(trial); // Pass the current trial object to setStims
-        },
-      };
-    })
-  ),
+  timeline: [], // Start with an empty timeline
+  on_timeline_start: function () {
+    // Generate new trials for practice
+    var { trials: newPracticeTrials } =
+      generateBalancedTrialsFixed(practiceLen);
+    console.log("Generated Practice Trials:", newPracticeTrials);
+
+    // Dynamically create timeline for practice trials
+    practiceNode.timeline = newPracticeTrials
+      .map((trial, index) => {
+        return {
+          type: jsPsychCallFunction,
+          func: () => {
+            console.log(`Setting Practice Trial ${index + 1}`);
+            setStims(trial);
+          },
+        };
+      })
+      .concat([
+        feedbackBlock, // Include feedback after trials
+      ]);
+  },
   loop_function: function (data) {
     practiceCount += 1;
     currentTrial = 0;
@@ -1494,7 +1501,28 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
 
 var testCount = 0;
 var testNode = {
-  timeline: [],
+  timeline: [], // Start with an empty timeline
+  on_timeline_start: function () {
+    // Generate new trials for test
+    var { trials: newTestTrials } =
+      generateBalancedTrialsFixed(numTrialsPerBlock);
+    console.log("Generated Test Trials:", newTestTrials);
+
+    // Dynamically create timeline for test trials
+    testNode.timeline = newTestTrials
+      .map((trial, index) => {
+        return {
+          type: jsPsychCallFunction,
+          func: () => {
+            console.log(`Setting Test Trial ${index + 1}`);
+            setStims(trial);
+          },
+        };
+      })
+      .concat([
+        feedbackBlock, // Include feedback after trials
+      ]);
+  },
   loop_function: function (data) {
     testCount += 1;
     currentTrial = 0;
@@ -1614,21 +1642,6 @@ var testNode = {
       } else {
         console.log("\nValidation successful: Conditions are balanced.");
       }
-
-      // Dynamically build the timeline for the next block
-      testNode.timeline = [feedbackBlock].concat(
-        testTrialsData.map((trial, index) => ({
-          type: jsPsychCallFunction,
-          data: {
-            trial_id: "set_stims",
-            trial_duration: null,
-          },
-          func: () => {
-            console.log(`Setting test trial ${index + 1}`);
-            setStims(trial); // Set stimuli for the current trial
-          },
-        }))
-      );
 
       return true;
     }
