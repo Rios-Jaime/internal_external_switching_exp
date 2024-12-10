@@ -1245,7 +1245,7 @@ var practiceNode = {
       }, {});
 
       const isBalanced = Object.values(conditionCountsFixed).every(
-        (count) => count === Math.floor(practiceLen / conditions.length)
+        (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
@@ -1316,12 +1316,6 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      //taskSwitches = jsPsych.randomization.repeat(
-      //  taskSwitchesArr,
-      //  practiceLen / 8
-      //);
-      //taskSwitches.unshift("na");
-
       var { trials, conditionCounts } =
         generateBalancedTrialsFixed(practiceLen);
 
@@ -1334,7 +1328,7 @@ var practiceNode = {
       }, {});
 
       const isBalanced = Object.values(conditionCountsFixed).every(
-        (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
+        (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
@@ -1521,12 +1515,6 @@ var testNode = {
         <p class=centerbox>Press <i>enter</i> to continue.</p>
         </div>`;
 
-      //taskSwitches = jsPsych.randomization.repeat(
-      //  taskSwitchesArr,
-      //  numTrialsPerBlock / 8
-      //);
-      //taskSwitches.unshift("na");
-
       return false;
     } else {
       feedbackText =
@@ -1577,12 +1565,6 @@ var testNode = {
       }
 
       feedbackText += `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
-
-      //taskSwitches = jsPsych.randomization.repeat(
-      //  taskSwitchesArr,
-      //  practiceLen / 8
-      //);
-      //taskSwitches.unshift("na");
 
       var { trials, conditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock);
@@ -1642,9 +1624,6 @@ var internal_external_experiment_init = () => {
   console.log("Assigned condition:", assignedCondition);
 
   jsPsych.pluginAPI.preloadImages(imageUrls);
-
-  //taskSwitches = jsPsych.randomization.repeat(taskSwitchesArr, practiceLen / 8);
-  //taskSwitches.unshift("na");
 
   internal_external_experiment.push(fullscreen);
   console.log("1");
