@@ -1169,6 +1169,9 @@ var practiceNode = {
     var missedResponses = (totalTrials - sumResponses) / totalTrials;
     var avgRT = sumRT / sumResponses;
 
+    console.log(accuracy);
+    console.log(missedResponses);
+
     if (
       accuracy >= practiceAccuracyThresh ||
       practiceCount === practiceThresh
