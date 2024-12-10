@@ -151,17 +151,38 @@ function generateObjectList(objects, category) {
   }));
 }
 
+// Function to get a random item from a list and remove it (without replacement)
+function getRandomItemWithoutReplacement(array, originalArray) {
+  if (array.length === 0) {
+    // Repopulate the array when it's empty
+    array.push(...originalArray);
+  }
+  // Randomly select an index
+  const randomIndex = Math.floor(Math.random() * array.length);
+  // Remove the selected item and return it
+  return array.splice(randomIndex, 1)[0];
+}
+
 /* ************** Getters *************** */
 
-// function to randomly select an image from object categories
+// Function to randomly select an image from object categories
 function getRandomObject(ref_object) {
   switch (ref_object) {
     case "tool":
-      return randomDraw(tool_objects);
+      return getRandomItemWithoutReplacement(
+        remainingToolObjects,
+        tool_objects
+      );
     case "sports":
-      return randomDraw(sports_objects);
+      return getRandomItemWithoutReplacement(
+        remainingSportsObjects,
+        sports_objects
+      );
     case "animate":
-      return randomDraw(animate_objects);
+      return getRandomItemWithoutReplacement(
+        remainingAnimateObjects,
+        animate_objects
+      );
     default:
       console.log(ref_object);
       throw new Error("Invalid ref_object value");
@@ -190,9 +211,7 @@ const setCTI = () => CTI;
 const getCTI = () => CTI;
 
 const getFixation = (color = "black") => `
-  <div class="centerbox">
-    <div class="fixation" style="font-size: 100px; color: ${color};">+</div>
-  </div>
+  <div class="fixation" style="font-size: 100px; color: ${color}; text-align: center; line-height: 1;">+</div>
 `;
 
 const getCue = () =>
@@ -225,6 +244,36 @@ const getEncodingStim = () => {
   `;
 };
 
+const getDecisionStim = () => {
+  // Determine the external stimulus based on currCue
+  const externalStimImage =
+    currCue === "external"
+      ? getImageUrl(currStim)
+      : getImageUrl(currDistractorStim);
+  const targetImage = getImageUrl(currTarget);
+
+  // Randomly decide if the target is on the left or right
+  const targetPosition = Math.random() < 0.5 ? "left" : "right";
+
+  // Generate HTML for the stimuli with consistent sizes and alignment
+  const targetHtml = `<img src="${targetImage}" alt="${currTarget}" style="width: 200px; height: auto; border: 3px solid black;">`;
+  const externalHtml = `<img src="${externalStimImage}" alt="external" style="width: 200px; height: auto;">`;
+
+  // Generate the HTML structure
+  return `
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+      <div style="display: flex; flex-direction: column; align-items: center; margin-right: 40px;">
+        ${targetPosition === "left" ? targetHtml : externalHtml}
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center;">
+        ${getCue()}
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; margin-left: 40px;">
+        ${targetPosition === "left" ? externalHtml : targetHtml}
+      </div>
+    </div>
+  `;
+};
 const getDecisionStim = () => {
   // Determine the external stimulus based on currCue
   const externalStimImage =
@@ -719,6 +768,11 @@ var animate_objects = [
   "sombra",
 ];
 
+// Copies of the original object arrays to track remaining objects
+let remainingToolObjects = [...tool_objects];
+let remainingSportsObjects = [...sports_objects];
+let remainingAnimateObjects = [...animate_objects];
+
 // Generate lists of objects with names and image paths
 const animate_images = generateObjectList(animate_objects, "animate");
 const sports_images = generateObjectList(sports_objects, "sports");
@@ -770,26 +824,24 @@ var feedbackText =
   "<div class = centerbox><p class = center-block-text>Press <i>enter</i> to begin practice.</p></div>";
 
 var promptTextList = `
-  <ul style="text-align:center; font-size:24px; margin-bottom: 10px;">
-    <li>
+  <div style="text-align:center; font-size:24px; margin-bottom: 10px;">
+    <p>
       Press <b>${
         responseMappings.smaller === ","
           ? "comma key (,)"
           : responseMappings.smaller === "."
           ? "period key (.)"
           : "Error: Mapping Missing"
-      }</b> if the target is <b>smaller</b>.
-    </li>
-    <li>
-      Press <b>${
+      }</b> if the target is <b>smaller</b> and 
+      <b>${
         responseMappings.larger === ","
           ? "comma key (,)"
           : responseMappings.larger === "."
           ? "period key (.)"
           : "Error: Mapping Missing"
       }</b> if the target is <b>larger</b>.
-    </li>
-  </ul>
+    </p>
+  </div>
   <div style="text-align:center; margin-top:10px;">
     <p>
       <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>
