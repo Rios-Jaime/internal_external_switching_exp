@@ -1310,13 +1310,14 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var { trials, conditionCounts } =
+      var { trials: newTrials, conditionCounts } =
         generateBalancedTrialsFixed(practiceLen);
 
       // functions to check proportions //
-      const conditionCountsFixed = trials.reduce((counts, trial) => {
-        if (trial.trial_type !== "na") {
-          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+      const conditionCountsFixed = newTrials.reduce((counts, trial) => {
+        if (newTrials.trial_type !== "na") {
+          counts[newTrials.trial_type] =
+            (counts[newTrials.trial_type] || 0) + 1;
         }
         return counts;
       }, {});
@@ -1326,7 +1327,7 @@ var practiceNode = {
       );
 
       console.log("\nGenerated Trials:");
-      trials.forEach((trial, index) => {
+      newTrials.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, trial);
       });
 
