@@ -899,14 +899,14 @@ var pageInstruct = [
   `,
 ];
 
-let practiceTrialsData = [];
 let testTrialsData = [];
-let newTrials = [];
+let practiceTrialsData = [];
 
-var { trials, conditionCounts } = generateBalancedTrialsFixed(practiceLen);
+var { practiceTrialsData, conditionCounts } =
+  generateBalancedTrialsFixed(practiceLen);
 
 // functions to check proportions //
-const conditionCountsFixed = trials.reduce((counts, trial) => {
+const conditionCountsFixed = practiceTrialsData.reduce((counts, trial) => {
   if (trial.trial_type !== "na") {
     counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
   }
@@ -918,7 +918,7 @@ const isBalanced = Object.values(conditionCountsFixed).every(
 );
 
 console.log("\nGenerated Trials:");
-trials.forEach((trial, index) => {
+practiceTrialsData.forEach((trial, index) => {
   console.log(`Trial ${index + 1}:`, trial);
 });
 
@@ -1018,7 +1018,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(trials[trialIndex]);
+      setStims(practiceTrialsData[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
   var practiceFixationBlock = {
@@ -1318,16 +1318,19 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      var { trials: newTrials, conditionCounts } =
+      var { trials: practiceTrialsData, conditionCounts } =
         generateBalancedTrialsFixed(practiceLen);
 
       // functions to check proportions //
-      const conditionCountsFixed = newTrials.reduce((counts, trial) => {
-        if (trial.trial_type !== "na") {
-          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
-        }
-        return counts;
-      }, {});
+      const conditionCountsFixed = practiceTrialsData.reduce(
+        (counts, trial) => {
+          if (trial.trial_type !== "na") {
+            counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+          }
+          return counts;
+        },
+        {}
+      );
 
       const isBalanced = Object.values(conditionCountsFixed).every(
         (count) => count === Math.floor(practiceLen / conditions.length)
@@ -1351,14 +1354,14 @@ var practiceNode = {
 
       // Clear and rebuild practiceTrials dynamically
       practiceTrials = [];
-      for (var i = 0; i < newTrials.length; i++) {
+      for (var i = 0; i < practiceTrialsData.length; i++) {
         practiceTrials.push(
           {
             type: jsPsychCallFunction,
             func: ((trial) => () => {
               console.log("Setting new trial:", trial);
               setStims(trial);
-            })(newTrials[i]), // IIFE ensures the correct trial is bound
+            })(practiceTrialsData[i]), // IIFE ensures the correct trial is bound
             data: { trial_id: "set_stims" },
           },
           {
@@ -1409,6 +1412,7 @@ var practiceNode = {
       }
 
       practiceNode.timeline = [feedbackBlock].concat(practiceTrials);
+      console.log("Updated practiceNode.timeline:", practiceNode.timeline);
       return true;
     }
   },
