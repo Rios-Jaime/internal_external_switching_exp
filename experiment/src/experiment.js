@@ -1018,7 +1018,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(practiceTrialsData[trialIndex]);
+      setStims(newTrials[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
   var practiceFixationBlock = {
