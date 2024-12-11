@@ -1,7 +1,8 @@
 var jsPsych = initJsPsych({
   on_finish: function () {
     jsPsych.data.displayData();
-    // Collect experiment data
+
+    //Collect experiment data
     const experimentData = jsPsych.data.get().json();
 
     // Define a function to send data with retry logic
@@ -33,6 +34,8 @@ var jsPsych = initJsPsych({
 
     // Call sendData to initiate the upload to the server
     sendData();
+
+    console.log("Experiment data:", experimentData);
   },
 });
 
@@ -576,6 +579,13 @@ var getResponse = function () {
 
 // Generic Task Variables
 // Extract response mappings from assignedCondition
+
+//const assignedCondition = {
+//  internal_color: "#D41159",
+//  external_color: "#1A85FF",
+//  response_mapping: "index:smaller, middle:larger",
+//};
+
 const responseMappings = assignedCondition.response_mapping
   .split(", ")
   .reduce((acc, mapping) => {
@@ -605,6 +615,7 @@ jsPsych.data.addProperties({
 
 var expID = "internal_external_switching_task";
 var expStage = "practice";
+var runPractice2 = false; // Global flag to control whether Practice 2 runs
 
 const choices = [responseMappings.smaller, responseMappings.larger];
 
@@ -654,9 +665,6 @@ const conditions = [
   "repeat_internal_tool",
   "repeat_external_tool",
 ];
-
-//let taskSwitchesArr = Array(4).fill("stay").concat(Array(4).fill("switch"));
-//taskSwitchesArr = shuffleArray(taskSwitchesArr);
 
 let originalCueConditions = [
   { cue_cond: "internal", ref_object: "sports" },
@@ -900,13 +908,13 @@ var pageInstruct = [
 ];
 
 let testTrialsData = [];
-let newTrials = [];
+let practiceTrials2Data = [];
 
-var { trials: practiceTrialsData, conditionCounts } =
+var { trials: practiceTrials1Data, conditionCounts } =
   generateBalancedTrialsFixed(practiceLen);
 
 // functions to check proportions //
-const conditionCountsFixed = practiceTrialsData.reduce((counts, trial) => {
+const conditionCountsFixed = practiceTrials1Data.reduce((counts, trial) => {
   if (trial.trial_type !== "na") {
     counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
   }
@@ -918,7 +926,7 @@ const isBalanced = Object.values(conditionCountsFixed).every(
 );
 
 console.log("\nGenerated Trials:");
-practiceTrialsData.forEach((trial, index) => {
+practiceTrials1Data.forEach((trial, index) => {
   console.log(`Trial ${index + 1}:`, trial);
 });
 
@@ -1008,7 +1016,7 @@ var feedbackBlock = {
   response_ends_trial: true,
 };
 
-var practiceTrials = [];
+var practiceTrials1 = [];
 for (var i = 0; i < practiceLen + 1; i++) {
   var setStimsBlock = {
     type: jsPsychCallFunction,
@@ -1018,7 +1026,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     },
     func: ((trialIndex) => () => {
       console.log(`Setting trial: ${trialIndex + 1}`);
-      setStims(practiceTrialsData[trialIndex]);
+      setStims(practiceTrials1Data[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
   var practiceFixationBlock = {
@@ -1086,8 +1094,8 @@ for (var i = 0; i < practiceLen + 1; i++) {
       return {
         trial_id: `${stage}_ITI`,
         ITIParams: {
-          min: 0,
-          max: 5,
+          min: 0.5,
+          max: 0.5,
           mean: 0.5,
         },
         block_num: stage === "practice" ? practiceCount : testCount,
@@ -1096,8 +1104,8 @@ for (var i = 0; i < practiceLen + 1; i++) {
     },
 
     trial_duration: function () {
-      ITIms = sampleFromDecayingExponential();
-      return 500;
+      ITIms = 500;
+      return ITIms;
     },
     prompt: function () {
       return getExpStage() === "practice" ? promptText : "";
@@ -1154,7 +1162,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     prompt: promptText,
   };
 
-  practiceTrials.push(
+  practiceTrials1.push(
     setStimsBlock,
     practiceFixationBlock,
     practiceEncodigBlock,
@@ -1166,11 +1174,15 @@ for (var i = 0; i < practiceLen + 1; i++) {
 }
 
 var practiceCount = 0;
-var practiceNode = {
-  timeline: [feedbackBlock].concat(practiceTrials),
+var practiceNode1 = {
+  timeline: [feedbackBlock].concat(practiceTrials1),
   loop_function: function (data) {
     practiceCount += 1;
     currentTrial = 0;
+
+    console.log(`Block ${practiceCount}`);
+
+    console.log(data.trials);
 
     var sumRT = 0;
     var sumResponses = 0;
@@ -1182,6 +1194,7 @@ var practiceNode = {
         data.trials[i].trial_id == "practice_trial" &&
         data.trials[i].block_num == getCurrBlockNum() - 1
       ) {
+        console.log(data.trials[i]);
         totalTrials += 1;
         if (data.trials[i].rt != null) {
           sumRT += data.trials[i].rt;
@@ -1193,12 +1206,395 @@ var practiceNode = {
       }
     }
 
+    console.log("correct: " + correct);
+    console.log("totalTrials: " + totalTrials);
+    console.log("sumResponses: " + sumResponses);
+
     var accuracy = correct / totalTrials;
     var missedResponses = (totalTrials - sumResponses) / totalTrials;
     var avgRT = sumRT / sumResponses;
 
-    console.log(accuracy);
-    console.log(missedResponses);
+    // Save performance metrics globally
+    jsPsych.data.addProperties({
+      practicePerformance: {
+        accuracy: accuracy,
+        avgRT: avgRT,
+        missedResponses: missedResponses,
+      },
+    });
+
+    if (accuracy >= practiceAccuracyThresh) {
+      feedbackText = `
+        <div class="centerbox">
+          <p class="center-block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
+          <p class="block-text">During this task, you will be presented with a reference item (internal) to commit to memory followed by a colored cue, then a target indicated by a black frame and a second reference item (external). Your task is to compare the size of the target and the reference item indicated by the cue.</p>
+          <p class="block-text">
+              <b>${
+                responseMappings.larger === ","
+                  ? "comma key (,)"
+                  : responseMappings.larger === "."
+                  ? "period key (.)"
+                  : "Error: Mapping Missing"
+              }</b> if <b>the target is larger</b>, and 
+              <b>${
+                responseMappings.smaller === ","
+                  ? "comma key (,)"
+                  : responseMappings.smaller === "."
+                  ? "period key (.)"
+                  : "Error: Mapping Missing"
+              }</b> if <b>the target is smaller</b> than the cued reference item.
+          </p>
+          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; border: 1px solid black;"></span>, then compare the target to the item held in memory (internal item).</p>
+          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; border: 1px solid black;"></span>, then compare the target to the item shown alongside it on the screen (external item).</p>
+          <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
+          <p class="block-text">Press <b>enter</b> to start the test phase.</p>
+        </div>
+      `;
+
+      // Generate test trials for the testing phase
+      ({ trials: testTrialsData, conditionCounts: testConditionCounts } =
+        generateBalancedTrialsFixed(numTrialsPerBlock));
+
+      console.log("Generated test trials:", testTrialsData);
+
+      // functions to check proportions //
+      const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
+        if (trial.trial_type !== "na") {
+          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+        }
+        return counts;
+      }, {});
+
+      const isBalanced = Object.values(conditionCountsFixed).every(
+        (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
+      );
+
+      console.log("\nGenerated Trials:");
+      testTrialsData.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
+      });
+
+      console.log("\nCondition Counts (Fixed):");
+      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
+        console.log(`${condition}: ${count}`);
+      });
+
+      if (!isBalanced) {
+        console.error("Conditions are not balanced!", conditionCountsFixed);
+      } else {
+        console.log("\nValidation successful: Conditions are balanced.");
+      }
+
+      expStage = "test";
+
+      runPractice2 = false;
+    } else {
+      console.log("practice1 moving into 2!");
+      feedbackText =
+        "<div class = centerbox><p class = block-text>Please take this time to read your feedback! This screen will advance automatically in 1 minute.</p>";
+
+      feedbackText +=
+        '<p class=block-text>Time remaining: <span id="countdown-timer">60</span> seconds</p>';
+
+      // Add a timer script to update the countdown
+      setTimeout(() => {
+        let countdown = 60; // Countdown time in seconds
+        const timerElement = document.getElementById("countdown-timer");
+
+        // Update the countdown every second
+        const intervalId = setInterval(() => {
+          countdown -= 1;
+          if (timerElement) {
+            timerElement.textContent = countdown;
+          }
+
+          // Clear the interval when the countdown reaches zero
+          if (countdown <= 0) {
+            clearInterval(intervalId);
+          }
+        }, 1000);
+      }, 0);
+
+      if (accuracy < practiceAccuracyThresh) {
+        feedbackText += `
+          <p class="block-text">Your accuracy is low. Remember:</p>
+          ${promptTextList}
+        `;
+      }
+
+      if (avgRT > rtThresh) {
+        feedbackText += `
+          <p class="block-text">You have been responding too slowly.</p>
+          ${speedReminder}
+        `;
+      }
+
+      if (missedResponses > missedResponseThresh) {
+        feedbackText += `
+          <p class="block-text">You have not been responding to some trials. Please respond on every trial that requires a response.</p>
+        `;
+      }
+
+      feedbackText +=
+        `<p class="block-text">We are now going to repeat the practice round.</p>` +
+        `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
+
+      ({ trials: practiceTrials2Data, conditionCounts: testConditionCounts } =
+        generateBalancedTrialsFixed(practiceLen));
+
+      // functions to check proportions //
+      const conditionCountsFixed = practiceTrials2Data.reduce(
+        (counts, trial) => {
+          if (trial.trial_type !== "na") {
+            counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+          }
+          return counts;
+        },
+        {}
+      );
+
+      const isBalanced = Object.values(conditionCountsFixed).every(
+        (count) => count === Math.floor(practiceLen / conditions.length)
+      );
+
+      console.log("\nGenerated Trials:");
+      practiceTrials2Data.forEach((trial, index) => {
+        console.log(`Trial ${index + 1}:`, trial);
+      });
+
+      console.log("\nCondition Counts (Fixed):");
+      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
+        console.log(`${condition}: ${count}`);
+      });
+
+      if (!isBalanced) {
+        console.error("Conditions are not balanced!", conditionCountsFixed);
+      } else {
+        console.log("\nValidation successful: Conditions are balanced.");
+      }
+
+      runPractice2 = true;
+    }
+
+    console.log("Practice 1 Performance:", {
+      accuracy,
+      avgRT,
+      missedResponses,
+    });
+
+    console.log("moving on");
+    return false;
+  },
+};
+
+var practiceTrials2 = [];
+for (var i = 0; i < practiceLen + 1; i++) {
+  var setStimsBlock = {
+    type: jsPsychCallFunction,
+    data: {
+      trial_id: "set_stims",
+      trial_duration: null,
+    },
+    func: ((trialIndex) => () => {
+      setStims(practiceTrials2Data[trialIndex]);
+    })(i),
+  };
+  var practiceFixationBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: fixation,
+    choices: ["NO_KEYS"],
+    data: {
+      trial_id: "practice_fixation",
+      exp_stage: "practice",
+      trial_duration: fixationDuration,
+      stimulus_duration: fixationDuration,
+    },
+    stimulus_duration: fixationDuration, // 500
+    trial_duration: fixationDuration, // 500
+    prompt: promptText,
+    on_finish: function (data) {
+      data["block_num"] = practiceCount;
+    },
+  };
+
+  var practiceCueBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: getCue,
+    choices: ["NO_KEYS"],
+    data: {
+      trial_id: "practice_cue",
+      exp_stage: "practice",
+      trial_duration: getCTI(),
+      stimulus_duration: getCTI(),
+    },
+    trial_duration: getCTI,
+    stimulus_duration: getCTI,
+
+    prompt: promptText,
+    on_finish: appendData,
+  };
+
+  var practiceEncodigBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: getEncodingStim,
+    choices: ["NO_KEYS"],
+    data: {
+      trial_id: "practice_cue",
+      exp_stage: "practice",
+      trial_duration: encodingPhaseDuration,
+      stimulus_duration: memorandaDuration,
+    },
+    trial_duration: encodingPhaseDuration,
+    stimulus_duration: memorandaDuration,
+
+    prompt: promptText,
+    on_finish: appendData,
+  };
+
+  var ITIms = null;
+
+  // *** ITI *** //
+  var ITIBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: fixation,
+    is_html: true,
+    choices: ["NO_KEYS"],
+    data: function () {
+      const stage = getExpStage();
+      return {
+        trial_id: `${stage}_ITI`,
+        ITIParams: {
+          min: 0.5,
+          max: 0.5,
+          mean: 0.5,
+        },
+        block_num: stage === "practice" ? practiceCount : testCount,
+        exp_stage: stage,
+      };
+    },
+
+    trial_duration: function () {
+      ITIms = 500;
+      return ITIms;
+    },
+    prompt: function () {
+      return getExpStage() === "practice" ? promptText : "";
+    },
+    on_finish: function (data) {
+      data["trial_duration"] = 500;
+      data["stimulus_duration"] = 500;
+    },
+  };
+
+  var practiceTrial = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: getDecisionStim,
+    choices: choices,
+    data: {
+      exp_stage: "practice",
+      trial_id: "practice_trial",
+      choices: choices,
+      trial_duration: stimTrialDuration,
+      stimulus_duration: stimStimulusDuration,
+    },
+
+    stimulus_duration: stimStimulusDuration, // 1000
+    trial_duration: stimTrialDuration, // 1500
+    response_ends_trial: false,
+    prompt: promptText,
+    on_finish: appendData,
+  };
+
+  var practiceFeedbackBlock = {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function () {
+      var last = jsPsych.data.get().last(1).values()[0];
+      if (last.response == null) {
+        return "<div class = center-box><div class=center-text><font size =20>Respond Faster!</font></div></div>";
+      } else if (last.correct_trial == 1) {
+        return "<div class = center-box><div class=center-text><font size =20 >Correct!</font></div></div>";
+      } else {
+        return "<div class = center-box><div class=center-text><font size =20 >Incorrect</font></div></div>";
+      }
+    },
+    data: function () {
+      return {
+        exp_stage: "practice",
+        trial_id: "practice_feedback",
+        trial_duration: 500,
+        stimulus_duration: 500,
+        block_num: practiceCount,
+      };
+    },
+    choices: ["NO_KEYS"],
+    stimulus_duration: 500,
+    trial_duration: 500,
+    prompt: promptText,
+  };
+
+  practiceTrials2.push(
+    setStimsBlock,
+    practiceFixationBlock,
+    practiceEncodigBlock,
+    practiceCueBlock,
+    practiceTrial,
+    practiceFeedbackBlock,
+    ITIBlock
+  );
+}
+
+var practiceNode2 = {
+  timeline: [feedbackBlock].concat(practiceTrials2),
+  loop_function: function (data) {
+    practiceCount += 1;
+    currentTrial = 0;
+
+    console.log("finished prcatice 2!");
+    console.log("practiceCount: " + practiceCount);
+
+    var sumRT = 0;
+    var sumResponses = 0;
+    var correct = 0;
+    var totalTrials = 0;
+
+    for (var i = 0; i < data.trials.length; i++) {
+      if (
+        data.trials[i].trial_id == "practice_trial" &&
+        data.trials[i].block_num == getCurrBlockNum() - 1
+      ) {
+        console.log(data.trials[i]);
+        totalTrials += 1;
+        if (data.trials[i].rt != null) {
+          sumRT += data.trials[i].rt;
+          sumResponses += 1;
+          if (data.trials[i].response == data.trials[i].correct_response) {
+            correct += 1;
+          }
+        }
+      }
+    }
+
+    console.log("correct: " + correct);
+    console.log("totalTrials: " + totalTrials);
+    console.log("sumResponses: " + sumResponses);
+
+    var accuracy = correct / totalTrials;
+    var missedResponses = (totalTrials - sumResponses) / totalTrials;
+    var avgRT = sumRT / sumResponses;
+
+    jsPsych.data.addProperties({
+      practiceNode2Performance: {
+        accuracy: accuracy,
+        avgRT: avgRT,
+        missedResponses: missedResponses,
+      },
+    });
+
+    console.log("Updated Performance:", {
+      accuracy: accuracy,
+      avgRT: avgRT,
+      missedResponses: missedResponses,
+    });
 
     if (
       accuracy >= practiceAccuracyThresh ||
@@ -1266,6 +1662,9 @@ var practiceNode = {
       }
 
       expStage = "test";
+
+      runPractice2 = false;
+
       return false;
     } else {
       console.log("practice running again: " + practiceCount);
@@ -1275,23 +1674,22 @@ var practiceNode = {
       feedbackText +=
         '<p class=block-text>Time remaining: <span id="countdown-timer">60</span> seconds</p>';
 
-      // Add a timer script to update the countdown
       setTimeout(() => {
         let countdown = 60; // Countdown time in seconds
         const timerElement = document.getElementById("countdown-timer");
 
-        // Update the countdown every second
-        const intervalId = setInterval(() => {
-          countdown -= 1;
-          if (timerElement) {
+        if (timerElement) {
+          const intervalId = setInterval(() => {
+            countdown -= 1;
             timerElement.textContent = countdown;
-          }
 
-          // Clear the interval when the countdown reaches zero
-          if (countdown <= 0) {
-            clearInterval(intervalId);
-          }
-        }, 1000);
+            if (countdown <= 0) {
+              clearInterval(intervalId);
+            }
+          }, 1000);
+        } else {
+          console.error("#countdown-timer not found in DOM!");
+        }
       }, 0);
 
       if (accuracy < practiceAccuracyThresh) {
@@ -1318,23 +1716,26 @@ var practiceNode = {
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
         `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
 
-      ({ trials: newTrials, conditionCounts: testConditionCounts } =
+      ({ trials: practiceTrials2Data, conditionCounts: testConditionCounts } =
         generateBalancedTrialsFixed(practiceLen));
 
       // functions to check proportions //
-      const conditionCountsFixed = newTrials.reduce((counts, trial) => {
-        if (trial.trial_type !== "na") {
-          counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
-        }
-        return counts;
-      }, {});
+      const conditionCountsFixed = practiceTrials2Data.reduce(
+        (counts, trial) => {
+          if (trial.trial_type !== "na") {
+            counts[trial.trial_type] = (counts[trial.trial_type] || 0) + 1;
+          }
+          return counts;
+        },
+        {}
+      );
 
       const isBalanced = Object.values(conditionCountsFixed).every(
         (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
       console.log("\nGenerated Trials:");
-      newTrials.forEach((trial, index) => {
+      practiceTrials2Data.forEach((trial, index) => {
         console.log(`Trial ${index + 1}:`, trial);
       });
 
@@ -1349,17 +1750,17 @@ var practiceNode = {
         console.log("\nValidation successful: Conditions are balanced.");
       }
 
-      // Clear and rebuild practiceTrials dynamically
-      practiceTrials = [];
-      for (var i = 0; i < newTrials.length; i++) {
-        practiceTrials.push(
+      runPractice2 = true;
+
+      // Build new test timeline dynamically
+      practiceTrials2 = [];
+      for (var i = 0; i < practiceLen + 1; i++) {
+        practiceTrials2.push(
           {
             type: jsPsychCallFunction,
-            func: ((index) => () => {
-              // Reference `newTrials` dynamically at execution time
-              console.log("Setting new trial dynamically:", newTrials[index]);
-              setStims(newTrials[index]);
-            })(i), // Use IIFE to bind `i` for the closure
+            func: ((trialIndex) => () => {
+              setStims(practiceTrials2Data[trialIndex]);
+            })(i),
             data: { trial_id: "set_stims" },
           },
           {
@@ -1397,22 +1798,30 @@ var practiceNode = {
           },
           {
             type: jsPsychHtmlKeyboardResponse,
-            stimulus: () => {
-              var last = jsPsych.data.get().last(1).values()[0];
-              if (last.response == null) return "Respond Faster!";
-              if (last.correct_trial === 1) return "Correct!";
-              return "Incorrect";
-            },
-            data: { trial_id: "practice_feedback", block_num: practiceCount },
+            stimulus: fixation,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "practice_ITI", block_num: practiceCount },
             trial_duration: 500,
           }
         );
       }
 
-      practiceNode.timeline = [feedbackBlock].concat(practiceTrials);
-      console.log("Updated practiceNode.timeline:", practiceNode.timeline);
+      practiceNode2.timeline = [feedbackBlock].concat(practiceTrials2);
+
+      console.log(practiceTrials2);
+      console.log(runPractice2);
+
       return true;
     }
+  },
+};
+
+var conditionalPractice2Node = {
+  timeline: [practiceNode2],
+  conditional_function: function () {
+    console.log(runPractice2);
+
+    return runPractice2;
   },
 };
 
@@ -1492,8 +1901,8 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
       return {
         trial_id: `${stage}_ITI`,
         ITIParams: {
-          min: 0,
-          max: 5,
+          min: 0.5,
+          max: 0.5,
           mean: 0.5,
         },
         block_num: stage === "test" ? testCount : testCount,
@@ -1502,8 +1911,8 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
     },
 
     trial_duration: function () {
-      ITIms = sampleFromDecayingExponential();
-      return 500;
+      ITIms = 500;
+      return ITIms;
     },
     on_finish: function (data) {
       data["trial_duration"] = 500;
@@ -1702,6 +2111,13 @@ var testNode = {
             },
             trial_duration: stimTrialDuration,
             on_finish: appendData,
+          },
+          {
+            type: jsPsychHtmlKeyboardResponse,
+            stimulus: fixation,
+            choices: ["NO_KEYS"],
+            data: { trial_id: "test_ITI", block_num: testCount },
+            trial_duration: 500,
           }
         );
       }
@@ -1733,16 +2149,12 @@ var internal_external_experiment_init = () => {
   jsPsych.pluginAPI.preloadImages(imageUrls);
 
   internal_external_experiment.push(fullscreen);
-  console.log("1");
   internal_external_experiment.push(instructionNode);
-  console.log("2");
-  internal_external_experiment.push(practiceNode);
-  console.log("3");
+  internal_external_experiment.push(practiceNode1);
+  internal_external_experiment.push(conditionalPractice2Node); // Conditionally includes Practice 2
   internal_external_experiment.push(testNode);
   internal_external_experiment.push(endBlock);
-  console.log("4");
   internal_external_experiment.push(exitFullscreen);
-  console.log("5");
 };
 
 // Call to initialize the experiment
