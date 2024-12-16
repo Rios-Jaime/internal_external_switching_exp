@@ -5,6 +5,17 @@ body, .jspsych-display-element {
   background-color: #A9A9A9 !important; /* Force light grey background */
 }
 
+.centerbox {
+  padding: 2em;
+  max-width: 90%;
+  margin:auto;
+  test-align: justify;
+  font-size: 1.2em;
+  line-height: 1.5em;
+}
+
+
+
 .picture_box {
   position: absolute;
   top: 50%;
@@ -15,30 +26,47 @@ body, .jspsych-display-element {
   text-align: center;
 }
 
-/* Fixation in the center */
-.fixation {
-  font-size: 40px;
-  margin-bottom: 20px;
-}
-
-img.center {
-  height: auto;
-  width: auto\9;
-  /* ie8 */
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  max-height: 65%;
-  height: 120px;
-  width: 120px;
-}
-
 .center-image {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  margin: 2em 0;
+}
+
+.center-image img {
+  max-width: 90%;
+  height: auto;
+}
+
+.block-text {
+  margin-bottom: 1em;
+}
+
+.decision-stim-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 40px;
+}
+
+.cue-block {
+  margin: 0 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stimuli {
+  width 200px;
+  height: auto;
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: contain;
+  overflow: hidden;
+  display: block;
+}
+
+.target-stimuli {
+  border: 3px solid black;
+  box-sizing: border-box;
 }
