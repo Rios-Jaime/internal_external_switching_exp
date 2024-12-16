@@ -202,7 +202,7 @@ function getRandomPosition() {
 }
 
 const getInstructFeedback = () =>
-  `<div class="centerbox"><p class="center-block-text">${feedbackInstructText}</p></div>`;
+  `<div class="centerbox"><p class="block-text">${feedbackInstructText}</p></div>`;
 
 const getFeedback = () =>
   `<div class="bigbox"><div class="picture_box"><p class="block-text">${feedbackText}</p></div></div>`;
@@ -229,7 +229,7 @@ const getEncodingStim = () => {
       : getImageUrl(currDistractorStim);
 
   if (imageUrl) {
-    internalStimImage = `<img src="${imageUrl}" alt="${currStim}" style="width: 200px; height: auto;">`;
+    internalStimImage = `<img src="${imageUrl}" alt="${currStim}" class="stimuli internal-stimuli">`;
   } else {
     console.error(
       `Image not found for stimulus: ${
@@ -242,7 +242,7 @@ const getEncodingStim = () => {
   // Return the encoding stimulus centered on the screen
   return `
     <div class="centerbox">
-      <div class="cue-text" style="margin-top: 20px;">${internalStimImage}</div>
+      <div>${internalStimImage}</div>
     </div>
   `;
 };
@@ -259,19 +259,19 @@ const getDecisionStim = () => {
   const targetPosition = Math.random() < 0.5 ? "left" : "right";
 
   // Generate HTML for the stimuli with consistent sizes and alignment
-  const targetHtml = `<img src="${targetImage}" alt="${currTarget}" style="width: 200px; height: auto; border: 3px solid black;">`;
-  const externalHtml = `<img src="${externalStimImage}" alt="external" style="width: 200px; height: auto;">`;
+  const targetHtml = `<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">`;
+  const externalHtml = `<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli"">`;
 
   // Generate the HTML structure
   return `
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-      <div style="display: flex; flex-direction: column; align-items: center; margin-right: 40px;">
+    <div class="decision-stim-container">
+      <div class="stimulus-block"">
         ${targetPosition === "left" ? targetHtml : externalHtml}
       </div>
-      <div style="display: flex; flex-direction: column; align-items: center;">
+      <div class="cue-block">
         ${getCue()}
       </div>
-      <div style="display: flex; flex-direction: column; align-items: center; margin-left: 40px;">
+      <div class="stimulus-block">
         ${targetPosition === "left" ? externalHtml : targetHtml}
       </div>
     </div>
@@ -640,12 +640,10 @@ var testLen = numTestBlocks * numTrialsPerBlock;
 // Trial Timing Paramters
 const stimStimulusDuration = 1500;
 const stimTrialDuration = 2000;
-const cueStimulusDuration = 250;
-const cueTrialDuration = 250;
-const encodingPhaseDuration = 1000;
-const memorandaDuration = 250;
+const encodingPhaseDuration = 1250;
+const memorandaDuration = 500;
 const fixationDuration = 500;
-var CTI = 250;
+var CTI = 500;
 
 // Trial Stimulus Variables
 var lastTask = "na"; // object that holds the last task, set by setStims()
@@ -688,6 +686,8 @@ var preFileType = "<img class='center' src='/images/"; // Adjusted to match stat
 
 // PRE LOAD IMAGES HERE
 var pathSource = "/images/";
+//var pathSource =
+//  "/Users/jahrios/Documents/Duke/egnerlab/projects/internal_external_switching/code/internal_external_switching_exp/experiment/images/";
 var trialExamplePath = pathSource + "trial_example/trial_example.png";
 
 var tool_objects = [
@@ -769,8 +769,8 @@ var fixation = getFixation();
 
 var endText = `
   <div class="centerbox">
-    <p class="center-block-text">Thanks for completing this task!</p>
-    <p class="center-block-text">Press <i>enter</i> to continue.</p>
+    <p class="block-text">Thanks for completing this task!</p>
+    <p class="block-text">Press <i>enter</i> to continue.</p>
   </div>
 `;
 
@@ -791,20 +791,20 @@ const responseKeys = `
 var currStim = "";
 
 var feedbackInstructText = `
-  <p class="center-block-text">
+  <p class="block-text">
     Welcome! This experiment will take around 45 minutes.
   </p>
-  <p class="center-block-text">
+  <p class="block-text">
     To avoid technical issues, please keep the experiment tab (on Chrome or Firefox) active and in fullscreen mode for the whole duration of each task.
   </p>
-  <p class="center-block-text"> Press <i>enter</i> to begin.</p>
+  <p class="block-text"> Press <i>enter</i> to begin.</p>
 `;
 
 var feedbackText =
-  "<div class = centerbox><p class = center-block-text>Press <i>enter</i> to begin practice.</p></div>";
+  "<div class = centerbox><p class = block-text>Press <i>enter</i> to begin practice.</p></div>";
 
 var promptTextList = `
-  <div style="text-align:center; font-size:24px; margin-bottom: 10px;">
+  <div style="text-align:center; font-size:calc(.7em + 0.3vw); margin-bottom: 10px; line-height: 1.5;">
     <p>
       Press <b>${
         responseMappings.smaller === ","
@@ -824,11 +824,11 @@ var promptTextList = `
   </div>
   <div style="text-align:center; margin-top:10px;">
     <p>
-      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>
+      <span style="font-size: 1.5em; color: ${internalColor};">+</span>
       indicates memory (<b>internal item</b>).
     </p>
     <p>
-      <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span>
+      <span style="font-size: 1.5em; color: ${externalColor};">+</span>
       indicates perception (<b>external item</b>).
     </p>
   </div>
@@ -836,13 +836,14 @@ var promptTextList = `
 
 const promptText = `
   <div style="
-    position: absolute; 
+    position: fixed;
     top: 5%; 
     left: 5%; 
-    transform: translate(-5%, -5%);
     text-align: left; 
-    font-size: 16px; 
-    line-height: 1.2;">
+    font-size: calc(.7em + 0.3vw); 
+    line-height: 1.3;
+    max-width: 40%;
+    z-index: 1000;">
     <p><b>${
       responseMappings.smaller === ","
         ? "comma key (,)"
@@ -857,8 +858,8 @@ const promptText = `
         ? "period key (.)"
         : "Error: Mapping Missing"
     }</b> if <b>larger</b>.<br> 
-    <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span> indicates memory (internal item) and 
-    <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> indicates perception (external item).
+    <span style="font-size: 1.5em; color: ${internalColor};">+</span> indicates memory (internal item) and 
+    <span style="font-size: 1.5em; color: ${externalColor};">+</span> indicates perception (external item).
     </p>
   </div>
 `;
@@ -866,28 +867,28 @@ const promptText = `
 var pageInstruct = [
   `
   <div class="centerbox">
-    <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>), and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color (<span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> or <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span>) of the fixation cross shown on the screen between the memory object and the target screen.</p>
+    <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross (<span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>), and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color ( <span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>) of the fixation cross shown on the screen between the memory object and the target screen.</p>
     
     <div class="center-image">
-      <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
+      <img src="${trialExamplePath}" alt="Memory Object">
     </div>
 
     <p class="block-text">Place your right-hand index finger on the <b>comma key (,)</b> and your right-hand middle finger on the <b>period key (.)</b></p>
 
-    <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; margin-bottom: -4px; border: 1px solid black;"></span> then compare the target to the reference item held in memory (internal item). If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; margin-bottom: -4px; border: 1px solid black;"></span> then compare the target to the reference item shown alongside it on the screen (external item).</p>
+    <p class="block-text">If the cue is <span style="font-size: 1.5 em; color: ${internalColor};">+</span> then compare the target to the reference item held in memory (internal item). If the cue is <span style="font-size: 24px; color: ${externalColor};">+</span> then compare the target to the reference item shown alongside it on the screen (external item).</p>
 
   </div>
   `,
   `
     <div class="center-image">
-      <img src="${trialExamplePath}" alt="Memory Object" style="max-width: 1500px; height: auto;">
+      <img src="${trialExamplePath}" alt="Memory Object">
     </div>
 
   <div class="centerbox">
     <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the cued reference item. The finger mappings are shown below:</p>
     ${promptTextList}
 
-    <p class="block-text"> Looking at the example trial above, the <span style="display: inline-block; width: 20px; height: 20px; background-color: #1A85FF; margin-bottom: -4px; border: 1px solid black;"></span> cue indicates that on this trial you would need to compare the target to the ${
+    <p class="block-text"> Looking at the example trial above, the <span style="font-size: 1.5em; color: #1A85FF;">+</span> cue indicates that on this trial you would need to compare the target to the ${
       internalColor === "#1A85FF" ? "internal item" : "external item"
     }. Because the target (<i>leopard</i>) is larger than the ${
     internalColor === "#1A85FF" ? "internal item" : "external item"
@@ -1226,7 +1227,7 @@ var practiceNode1 = {
     if (accuracy >= practiceAccuracyThresh) {
       feedbackText = `
         <div class="centerbox">
-          <p class="center-block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
+          <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
           <p class="block-text">During this task, you will be presented with a reference item (internal) to commit to memory followed by a colored cue, then a target indicated by a black frame and a second reference item (external). Your task is to compare the size of the target and the reference item indicated by the cue.</p>
           <p class="block-text">
               <b>${
@@ -1244,8 +1245,8 @@ var practiceNode1 = {
                   : "Error: Mapping Missing"
               }</b> if <b>the target is smaller</b> than the cued reference item.
           </p>
-          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; border: 1px solid black;"></span>, then compare the target to the item held in memory (internal item).</p>
-          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; border: 1px solid black;"></span>, then compare the target to the item shown alongside it on the screen (external item).</p>
+          <p class="block-text">If the cue is <span style="font-size: 1.5em; color: ${internalColor};">+</span>, then compare the target to the item held in memory (internal item).</p>
+          <p class="block-text">If the cue is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen (external item).</p>
           <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
@@ -1602,7 +1603,7 @@ var practiceNode2 = {
     ) {
       feedbackText = `
         <div class="centerbox">
-          <p class="center-block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
+          <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
           <p class="block-text">During this task, you will be presented with a reference item (internal) to commit to memory followed by a colored cue, then a target indicated by a black frame and a second reference item (external). Your task is to compare the size of the target and the reference item indicated by the cue.</p>
           <p class="block-text">
               <b>${
@@ -1620,8 +1621,7 @@ var practiceNode2 = {
                   : "Error: Mapping Missing"
               }</b> if <b>the target is smaller</b> than the cued reference item.
           </p>
-          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${internalColor}; border: 1px solid black;"></span>, then compare the target to the item held in memory (internal item).</p>
-          <p class="block-text">If the cue is <span style="display: inline-block; width: 20px; height: 20px; background-color: ${externalColor}; border: 1px solid black;"></span>, then compare the target to the item shown alongside it on the screen (external item).</p>
+          <p class="block-text">If the cue is <span style="font-size: 1.5 em; color: ${internalColor};">+</span>, then compare the target to the item held <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen (external item).</p>
           <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
