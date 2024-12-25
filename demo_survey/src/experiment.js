@@ -32,7 +32,7 @@ var jsPsych = initJsPsych({
           const surveys = new URLSearchParams(window.location.search).get(
             "surveys"
           );
-          window.location.href = `/next?progress=demo_survey&surveys=${surveys}`;
+          window.location.href = /next?progress=demo_survey&surveys=${surveys};
         })
         .catch((error) => {
           console.error("Error sending data:", error);
@@ -62,55 +62,103 @@ jsPsych.data.addProperties({
   task_id: task_id,
 });
 
-const demographicSurveyWithConditionalFields = {
-  type: jsPsychSurvey,
-  pages: [
-    [
-      {
-        type: "multi-choice",
-        prompt: "Gender:",
-        options: ["Female", "Male", "Other", "Do not wish to respond"],
-        name: "gender",
-        required: true,
-        allow_other_text: true,
-      },
-      {
-        type: "multi-choice",
-        prompt: "Race:",
-        options: [
-          "American Indian/Alaska Native",
-          "Asian",
-          "Native Hawaiian/Other Pacific Islander",
-          "Black/African American",
-          "White/Caucasian",
-          "Multiracial",
-          "Other",
-          "Do not wish to respond",
-        ],
-        name: "race",
-        required: true,
-        allow_other_text: true,
-      },
-    ],
+const demographicSurvey = {
+  type: jsPsychSurveyMultiChoice,
+  preamble: `<h3>Demographic Survey</h3><p>Please answer the following questions:</p>`,
+  questions: [
+    {
+      prompt: "Gender:",
+      options: ["Female", "Male", "Other", "Do not wish to respond"],
+      required: true,
+      name: "gender",
+    },
+    {
+      prompt: "Biological Sex:",
+      options: ["Female", "Male", "Intersex", "Do not wish to respond"],
+      required: true,
+      name: "biological_sex",
+    },
+    {
+      prompt: "Race:",
+      options: [
+        "American Indian/Alaska Native",
+        "Asian",
+        "Native Hawaiian/Other Pacific Islander",
+        "Black/African American",
+        "White/Caucasian",
+        "Multiracial",
+        "Other",
+        "Do not wish to respond",
+      ],
+      required: true,
+      name: "race",
+    },
+    {
+      prompt: "Are you Hispanic?",
+      options: ["Yes", "No", "Do not wish to respond"],
+      required: true,
+      name: "hispanic",
+    },
+    {
+      prompt: "Age (in years):",
+      type: "text", // Specify this as a text input
+      placeholder: "Enter your age",
+      required: true,
+      name: "age",
+    },
   ],
   on_finish: function (data) {
-    const response = data.response;
-    const genderOther = response.gender === "Other" ? response["gender-other"] : null;
-    const raceOther = response.race === "Other" ? response["race-other"] : null;
-
-    console.log("Responses:", response);
-    console.log("Gender (Other):", genderOther);
-    console.log("Race (Other):", raceOther);
+    console.log("Demographic Survey Responses:", data.response);
   },
 };
 
-// Full timeline setup
+// Free-text survey for "Other" options
+const demographicFreeTextSurvey = {
+  type: jsPsychSurveyText,
+  preamble: `<h3>Additional Information</h3><p>Please answer only if you selected "Other" in the previous survey:</p>`,
+  questions: [
+    {
+      prompt: "If you selected 'Other' for gender, please specify:",
+      rows: 1,
+      columns: 50,
+      name: "gender_other",
+      required: false,
+    },
+    {
+      prompt: "If you selected 'Other' for race, please specify:",
+      rows: 1,
+      columns: 50,
+      name: "race_other",
+      required: false,
+    },
+  ],
+  on_finish: function (data) {
+    console.log("Free text responses:", data.response);
+  },
+};
+
+// Conditional logic for showing free text survey
+const conditionalSurveyNode = {
+  timeline: [demographicFreeTextSurvey],
+  conditional_function: function () {
+    const lastResponse = jsPsych.data.getLastTrialData().values()[0].response;
+
+    // Check if "Other" was selected for gender or race
+    const showFreeTextSurvey =
+      lastResponse.gender === "Other" || lastResponse.race === "Other";
+
+    return showFreeTextSurvey;
+  },
+};
+
+// Timeline setup
 const timeline = [
   {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
   },
-  demographicSurveyWithConditionalFields,
+  demographicSurvey,
+  conditionalSurveyNode,
   {
     type: jsPsychFullscreen,
     fullscreen_mode: false,
@@ -119,3 +167,4 @@ const timeline = [
 
 // Run the jsPsych experiment
 jsPsych.run(timeline);
+
