@@ -34,7 +34,7 @@ var jsPsych = initJsPsych({
           const surveys = new URLSearchParams(window.location.search).get(
             "surveys"
           );
-          window.location.href = `/next?progress=experiment&surveys=${surveys}`;
+          window.location.href = `/next?progress=experiment&surveys=${surveys}&participant_id=${subject_id}`;
         })
         .catch((error) => {
           console.error("Error sending data:", error);
