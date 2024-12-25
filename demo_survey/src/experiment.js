@@ -10,7 +10,6 @@ var jsPsych = initJsPsych({
       study_id: study_id,
       task_id: task_id,
       data: experimentData,
-      assignedCondition: assignedCondition,
     };
 
     // Send data to the server
@@ -30,10 +29,10 @@ var jsPsych = initJsPsych({
             setTimeout(sendData, 3000); // Retry after 3 seconds
           }
           // Redirect to /next with progress and surveys
-        const surveys = new URLSearchParams(window.location.search).get(
-          "surveys"
-        );
-        window.location.href = `/next?progress=demo_survey&surveys=${surveys}`;
+          const surveys = new URLSearchParams(window.location.search).get(
+            "surveys"
+          );
+          window.location.href = `/next?progress=demo_survey&surveys=${surveys}`;
         })
         .catch((error) => {
           console.error("Error sending data:", error);

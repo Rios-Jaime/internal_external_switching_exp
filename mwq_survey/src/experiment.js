@@ -10,7 +10,6 @@ var jsPsych = initJsPsych({
       study_id: study_id,
       task_id: task_id,
       data: experimentData,
-      assignedCondition: assignedCondition,
     };
 
     // Send data to the server
