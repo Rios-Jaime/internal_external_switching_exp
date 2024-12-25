@@ -1,22 +1,26 @@
 var jsPsych = initJsPsych({
   on_finish: function () {
-    jsPsych.data.displayData();
-
-    //Collect experiment data
+    // Collect experiment data
     const experimentData = jsPsych.data.get().json();
 
-    // Define a function to send data with retry logic
+    // Add metadata
+    const fullData = {
+      participant_id: subject_id,
+      session_id: session_id,
+      study_id: study_id,
+      task_id: task_id,
+      data: experimentData,
+      assignedCondition: assignedCondition,
+    };
+
+    // Send data to the server
     const sendData = () => {
       fetch("/egner", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          participant_id: subject_id,
-          data: experimentData,
-          assignedCondition: assignedCondition,
-        }),
+        body: JSON.stringify(fullData),
       })
         .then((response) => {
           if (response.ok) {
@@ -25,6 +29,8 @@ var jsPsych = initJsPsych({
             console.error("Failed to send data to server; retrying...");
             setTimeout(sendData, 3000); // Retry after 3 seconds
           }
+          // Redirect to /next for the next survey
+          window.location.href = "/next?progress=survey_2";
         })
         .catch((error) => {
           console.error("Error sending data:", error);
@@ -32,10 +38,8 @@ var jsPsych = initJsPsych({
         });
     };
 
-    // Call sendData to initiate the upload to the server
     sendData();
-
-    console.log("Experiment data:", experimentData);
+    console.log("Experiment data:", fullData);
   },
 });
 
