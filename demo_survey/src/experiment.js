@@ -32,7 +32,8 @@ var jsPsych = initJsPsych({
           const surveys = new URLSearchParams(window.location.search).get(
             "surveys"
           );
-          window.location.href = /next?progress=demo_survey&surveys=${surveys};
+          window.location.href =
+            `/next?progress=demo_survey&surveys=${surveys}`;
         })
         .catch((error) => {
           console.error("Error sending data:", error);
@@ -167,4 +168,3 @@ const timeline = [
 
 // Run the jsPsych experiment
 jsPsych.run(timeline);
-
