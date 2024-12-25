@@ -100,16 +100,28 @@ const demographicSurvey = {
       required: true,
       name: "hispanic",
     },
-    {
-      prompt: "Age (in years):",
-      type: "text", // Specify this as a text input
-      placeholder: "Enter your age",
-      required: true,
-      name: "age",
-    },
   ],
   on_finish: function (data) {
     console.log("Demographic Survey Responses:", data.response);
+  },
+};
+
+// Add a separate survey for the age question
+const ageSurvey = {
+  type: jsPsychSurveyText,
+  preamble: `<h3>Demographic Survey - Age</h3>`,
+  questions: [
+    {
+      prompt: "Age (in years):",
+      rows: 1,
+      columns: 5,
+      placeholder: "Enter your age",
+      name: "age",
+      required: true,
+    },
+  ],
+  on_finish: function (data) {
+    console.log("Age Response:", data.response);
   },
 };
 
@@ -159,6 +171,7 @@ const timeline = [
     fullscreen_mode: true,
   },
   demographicSurvey,
+  ageSurvey,
   conditionalSurveyNode,
   {
     type: jsPsychFullscreen,
