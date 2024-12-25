@@ -1547,7 +1547,7 @@ for (var i = 0; i < practiceLen + 1; i++) {
     setStimsBlock,
     practiceFixationBlock,
     practiceEncodigBlock,
-    practiceCueBlock,
+    //practiceCueBlock,
     practiceTrial,
     practiceFeedbackBlock,
     ITIBlock
