@@ -62,80 +62,55 @@ jsPsych.data.addProperties({
   task_id: task_id,
 });
 
-// Define the demographic survey (multi-choice questions)
-const demographicSurvey = {
-  type: jsPsychSurveyMultiChoice,
-  preamble: `<h3>Demographic Survey</h3><p>Please answer the following questions:</p>`,
-  questions: [
-    {
-      prompt: "Gender:",
-      options: ["Female", "Male", "Other", "Do not wish to respond"],
-      required: true,
-      name: "gender",
-    },
-    {
-      prompt: "Biological Sex:",
-      options: ["Female", "Male", "Intersex", "Do not wish to respond"],
-      required: true,
-      name: "biological_sex",
-    },
-    {
-      prompt: "Race:",
-      options: [
-        "American Indian/Alaska Native",
-        "Asian",
-        "Native Hawaiian/Other Pacific Islander",
-        "Black/African American",
-        "White/Caucasian",
-        "Multiracial",
-        "Other",
-        "Do not wish to respond",
-      ],
-      required: true,
-      name: "race",
-    },
-    {
-      prompt: "Are you Hispanic?",
-      options: ["Yes", "No", "Do not wish to respond"],
-      required: true,
-      name: "hispanic",
-    },
+const demographicSurveyWithConditionalFields = {
+  type: jsPsychSurvey,
+  pages: [
+    [
+      {
+        type: "multi-choice",
+        prompt: "Gender:",
+        options: ["Female", "Male", "Other", "Do not wish to respond"],
+        name: "gender",
+        required: true,
+        allow_other_text: true,
+      },
+      {
+        type: "multi-choice",
+        prompt: "Race:",
+        options: [
+          "American Indian/Alaska Native",
+          "Asian",
+          "Native Hawaiian/Other Pacific Islander",
+          "Black/African American",
+          "White/Caucasian",
+          "Multiracial",
+          "Other",
+          "Do not wish to respond",
+        ],
+        name: "race",
+        required: true,
+        allow_other_text: true,
+      },
+    ],
   ],
   on_finish: function (data) {
-    console.log("Survey responses:", data.response);
+    const response = data.response;
+    const genderOther = response.gender === "Other" ? response["gender-other"] : null;
+    const raceOther = response.race === "Other" ? response["race-other"] : null;
+
+    console.log("Responses:", response);
+    console.log("Gender (Other):", genderOther);
+    console.log("Race (Other):", raceOther);
   },
 };
 
-// Define the free text survey for "Other" responses
-const demographicFreeTextSurvey = {
-  type: jsPsychSurveyText,
-  questions: [
-    {
-      prompt: "If you selected 'Other' for gender, please specify:",
-      rows: 1,
-      columns: 50,
-      name: "gender_other",
-    },
-    {
-      prompt: "If you selected 'Other' for race, please specify:",
-      rows: 1,
-      columns: 50,
-      name: "race_other",
-    },
-  ],
-  on_finish: function (data) {
-    console.log("Free text responses:", data.response);
-  },
-};
-
-// Timeline setup
+// Full timeline setup
 const timeline = [
   {
     type: jsPsychFullscreen,
     fullscreen_mode: true,
   },
-  demographicSurvey,
-  demographicFreeTextSurvey,
+  demographicSurveyWithConditionalFields,
   {
     type: jsPsychFullscreen,
     fullscreen_mode: false,

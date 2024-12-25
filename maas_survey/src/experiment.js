@@ -76,7 +76,7 @@ var instructionsBlock = {
   stimulus: `
     <div class='instructions'>
       <p>Welcome to this survey.</p>
-      <p>You will be shown a collection of statements about your everyday experience. Using the 1-6 shown, please indicate how frequently o infrequently you currently have each experience. Please answer according to what really reflects your experiences rather than what you think your experience should be. Please treat each item seperately from every other item.</p>
+      <p>You will be shown a collection of statements about your everyday experience. Using the 1-6 scale shown, please indicate how frequently or infrequently you currently have each experience. Please answer according to what really reflects your experiences rather than what you think your experience should be. Please treat each item seperately from every other item.</p>
       <p>Press <b>enter</b> to begin.</p>
     </div>`,
   choices: ["Enter"],
