@@ -1,6 +1,6 @@
 // Extract participant_id from query parameters
 const urlParams = new URLSearchParams(window.location.search);
-const participant_id = urlParams.get("participant_id");
+const subject_id = urlParams.get("participant_id");
 
 
 var jsPsych = initJsPsych({
@@ -54,7 +54,6 @@ var jsPsych = initJsPsych({
 //var study_id = jsPsych.data.getURLVariable("STUDY_ID");
 //var session_id = jsPsych.data.getURLVariable("SESSION_ID");
 
-var subject_id = jsPsych.randomization.randomID(8);
 var study_id = "attention-test";
 var session_id = "ses-1";
 var task_id = "demo_survey";

@@ -1,6 +1,6 @@
 // Extract participant_id from query parameters
 const urlParams = new URLSearchParams(window.location.search);
-const participant_id = urlParams.get("participant_id");
+const subject_id = urlParams.get("participant_id");
 
 var jsPsych = initJsPsych({
   on_finish: function () {
