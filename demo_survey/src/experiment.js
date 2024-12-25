@@ -1,3 +1,8 @@
+// Extract participant_id from query parameters
+const urlParams = new URLSearchParams(window.location.search);
+const participant_id = urlParams.get("participant_id");
+
+
 var jsPsych = initJsPsych({
   on_finish: function () {
     // Collect experiment data
@@ -29,10 +34,9 @@ var jsPsych = initJsPsych({
             setTimeout(sendData, 3000); // Retry after 3 seconds
           }
           // Redirect to /next with progress and surveys
-          const surveys = new URLSearchParams(window.location.search).get(
-            "surveys"
-          );
-          window.location.href = `/next?progress=demo_survey&surveys=${surveys}`;
+          const surveys = urlParams.get("surveys");
+          window.location.href = `/next?progress=demo_survey&surveys=${surveys}&participant_id=${participant_id}`;
+          
         })
         .catch((error) => {
           console.error("Error sending data:", error);
