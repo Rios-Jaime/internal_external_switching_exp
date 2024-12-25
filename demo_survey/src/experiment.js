@@ -32,8 +32,7 @@ var jsPsych = initJsPsych({
           const surveys = new URLSearchParams(window.location.search).get(
             "surveys"
           );
-          window.location.href =
-            `/next?progress=demo_survey&surveys=${surveys}`;
+          window.location.href = `/next?progress=demo_survey&surveys=${surveys}`;
         })
         .catch((error) => {
           console.error("Error sending data:", error);
@@ -125,42 +124,52 @@ const ageSurvey = {
   },
 };
 
-// Free-text survey for "Other" options
+// Dynamic free-text survey for "Other" options
 const demographicFreeTextSurvey = {
   type: jsPsychSurveyText,
   preamble: `<h3>Additional Information</h3><p>Please answer only if you selected "Other" in the previous survey:</p>`,
-  questions: [
-    {
-      prompt: "If you selected 'Other' for gender, please specify:",
-      rows: 1,
-      columns: 50,
-      name: "gender_other",
-      required: false,
-    },
-    {
-      prompt: "If you selected 'Other' for race, please specify:",
-      rows: 1,
-      columns: 50,
-      name: "race_other",
-      required: false,
-    },
-  ],
+  questions: function () {
+    // Retrieve the response data from the demographic survey
+    const demographicData = jsPsych.data
+      .get()
+      .filter({
+        trial_type: "survey-multi-choice",
+      })
+      .values();
+
+    if (demographicData.length > 0) {
+      const lastResponse = demographicData[demographicData.length - 1].response;
+      const questions = [];
+
+      // Add a text box for gender if "Other" was selected
+      if (lastResponse.gender === "Other") {
+        questions.push({
+          prompt: "If you selected 'Other' for gender, please specify:",
+          rows: 1,
+          columns: 50,
+          name: "gender_other",
+          required: true, // Make it required since they selected "Other"
+        });
+      }
+
+      // Add a text box for race if "Other" was selected
+      if (lastResponse.race === "Other") {
+        questions.push({
+          prompt: "If you selected 'Other' for race, please specify:",
+          rows: 1,
+          columns: 50,
+          name: "race_other",
+          required: true, // Make it required since they selected "Other"
+        });
+      }
+
+      return questions;
+    }
+
+    return []; // Default to no questions if no "Other" was selected
+  },
   on_finish: function (data) {
     console.log("Free text responses:", data.response);
-  },
-};
-
-// Conditional logic for showing free text survey
-const conditionalSurveyNode = {
-  timeline: [demographicFreeTextSurvey],
-  conditional_function: function () {
-    const lastResponse = jsPsych.data.getLastTrialData().values()[0].response;
-
-    // Check if "Other" was selected for gender or race
-    const showFreeTextSurvey =
-      lastResponse.gender === "Other" || lastResponse.race === "Other";
-
-    return showFreeTextSurvey;
   },
 };
 
@@ -171,8 +180,29 @@ const timeline = [
     fullscreen_mode: true,
   },
   demographicSurvey,
+  {
+    timeline: [demographicFreeTextSurvey],
+    conditional_function: function () {
+      // Retrieve the response data from the demographic survey
+      const demographicData = jsPsych.data
+        .get()
+        .filter({
+          trial_type: "survey-multi-choice",
+        })
+        .values();
+
+      if (demographicData.length > 0) {
+        const lastResponse =
+          demographicData[demographicData.length - 1].response;
+
+        // Show the free-text survey only if "Other" was selected for gender or race
+        return lastResponse.gender === "Other" || lastResponse.race === "Other";
+      }
+
+      return false; // Default to false if no data is found
+    },
+  },
   ageSurvey,
-  conditionalSurveyNode,
   {
     type: jsPsychFullscreen,
     fullscreen_mode: false,
