@@ -1,5 +1,5 @@
 const urlParams = new URLSearchParams(window.location.search);
-const subject_id = urlParams.get("participant_id");
+const participant_id = urlParams.get("participant_id");
 
 var jsPsych = initJsPsych({
   on_finish: function () {
@@ -8,7 +8,7 @@ var jsPsych = initJsPsych({
 
     // Add metadata
     const fullData = {
-      participant_id: subject_id,
+      participant_id: participant_id,
       session_id: session_id,
       study_id: study_id,
       task_id: task_id,
@@ -56,7 +56,7 @@ var session_id = "ses-1";
 var task_id = "maas_survey";
 
 jsPsych.data.addProperties({
-  subject_id: subject_id,
+  participant_id: participant_id,
   study_id: study_id,
   session_id: session_id,
   task_id: task_id,
