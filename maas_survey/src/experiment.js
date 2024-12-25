@@ -29,8 +29,11 @@ var jsPsych = initJsPsych({
             console.error("Failed to send data to server; retrying...");
             setTimeout(sendData, 3000); // Retry after 3 seconds
           }
-          // Redirect to /next for the next survey
-          window.location.href = "/next?progress=survey_1";
+          // Redirect to /next with progress and surveys
+          const surveys = new URLSearchParams(window.location.search).get(
+            "surveys"
+          );
+          window.location.href = `/next?progress=maas_survey&surveys=${surveys}`;
         })
         .catch((error) => {
           console.error("Error sending data:", error);

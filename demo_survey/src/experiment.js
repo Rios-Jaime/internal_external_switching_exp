@@ -29,8 +29,11 @@ var jsPsych = initJsPsych({
             console.error("Failed to send data to server; retrying...");
             setTimeout(sendData, 3000); // Retry after 3 seconds
           }
-          // Redirect to a thank-you page or display a message
-          window.location.href = "/next?progress=survey_3";
+          // Redirect to /next with progress and surveys
+        const surveys = new URLSearchParams(window.location.search).get(
+          "surveys"
+        );
+        window.location.href = `/next?progress=demo_survey&surveys=${surveys}`;
         })
         .catch((error) => {
           console.error("Error sending data:", error);
@@ -51,7 +54,7 @@ var jsPsych = initJsPsych({
 var subject_id = jsPsych.randomization.randomID(8);
 var study_id = "attention-test";
 var session_id = "ses-1";
-var task_id = "mwq_survey";
+var task_id = "demo_survey";
 
 jsPsych.data.addProperties({
   subject_id: subject_id,
