@@ -50,7 +50,7 @@ var jsPsych = initJsPsych({
             setTimeout(sendData, 3000); // Retry after 3 seconds
           }
 
-    // Redirect to /next with progress and surveys
+          // Redirect to /next with progress and surveys
           const surveys = new URLSearchParams(window.location.search).get(
             "surveys"
           );
@@ -709,7 +709,6 @@ function setStims(trial) {
   tool_item = trial.tool_object;
   animate_object = trial.animate_object;
 
-
   if (comparison_type === "mixed") {
     correctResponse = isInternalSports
       ? trial.response_if_sports_internal
@@ -725,8 +724,8 @@ function setStims(trial) {
     trial_type: trialType,
     comparison: comparison_type,
     target: currTarget,
-    internal: trial.internal_item;,
-    external: trial.external_item;,
+    internal: trial.internal_item,
+    external: trial.external_item,
     correct_response: correctResponse,
     is_internal_sports: isInternalSports,
   });
