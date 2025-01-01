@@ -427,23 +427,27 @@ function assignBalancedPairings(
     };
   }
 
-  // Handle 'na' trial
   const naTrial = generatedTrials[0];
   const randomAnimal =
     Object.keys(validPairings)[
       Math.floor(Math.random() * Object.keys(validPairings).length)
     ];
-  const randomSportsItem =
-    sportsItems[Math.floor(Math.random() * sportsItems.length)];
-  const randomToolItem =
-    toolItems[Math.floor(Math.random() * toolItems.length)];
+  const naTrialType = Math.random() < 0.5 ? "mixed" : "same";
+
+  // Get a random valid pairing for this animal and trial type
+  const validPairsForAnimal = validPairings[randomAnimal][naTrialType];
+  const randomPairIndex = Math.floor(
+    Math.random() * validPairsForAnimal.length
+  );
+  const [randomSportsItem, randomToolItem, relation] =
+    validPairsForAnimal[randomPairIndex];
 
   assignTrialValues(naTrial, {
     animal: randomAnimal,
-    trialType: Math.random() < 0.5 ? "mixed" : "same",
+    trialType: naTrialType,
     sportsItem: randomSportsItem,
     toolItem: randomToolItem,
-    relation: validPairings[randomAnimal][trialType][0][2], // Use the relation from valid pairings
+    relation: relation,
   });
 
   // Try to assign all trials with timeout
