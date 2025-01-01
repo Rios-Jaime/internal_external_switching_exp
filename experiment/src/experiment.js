@@ -62,7 +62,7 @@ var jsPsych = initJsPsych({
         });
     };
 
-    //sendData();
+    sendData();
     console.log("Experiment data:", fullData);
   },
 });
@@ -184,10 +184,12 @@ function assignBalancedPairings(
   validPairings,
   sportsItems,
   toolItems,
-  timeoutMs = 10000
+  timeoutMs = 5000
 ) {
   const numTrials = generatedTrials.length - 1; // Exclude 'na' trial
-  const maxExposure = Math.floor(numTrials / Object.keys(validPairings).length);
+  const maxExposure = Math.ceil(
+    numTrials / (Object.keys(validPairings).length * 0.75)
+  ); // Made more flexible
   const startTime = Date.now();
 
   // Initialize tracking structures with Map for better performance
@@ -215,36 +217,46 @@ function assignBalancedPairings(
       same: [],
     };
 
-    ["mixed", "same"].forEach((trialType) => {
-      validPairings[animal][trialType].forEach(([item1, item2, relation]) => {
-        let sportsItem, toolItem;
-        if (sportsItems.includes(item1) && toolItems.includes(item2)) {
-          [sportsItem, toolItem] = [item1, item2];
-        } else if (toolItems.includes(item1) && sportsItems.includes(item2)) {
-          [sportsItem, toolItem] = [item2, item1];
+    ["mixed", "same"].forEach((comparisonType) => {
+      validPairings[animal][comparisonType].forEach(
+        ([item1, item2, relation]) => {
+          let sportsItem, toolItem;
+          if (sportsItems.includes(item1) && toolItems.includes(item2)) {
+            [sportsItem, toolItem] = [item1, item2];
+          } else if (toolItems.includes(item1) && sportsItems.includes(item2)) {
+            [sportsItem, toolItem] = [item2, item1];
+          }
+          if (sportsItem && toolItem) {
+            combinations[comparisonType].push({
+              sportsItem,
+              toolItem,
+              relation,
+            });
+          }
         }
-        if (sportsItem && toolItem) {
-          combinations[trialType].push({
-            sportsItem,
-            toolItem,
-            relation,
-          });
-        }
-      });
+      );
     });
 
     precomputedCombinations.set(animal, combinations);
   });
 
-  function isValidAssignment(animal, sportsItem, toolItem, trialType) {
+  function isValidAssignment(
+    animal,
+    sportsItem,
+    toolItem,
+    comparisonType,
+    relaxConstraints = false
+  ) {
     const targetMixedCount = Math.floor(numTrials / 2);
+    const exposureLimit = relaxConstraints ? maxExposure * 1.5 : maxExposure;
+
     return (
-      usageTracker.animals.get(animal) < maxExposure &&
-      usageTracker.sports.get(sportsItem) < maxExposure &&
-      usageTracker.tools.get(toolItem) < maxExposure &&
-      (trialType === "mixed"
-        ? usageTracker.mixed < targetMixedCount
-        : usageTracker.same < targetMixedCount)
+      usageTracker.animals.get(animal) < exposureLimit &&
+      usageTracker.sports.get(sportsItem) < exposureLimit &&
+      usageTracker.tools.get(toolItem) < exposureLimit &&
+      (comparisonType === "mixed"
+        ? relaxConstraints || usageTracker.mixed < targetMixedCount
+        : relaxConstraints || usageTracker.same < targetMixedCount)
     );
   }
 
@@ -265,14 +277,14 @@ function assignBalancedPairings(
     return items;
   }
 
-  function assignTrialNonRecursive() {
+  function assignTrialNonRecursive(relaxConstraints = false) {
     const stack = [1]; // Start from index 1 to skip 'na' trial
-    const assignments = new Map(); // Store temporary assignments
+    const assignments = new Map();
+    const localStartTime = Date.now();
 
     while (stack.length > 0) {
-      // Check timeout
-      if (Date.now() - startTime > timeoutMs) {
-        throw new Error("Timeout reached while assigning trials");
+      if (Date.now() - localStartTime > timeoutMs) {
+        return false;
       }
 
       const trialIndex = stack[stack.length - 1];
@@ -284,28 +296,30 @@ function assignBalancedPairings(
       const trial = generatedTrials[trialIndex];
       const targetMixedCount = Math.floor(numTrials / 2);
 
-      // Get current assignment attempt for this trial
       let currentAttempt = assignments.get(trialIndex) || {
         animalIndex: 0,
-        trialTypeIndex: 0,
+        comparisonTypeIndex: 0,
         combinationIndex: 0,
       };
 
-      const animals = getLeastUsedItems(usageTracker.animals);
+      const animals = relaxConstraints
+        ? Object.keys(validPairings)
+        : getLeastUsedItems(usageTracker.animals);
 
-      // Try to find a valid assignment
       let assigned = false;
 
       while (currentAttempt.animalIndex < animals.length && !assigned) {
         const animal = animals[currentAttempt.animalIndex];
-        const trialTypes = [];
+        const comparisonTypes = ["mixed", "same"];
 
-        if (usageTracker.mixed < targetMixedCount) trialTypes.push("mixed");
-        if (usageTracker.same < targetMixedCount) trialTypes.push("same");
-
-        while (currentAttempt.trialTypeIndex < trialTypes.length && !assigned) {
-          const trialType = trialTypes[currentAttempt.trialTypeIndex];
-          const combinations = precomputedCombinations.get(animal)[trialType];
+        while (
+          currentAttempt.comparisonTypeIndex < comparisonTypes.length &&
+          !assigned
+        ) {
+          const comparisonType =
+            comparisonTypes[currentAttempt.comparisonTypeIndex];
+          const combinations =
+            precomputedCombinations.get(animal)[comparisonType];
 
           while (
             currentAttempt.combinationIndex < combinations.length &&
@@ -314,19 +328,24 @@ function assignBalancedPairings(
             const { sportsItem, toolItem, relation } =
               combinations[currentAttempt.combinationIndex];
 
-            if (isValidAssignment(animal, sportsItem, toolItem, trialType)) {
-              // Make assignment
+            if (
+              isValidAssignment(
+                animal,
+                sportsItem,
+                toolItem,
+                comparisonType,
+                relaxConstraints
+              )
+            ) {
               assignTrialValues(trial, {
                 animal,
-                trialType,
+                comparisonType,
                 sportsItem,
                 toolItem,
                 relation,
               });
 
-              // Update trackers
-              updateTrackers(animal, sportsItem, toolItem, trialType, 1);
-
+              updateTrackers(animal, sportsItem, toolItem, comparisonType, 1);
               stack.push(trialIndex + 1);
               assigned = true;
             }
@@ -336,18 +355,17 @@ function assignBalancedPairings(
 
           if (!assigned) {
             currentAttempt.combinationIndex = 0;
-            currentAttempt.trialTypeIndex++;
+            currentAttempt.comparisonTypeIndex++;
           }
         }
 
         if (!assigned) {
-          currentAttempt.trialTypeIndex = 0;
+          currentAttempt.comparisonTypeIndex = 0;
           currentAttempt.animalIndex++;
         }
       }
 
       if (!assigned) {
-        // Backtrack
         stack.pop();
         if (stack.length > 0) {
           const previousTrial = generatedTrials[stack[stack.length - 1]];
@@ -356,14 +374,13 @@ function assignBalancedPairings(
             prevAssignment.animal,
             prevAssignment.sportsItem,
             prevAssignment.toolItem,
-            prevAssignment.trialType,
+            prevAssignment.comparisonType,
             -1
           );
 
-          // Reset the current trial's values
           assignments.set(stack[stack.length - 1], {
             animalIndex: 0,
-            trialTypeIndex: 0,
+            comparisonTypeIndex: 0,
             combinationIndex: currentAttempt.combinationIndex + 1,
           });
         }
@@ -375,27 +392,26 @@ function assignBalancedPairings(
     return false;
   }
 
-  function updateTrackers(animal, sportsItem, toolItem, trialType, delta) {
+  function updateTrackers(animal, sportsItem, toolItem, comparisonType, delta) {
     usageTracker.animals.set(animal, usageTracker.animals.get(animal) + delta);
     usageTracker.sports.set(
       sportsItem,
       usageTracker.sports.get(sportsItem) + delta
     );
     usageTracker.tools.set(toolItem, usageTracker.tools.get(toolItem) + delta);
-    usageTracker[trialType] += delta;
+    usageTracker[comparisonType] += delta;
   }
 
   function assignTrialValues(
     trial,
-    { animal, trialType, sportsItem, toolItem, relation }
+    { animal, comparisonType, sportsItem, toolItem, relation }
   ) {
     trial.target = animal;
-    trial.comparison_type = trialType;
+    trial.comparison_type = comparisonType;
     trial.sport_object = sportsItem;
     trial.tool_object = toolItem;
     trial.animate_object = animal;
 
-    // Assign internal/external based on cue condition
     if (trial.cue_cond === "external") {
       if (trial.ref_object === "sports") {
         trial.external_item = sportsItem;
@@ -420,40 +436,44 @@ function assignBalancedPairings(
   function getTrialValues(trial) {
     return {
       animal: trial.target,
-      trialType: trial.comparison_type,
+      comparisonType: trial.comparison_type,
       sportsItem: trial.sport_object,
       toolItem: trial.tool_object,
       relation: trial.response_if_sports_internal,
     };
   }
 
+  // Handle 'na' trial
   const naTrial = generatedTrials[0];
   const randomAnimal =
     Object.keys(validPairings)[
       Math.floor(Math.random() * Object.keys(validPairings).length)
     ];
-  const naTrialType = Math.random() < 0.5 ? "mixed" : "same";
-
-  // Get a random valid pairing for this animal and trial type
-  const validPairsForAnimal = validPairings[randomAnimal][naTrialType];
-  const randomPairIndex = Math.floor(
-    Math.random() * validPairsForAnimal.length
-  );
-  const [randomSportsItem, randomToolItem, relation] =
-    validPairsForAnimal[randomPairIndex];
+  const randomComparisonType = Math.random() < 0.5 ? "mixed" : "same";
+  const combinations =
+    precomputedCombinations.get(randomAnimal)[randomComparisonType];
+  const randomCombination =
+    combinations[Math.floor(Math.random() * combinations.length)];
 
   assignTrialValues(naTrial, {
     animal: randomAnimal,
-    trialType: naTrialType,
-    sportsItem: randomSportsItem,
-    toolItem: randomToolItem,
-    relation: relation,
+    comparisonType: randomComparisonType,
+    sportsItem: randomCombination.sportsItem,
+    toolItem: randomCombination.toolItem,
+    relation: randomCombination.relation,
   });
 
-  // Try to assign all trials with timeout
+  // Try to assign all trials with progressively relaxed constraints
   try {
-    if (!assignTrialNonRecursive()) {
-      throw new Error("Failed to find valid assignment");
+    let success = assignTrialNonRecursive(false);
+    if (!success) {
+      console.log("First attempt failed, trying with relaxed constraints...");
+      success = assignTrialNonRecursive(true);
+      if (!success) {
+        throw new Error(
+          "Failed to find valid assignment even with relaxed constraints"
+        );
+      }
     }
   } catch (error) {
     console.error("Error during trial assignment:", error);
@@ -461,20 +481,13 @@ function assignBalancedPairings(
     throw error;
   }
 
-  // Log statistics before returning
+  // Log statistics
   console.log("\nFinal Statistics:");
   console.log("Trial Types:", {
     mixed: usageTracker.mixed,
     same: usageTracker.same,
     total: usageTracker.mixed + usageTracker.same,
   });
-
-  console.log("\nAnimal Exposures:", Object.fromEntries(usageTracker.animals));
-  console.log(
-    "Sports Item Exposures:",
-    Object.fromEntries(usageTracker.sports)
-  );
-  console.log("Tool Item Exposures:", Object.fromEntries(usageTracker.tools));
 
   return generatedTrials;
 }
