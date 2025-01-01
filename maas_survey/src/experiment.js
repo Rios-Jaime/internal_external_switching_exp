@@ -80,6 +80,12 @@ var instructionsBlock = {
       <p>Press <b>enter</b> to begin.</p>
     </div>`,
   choices: ["Enter"],
+  trial_duration: 180000,
+  data: {
+    trial_id: "instructions",
+    trial_duration: 180000,
+  },
+  post_trial_gap: 0,
 };
 
 var trial = {
