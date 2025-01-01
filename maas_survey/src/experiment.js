@@ -90,6 +90,7 @@ var instructionsBlock = {
 
 var trial = {
   type: jsPsychSurveyLikert,
+  preamble: `<p>Please indicate how frequently or infrequently you currently have each experience.</p>`,
   questions: [
     {
       prompt:
