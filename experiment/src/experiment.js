@@ -62,7 +62,7 @@ var jsPsych = initJsPsych({
         });
     };
 
-    sendData();
+    //sendData();
     console.log("Experiment data:", fullData);
   },
 });
@@ -719,6 +719,8 @@ function setStims(trial) {
     correctResponse = trial.response_if_sports_internal;
   }
 
+  correctResponse = correctResponse === "smaller" ? "," : ".";
+
   // Add debug logging
   console.log({
     trial_type: trialType,
@@ -993,17 +995,17 @@ const sizeRelationships = {
       "screwdriver",
       "wrench",
       "hammer",
+      "drill",
+      "mallet",
+      "boxing_gloves",
+      "ice_skate",
     ],
     smaller_than: [
       "chainsaw",
       "surfboard",
-      "mallet",
       "crowbar",
-      "boxing_gloves",
-      "ice_skate",
       "skateboard",
       "soccerball",
-      "drill",
       "wheelbarrow",
       "canoe",
     ],
@@ -1020,23 +1022,29 @@ const sizeRelationships = {
       "hammer",
       "drill",
       "crowbar",
-      "wheelbarrow",
+      "skateboard",
+      "chainsaw",
     ],
-    smaller_than: ["surfboard", "chainsaw", "skateboard", "canoe"],
+    smaller_than: ["surfboard", "wheelbarrow", "canoe"],
   },
   lizard: {
-    larger_than: ["golf_ball", "shuttlecock", "screwdriver", "wrench"],
-    smaller_than: [
-      "boxing_gloves",
-      "hammer",
+    larger_than: [
+      "golf_ball",
+      "shuttlecock",
+      "screwdriver",
+      "wrench",
       "drill",
+      "mallet",
+      "hammer",
+      "boxing_gloves",
+      "ice_skate",
+      "soccerball",
+    ],
+    smaller_than: [
       "skateboard",
       "surfboard",
       "chainsaw",
-      "mallet",
       "crowbar",
-      "ice_skate",
-      "soccerball",
       "wheelbarrow",
       "canoe",
     ],
@@ -1076,9 +1084,8 @@ const sizeRelationships = {
     ],
   },
   crow: {
-    larger_than: ["golf_ball", "shuttlecock", "screwdriver"],
+    larger_than: ["golf_ball", "shuttlecock", "screwdriver", "wrench"],
     smaller_than: [
-      "wrench",
       "boxing_gloves",
       "hammer",
       "drill",
@@ -1094,18 +1101,23 @@ const sizeRelationships = {
     ],
   },
   sombra: {
-    larger_than: ["golf_ball", "shuttlecock", "screwdriver", "wrench"],
-    smaller_than: [
-      "chainsaw",
-      "surfboard",
+    larger_than: [
+      "golf_ball",
+      "shuttlecock",
+      "screwdriver",
+      "wrench",
       "mallet",
-      "crowbar",
-      "boxing_gloves",
-      "ice_skate",
-      "skateboard",
       "hammer",
       "drill",
       "soccerball",
+      "boxing_gloves",
+      "ice_skate",
+      "crowbar",
+    ],
+    smaller_than: [
+      "chainsaw",
+      "surfboard",
+      "skateboard",
       "wheelbarrow",
       "canoe",
     ],
