@@ -184,7 +184,7 @@ function assignBalancedPairings(
   validPairings,
   sportsItems,
   toolItems,
-  timeoutMs = 5000
+  timeoutMs = 10000
 ) {
   const numTrials = generatedTrials.length - 1; // Exclude 'na' trial
   const maxExposure = Math.floor(numTrials / Object.keys(validPairings).length);
