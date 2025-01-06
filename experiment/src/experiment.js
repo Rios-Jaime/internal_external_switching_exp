@@ -1,15 +1,5 @@
-var experimentStartTime;
-
 var jsPsych = initJsPsych({
   on_finish: function () {
-    // Calculate experiment duration
-    const experimentEndTime = new Date();
-    const experimentDuration = experimentEndTime - experimentStartTime; // in milliseconds
-
-    // Convert to minutes and seconds
-    const minutes = Math.floor(experimentDuration / 60000);
-    const seconds = ((experimentDuration % 60000) / 1000).toFixed(0);
-
     // Collect experiment data
     const experimentData = jsPsych.data.get().json();
 
@@ -21,16 +11,8 @@ var jsPsych = initJsPsych({
       task_id: task_id,
       data: experimentData,
       assignedCondition: assignedCondition,
-      experimentDuration: {
-        totalMs: experimentDuration,
-        minutes: minutes,
-        seconds: seconds,
-      },
     };
 
-    console.log(
-      `Experiment duration: ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`
-    );
     console.log("Experiment data:", fullData);
 
     // Send data to the server
@@ -63,7 +45,6 @@ var jsPsych = initJsPsych({
     };
 
     sendData();
-    console.log("Experiment data:", fullData);
   },
 });
 
@@ -131,7 +112,6 @@ function shuffleArray(array) {
 function sampleCueCondition(conditions, currentCueCond, isSwitch) {
   // If conditions array is empty, repopulate and shuffle it
   if (conditions.length === 0) {
-    console.log("Repopulating cue conditions...");
     conditions.push(...shuffleArray([...originalCueConditions]));
   }
 
@@ -186,13 +166,11 @@ function assignBalancedPairings(
   toolItems,
   timeoutMs = 5000
 ) {
-  const numTrials = generatedTrials.length - 1; // Exclude 'na' trial
+  const numTrials = generatedTrials.length - 1;
   const maxExposure = Math.ceil(
     numTrials / (Object.keys(validPairings).length * 0.75)
-  ); // Made more flexible
-  const startTime = Date.now();
+  );
 
-  // Initialize tracking structures with Map for better performance
   const usageTracker = {
     animals: new Map(),
     sports: new Map(),
@@ -201,21 +179,16 @@ function assignBalancedPairings(
     same: 0,
   };
 
-  // Initialize usage counters with Maps
   Object.keys(validPairings).forEach((animal) =>
     usageTracker.animals.set(animal, 0)
   );
   sportsItems.forEach((item) => usageTracker.sports.set(item, 0));
   toolItems.forEach((item) => usageTracker.tools.set(item, 0));
 
-  // Pre-compute valid combinations to avoid repeated checks
   const precomputedCombinations = new Map();
 
   Object.keys(validPairings).forEach((animal) => {
-    const combinations = {
-      mixed: [],
-      same: [],
-    };
+    const combinations = { mixed: [], same: [] };
 
     ["mixed", "same"].forEach((comparisonType) => {
       validPairings[animal][comparisonType].forEach(
@@ -263,7 +236,6 @@ function assignBalancedPairings(
   function getLeastUsedItems(tracker) {
     let minUsage = Infinity;
     const items = [];
-
     tracker.forEach((count, item) => {
       if (count < minUsage) {
         minUsage = count;
@@ -273,29 +245,61 @@ function assignBalancedPairings(
         items.push(item);
       }
     });
-
     return items;
   }
 
+  function assignTrialValues(
+    trial,
+    { animal, comparisonType, sportsItem, toolItem, relation }
+  ) {
+    trial.target = animal;
+    trial.comparison_type = comparisonType;
+    trial.sport_object = sportsItem;
+    trial.tool_object = toolItem;
+    trial.animate_object = animal;
+
+    if (trial.cue_cond === "external") {
+      if (trial.ref_object === "sports") {
+        trial.external_item = sportsItem;
+        trial.internal_item = toolItem;
+      } else {
+        trial.external_item = toolItem;
+        trial.internal_item = sportsItem;
+      }
+    } else {
+      if (trial.ref_object === "sports") {
+        trial.internal_item = sportsItem;
+        trial.external_item = toolItem;
+      } else {
+        trial.internal_item = toolItem;
+        trial.external_item = sportsItem;
+      }
+    }
+    trial.response_if_sports_internal = relation;
+  }
+
+  function updateTrackers(animal, sportsItem, toolItem, comparisonType, delta) {
+    usageTracker.animals.set(animal, usageTracker.animals.get(animal) + delta);
+    usageTracker.sports.set(
+      sportsItem,
+      usageTracker.sports.get(sportsItem) + delta
+    );
+    usageTracker.tools.set(toolItem, usageTracker.tools.get(toolItem) + delta);
+    usageTracker[comparisonType] += delta;
+  }
+
   function assignTrialNonRecursive(relaxConstraints = false) {
-    const stack = [1]; // Start from index 1 to skip 'na' trial
+    const stack = [1];
     const assignments = new Map();
     const localStartTime = Date.now();
 
     while (stack.length > 0) {
-      if (Date.now() - localStartTime > timeoutMs) {
-        return false;
-      }
+      if (Date.now() - localStartTime > timeoutMs) return false;
 
       const trialIndex = stack[stack.length - 1];
-
-      if (trialIndex >= generatedTrials.length) {
-        return true;
-      }
+      if (trialIndex >= generatedTrials.length) return true;
 
       const trial = generatedTrials[trialIndex];
-      const targetMixedCount = Math.floor(numTrials / 2);
-
       let currentAttempt = assignments.get(trialIndex) || {
         animalIndex: 0,
         comparisonTypeIndex: 0,
@@ -305,7 +309,6 @@ function assignBalancedPairings(
       const animals = relaxConstraints
         ? Object.keys(validPairings)
         : getLeastUsedItems(usageTracker.animals);
-
       let assigned = false;
 
       while (currentAttempt.animalIndex < animals.length && !assigned) {
@@ -344,12 +347,10 @@ function assignBalancedPairings(
                 toolItem,
                 relation,
               });
-
               updateTrackers(animal, sportsItem, toolItem, comparisonType, 1);
               stack.push(trialIndex + 1);
               assigned = true;
             }
-
             currentAttempt.combinationIndex++;
           }
 
@@ -369,7 +370,12 @@ function assignBalancedPairings(
         stack.pop();
         if (stack.length > 0) {
           const previousTrial = generatedTrials[stack[stack.length - 1]];
-          const prevAssignment = getTrialValues(previousTrial);
+          const prevAssignment = {
+            animal: previousTrial.target,
+            comparisonType: previousTrial.comparison_type,
+            sportsItem: previousTrial.sport_object,
+            toolItem: previousTrial.tool_object,
+          };
           updateTrackers(
             prevAssignment.animal,
             prevAssignment.sportsItem,
@@ -377,70 +383,11 @@ function assignBalancedPairings(
             prevAssignment.comparisonType,
             -1
           );
-
-          assignments.set(stack[stack.length - 1], {
-            animalIndex: 0,
-            comparisonTypeIndex: 0,
-            combinationIndex: currentAttempt.combinationIndex + 1,
-          });
         }
-      } else {
-        assignments.set(trialIndex, currentAttempt);
       }
+      assignments.set(trialIndex, currentAttempt);
     }
-
     return false;
-  }
-
-  function updateTrackers(animal, sportsItem, toolItem, comparisonType, delta) {
-    usageTracker.animals.set(animal, usageTracker.animals.get(animal) + delta);
-    usageTracker.sports.set(
-      sportsItem,
-      usageTracker.sports.get(sportsItem) + delta
-    );
-    usageTracker.tools.set(toolItem, usageTracker.tools.get(toolItem) + delta);
-    usageTracker[comparisonType] += delta;
-  }
-
-  function assignTrialValues(
-    trial,
-    { animal, comparisonType, sportsItem, toolItem, relation }
-  ) {
-    trial.target = animal;
-    trial.comparison_type = comparisonType;
-    trial.sport_object = sportsItem;
-    trial.tool_object = toolItem;
-    trial.animate_object = animal;
-
-    if (trial.cue_cond === "external") {
-      if (trial.ref_object === "sports") {
-        trial.external_item = sportsItem;
-        trial.internal_item = toolItem;
-      } else {
-        trial.external_item = toolItem;
-        trial.internal_item = sportsItem;
-      }
-    } else {
-      if (trial.ref_object === "sports") {
-        trial.internal_item = sportsItem;
-        trial.external_item = toolItem;
-      } else {
-        trial.internal_item = toolItem;
-        trial.external_item = sportsItem;
-      }
-    }
-
-    trial.response_if_sports_internal = relation;
-  }
-
-  function getTrialValues(trial) {
-    return {
-      animal: trial.target,
-      comparisonType: trial.comparison_type,
-      sportsItem: trial.sport_object,
-      toolItem: trial.tool_object,
-      relation: trial.response_if_sports_internal,
-    };
   }
 
   // Handle 'na' trial
@@ -463,33 +410,97 @@ function assignBalancedPairings(
     relation: randomCombination.relation,
   });
 
-  // Try to assign all trials with progressively relaxed constraints
-  try {
-    let success = assignTrialNonRecursive(false);
-    if (!success) {
-      console.log("First attempt failed, trying with relaxed constraints...");
-      success = assignTrialNonRecursive(true);
-      if (!success) {
-        throw new Error(
-          "Failed to find valid assignment even with relaxed constraints"
-        );
-      }
-    }
-  } catch (error) {
-    console.error("Error during trial assignment:", error);
-    console.log("Current state:", Object.fromEntries(usageTracker.animals));
-    throw error;
+  let success = assignTrialNonRecursive(false);
+  if (!success) {
+    console.log("First attempt failed, trying with relaxed constraints...");
+    success = assignTrialNonRecursive(true);
+    if (!success)
+      throw new Error(
+        "Failed to find valid assignment even with relaxed constraints"
+      );
   }
 
-  // Log statistics
-  console.log("\nFinal Statistics:");
-  console.log("Trial Types:", {
-    mixed: usageTracker.mixed,
-    same: usageTracker.same,
-    total: usageTracker.mixed + usageTracker.same,
-  });
-
   return generatedTrials;
+}
+
+function generateBalancedTrialsFixed(
+  numTrials = 48,
+  validPairings,
+  sportsItems,
+  toolItems
+) {
+  function generateBatch(batchSize) {
+    const trials = [];
+    trials.push({
+      trial_type: "na",
+      cue_cond: ["internal", "external"][Math.floor(Math.random() * 2)],
+      ref_object: ["sports", "tool"][Math.floor(Math.random() * 2)],
+      task_switch: "na",
+    });
+
+    const batchConditions = conditions.reduce((acc, condition) => {
+      acc[condition] = Math.floor((batchSize - 1) / conditions.length);
+      return acc;
+    }, {});
+
+    for (let i = 0; i < batchSize - 1; i++) {
+      let validConditions = conditions.filter(
+        (condition) => batchConditions[condition] > 0
+      );
+      if (validConditions.length === 0) break;
+
+      const selectedCondition =
+        validConditions[Math.floor(Math.random() * validConditions.length)];
+      batchConditions[selectedCondition]--;
+
+      const [taskSwitch, cueCond, refObject] = selectedCondition.split("_");
+      trials.push({
+        trial_type: selectedCondition,
+        cue_cond: cueCond,
+        ref_object: refObject,
+        task_switch: taskSwitch,
+      });
+    }
+
+    return { trials, conditionCounts: batchConditions };
+  }
+
+  const numBatches = Math.ceil(numTrials / 8);
+  let allTrials = [];
+
+  for (let i = 0; i < numBatches; i++) {
+    const { trials } = generateBatch(8);
+    const withPairings = assignBalancedPairings(
+      trials,
+      validPairings,
+      sportsItems,
+      toolItems
+    );
+    allTrials = allTrials.concat(withPairings.slice(1));
+  }
+
+  const naTrials = allTrials.filter((t) => t.trial_type === "na");
+  if (naTrials.length > 0) {
+    allTrials = [
+      naTrials[0],
+      ...allTrials.filter((t) => t.trial_type !== "na"),
+    ];
+  }
+
+  const nonNaTrials = allTrials.slice(1);
+  shuffleArray(nonNaTrials);
+
+  const finalTrials = [allTrials[0], ...nonNaTrials.slice(0, numTrials)];
+
+  const counts = finalTrials.slice(1).reduce((acc, trial) => {
+    if (trial.trial_type !== "na") {
+      acc[trial.trial_type] = (acc[trial.trial_type] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  console.log("Final trial counts:", counts);
+  return { trials: finalTrials, conditionCounts: counts };
 }
 
 function generateValidPairings(
@@ -686,10 +697,7 @@ var appendData = function () {
 };
 
 function setStims(trial) {
-  console.log("Trial setup:", trial);
-
   const blockType = getExpStage();
-  console.log("Setting stimuli for", blockType, "trial");
 
   // Set conditions based on trial
   const isInternalSports = trial.ref_object === "sports";
@@ -862,10 +870,6 @@ const responseMappings = assignedCondition.response_mapping
 const internalColor = assignedCondition.internal_color;
 const externalColor = assignedCondition.external_color;
 
-console.log("Internal Color:", internalColor); // Should log the correct value
-console.log("External Color:", externalColor); // Should log the correct value
-console.log("Response Mappings:", responseMappings); // Should log {smaller: ',', larger: '.'}
-
 // Add mappings and color assignments to jsPsych data
 jsPsych.data.addProperties({
   response_mappings: {
@@ -942,8 +946,6 @@ let originalCueConditions = [
 
 // Shuffle the existing array
 let cue_conditions = shuffleArray([...originalCueConditions]);
-
-console.log(cue_conditions);
 
 // Image Variables
 var fileTypeExtension = "png";
@@ -1322,16 +1324,6 @@ const isBalanced = Object.values(conditionCountsFixed).every(
   (count) => count === Math.floor(practiceLen / conditions.length)
 );
 
-console.log("\nGenerated Trials:");
-practiceTrials1Data.forEach((trial, index) => {
-  console.log(`Trial ${index + 1}:`, trial);
-});
-
-console.log("\nCondition Counts (Fixed):");
-Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
-  console.log(`${condition}: ${count}`);
-});
-
 if (!isBalanced) {
   console.error("Conditions are not balanced!", conditionCountsFixed);
 } else {
@@ -1368,11 +1360,11 @@ var feedbackInstructBlock = {
   type: jsPsychHtmlKeyboardResponse,
   data: {
     trial_id: "instruction_feedback",
-    trial_duration: 180000,
+    trial_duration: 300000,
   },
   choices: ["Enter"],
   stimulus: getInstructFeedback,
-  trial_duration: 180000,
+  trial_duration: 300000,
 };
 
 var instructionNode = {
@@ -1652,8 +1644,6 @@ var practiceNode1 = {
       ({ trials: testTrialsData, conditionCounts: testConditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock));
 
-      console.log("Generated test trials:", testTrialsData);
-
       // functions to check proportions //
       const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
         if (trial.trial_type !== "na") {
@@ -1665,16 +1655,6 @@ var practiceNode1 = {
       const isBalanced = Object.values(conditionCountsFixed).every(
         (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
       );
-
-      console.log("\nGenerated Trials:");
-      testTrialsData.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
-      });
-
-      console.log("\nCondition Counts (Fixed):");
-      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
-        console.log(`${condition}: ${count}`);
-      });
 
       if (!isBalanced) {
         console.error("Conditions are not balanced!", conditionCountsFixed);
@@ -1754,16 +1734,6 @@ var practiceNode1 = {
         (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
-      console.log("\nGenerated Trials:");
-      practiceTrials2Data.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
-      });
-
-      console.log("\nCondition Counts (Fixed):");
-      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
-        console.log(`${condition}: ${count}`);
-      });
-
       if (!isBalanced) {
         console.error("Conditions are not balanced!", conditionCountsFixed);
       } else {
@@ -1779,7 +1749,6 @@ var practiceNode1 = {
       missedResponses,
     });
 
-    console.log("moving on");
     return false;
   },
 };
@@ -1946,9 +1915,6 @@ var practiceNode2 = {
     practiceCount += 1;
     currentTrial = 0;
 
-    console.log("finished prcatice 2!");
-    console.log("practiceCount: " + practiceCount);
-
     var sumRT = 0;
     var sumResponses = 0;
     var correct = 0;
@@ -2017,7 +1983,7 @@ var practiceNode2 = {
                   : "Error: Mapping Missing"
               }</b> if <b>the target is smaller</b> than the cued reference item.
           </p>
-          <p class="block-text">If the cue is <span style="font-size: 1.5 em; color: ${internalColor};">+</span>, then compare the target to the item held <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen (external item).</p>
+          <p class="block-text">If the cue is <span style="font-size: 1.5 em; color: ${internalColor};">+</span>, then compare the target to the item held in memory (internal item). <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen (external item).</p>
           <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
@@ -2538,13 +2504,6 @@ var endBlock = {
 
 var internal_external_experiment = [];
 var internal_external_experiment_init = () => {
-  experimentStartTime = new Date(); // Record start time
-  console.log("Experiment starting at:", experimentStartTime);
-
-  console.log(all_images);
-  console.log("Response Mappings:", responseMappings);
-  console.log("Assigned condition:", assignedCondition);
-
   jsPsych.pluginAPI.preloadImages(imageUrls);
 
   internal_external_experiment.push(fullscreen);
