@@ -819,9 +819,7 @@ const sizeRelationships = {
       "hammer",
       "drill",
       "mallet",
-      "boxing_gloves",
-      "ice_skate",
-    ],
+          ],
     smaller_than: [
       "chainsaw",
       "surfboard",
@@ -830,6 +828,8 @@ const sizeRelationships = {
       "soccerball",
       "wheelbarrow",
       "canoe",
+      "boxing_gloves",
+      "ice_skate",
     ],
   },
   goat: {
@@ -924,7 +924,6 @@ const sizeRelationships = {
       "mallet",
       "drill",
       "hammer",
-      "soccerball",
     ],
     smaller_than: [
       "boxing_gloves",
@@ -935,6 +934,7 @@ const sizeRelationships = {
       "ice_skate",
       "canoe",
       "wheelbarrow",
+      "soccerball",
     ],
   },
   sombra: {
