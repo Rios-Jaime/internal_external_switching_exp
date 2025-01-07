@@ -655,8 +655,6 @@ function generateBalancedTrialsFixed(numTrials = 40) {
 // Generic Task Variables
 // Extract response mappings from assignedCondition
 
-Math.seedrandom("fixed-seed");
-
 //const assignedCondition = {
 //  internal_color: "#D41159",
 //  external_color: "#1A85FF",
@@ -808,8 +806,9 @@ const sizeRelationships = {
       "mallet",
       "crowbar",
       "skateboard",
+      "chainsaw",
     ],
-    smaller_than: ["surfboard", "chainsaw", "wheelbarrow", "canoe"],
+    smaller_than: ["surfboard", "wheelbarrow", "canoe"],
   },
   duck: {
     larger_than: [
@@ -873,53 +872,68 @@ const sizeRelationships = {
     ],
   },
   rabbit: {
-    larger_than: ["golf_ball", "shuttlecock", "screwdriver", "wrench"],
+    larger_than: [
+      "golf_ball",
+      "shuttlecock",
+      "screwdriver",
+      "wrench",
+      "drill",
+      "hammer",
+      "mallet",
+    ],
     smaller_than: [
       "surfboard",
       "chainsaw",
-      "mallet",
       "crowbar",
       "boxing_gloves",
       "ice_skate",
       "skateboard",
       "soccerball",
-      "hammer",
-      "drill",
       "canoe",
       "wheelbarrow",
     ],
   },
   bass: {
-    larger_than: ["golf_ball", "shuttlecock", "screwdriver", "wrench"],
-    smaller_than: [
-      "hammer",
+    larger_than: [
+      "golf_ball",
+      "shuttlecock",
+      "screwdriver",
+      "wrench",
       "drill",
+      "hammer",
+      "mallet",
+      "soccerball",
+    ],
+    smaller_than: [
       "boxing_gloves",
       "skateboard",
       "surfboard",
       "chainsaw",
-      "mallet",
       "crowbar",
       "ice_skate",
       "canoe",
-      "soccerball",
       "wheelbarrow",
     ],
   },
   crow: {
-    larger_than: ["golf_ball", "shuttlecock", "screwdriver", "wrench"],
+    larger_than: [
+      "golf_ball",
+      "shuttlecock",
+      "screwdriver",
+      "wrench",
+      "mallet",
+      "drill",
+      "hammer",
+      "soccerball",
+    ],
     smaller_than: [
       "boxing_gloves",
-      "hammer",
-      "drill",
       "skateboard",
       "surfboard",
       "chainsaw",
-      "mallet",
       "crowbar",
       "ice_skate",
       "canoe",
-      "soccerball",
       "wheelbarrow",
     ],
   },
@@ -936,14 +950,10 @@ const sizeRelationships = {
       "boxing_gloves",
       "ice_skate",
       "crowbar",
-    ],
-    smaller_than: [
-      "chainsaw",
-      "surfboard",
       "skateboard",
-      "wheelbarrow",
-      "canoe",
+      "chainsaw",
     ],
+    smaller_than: ["surfboard", "wheelbarrow", "canoe"],
   },
 };
 
