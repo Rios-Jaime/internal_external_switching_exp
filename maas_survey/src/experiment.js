@@ -164,7 +164,7 @@ var trial = {
     },
     {
       prompt:
-        "I find myself listening to someone with one ear, doing somethingelse at the same time.",
+        "I find myself listening to someone with one ear, doing something else at the same time.",
       name: "question_11",
       labels: likert_scale,
       required: true,
