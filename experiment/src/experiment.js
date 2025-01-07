@@ -16,35 +16,35 @@ var jsPsych = initJsPsych({
     console.log("Experiment data:", fullData);
 
     // Send data to the server
-     const sendData = () => {
+    const sendData = () => {
       fetch("/egner", {
-       method: "POST",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       body: JSON.stringify(fullData),
-     })
-       .then((response) => {
-         if (response.ok) {
-           console.log("Data successfully sent to server");
-         } else {
-           console.error("Failed to send data to server; retrying...");
-           setTimeout(sendData, 3000); // Retry after 3 seconds
-         }
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(fullData),
+      })
+        .then((response) => {
+          if (response.ok) {
+            console.log("Data successfully sent to server");
+          } else {
+            console.error("Failed to send data to server; retrying...");
+            setTimeout(sendData, 3000); // Retry after 3 seconds
+          }
 
-    // Redirect to /next with progress and surveys
-       const surveys = new URLSearchParams(window.location.search).get(
-         "surveys"
-       );
-       window.location.href = `/next?progress=experiment&surveys=${surveys}&participant_id=${subject_id}`;
-     })
-     .catch((error) => {
-       console.error("Error sending data:", error);
-       setTimeout(sendData, 3000); // Retry after 3 seconds
-     });
-     };
+          // Redirect to /next with progress and surveys
+          const surveys = new URLSearchParams(window.location.search).get(
+            "surveys"
+          );
+          window.location.href = `/next?progress=experiment&surveys=${surveys}&participant_id=${subject_id}`;
+        })
+        .catch((error) => {
+          console.error("Error sending data:", error);
+          setTimeout(sendData, 3000); // Retry after 3 seconds
+        });
+    };
 
-     sendData();
+    sendData();
   },
 });
 
@@ -994,7 +994,7 @@ var currStim = "";
 
 var feedbackInstructText = `
   <p class="block-text">
-    Welcome! This experiment will take around 45 minutes.
+    Welcome! This experiment will take around 50 minutes.
   </p>
   <p class="block-text">
     To avoid technical issues, please keep the experiment tab (on Chrome or Firefox) active and in fullscreen mode for the whole duration of each task.
@@ -1199,13 +1199,16 @@ var feedbackBlock = {
     return {
       trial_id: `${stage}_feedback`,
       exp_stage: stage,
-      trial_duration: 60000,
+      trial_duration: stage === "initial_test" ? 180000 : 60000,
       block_num: stage === "practice" ? practiceCount : testCount,
     };
   },
   choices: ["Enter"],
   stimulus: getFeedback,
-  trial_duration: 60000,
+  trial_duration: function () {
+    const stage = getExpStage();
+    return stage === "initial_test" ? 180000 : 60000;
+  },
   response_ends_trial: true,
 };
 
@@ -1466,7 +1469,7 @@ var practiceNode1 = {
         console.log("\nValidation successful: Conditions are balanced.");
       }
 
-      expStage = "test";
+      expStage = "initial_test";
 
       runPractice2 = false;
     } else {
