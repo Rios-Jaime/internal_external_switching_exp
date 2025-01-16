@@ -704,16 +704,16 @@ var practiceThresh = 3;
 
 // Task Length Parameters
 var practiceLen = 8;
-var numTestBlocks = 10;
-var numTrialsPerBlock = 48; // should be multiple of 24
+var numTestBlocks = 8;
+var numTrialsPerBlock = 48;
 var testLen = numTestBlocks * numTrialsPerBlock;
 
 // Trial Timing Paramters
-const stimStimulusDuration = 1500;
-const stimTrialDuration = 2000;
-const encodingPhaseDuration = 1250;
-const memorandaDuration = 500;
-const fixationDuration = 500;
+const stimStimulusDuration = 2000;
+const stimTrialDuration = 2500;
+const encodingPhaseDuration = 2250;
+const memorandaDuration = 750;
+const fixationDuration = 750;
 var CTI = 500;
 
 // Trial Stimulus Variables
@@ -761,199 +761,214 @@ var trialExamplePath = pathSource + "trial_example/trial_example.png";
 
 // Selected items arrays
 var animate_objects = [
-  "baboon",
+  "cat",
+  "chicken",
   "duck",
-  "goat",
-  "lizard",
-  "rabbit",
-  "bass",
-  "crow",
+  "fox",
+  "monkey",
+  "skunk",
   "sombra",
+  "turtle",
 ];
 
 var sports_objects = [
-  "boxing_gloves",
-  "ice_skate",
-  "shuttlecock",
-  "skateboard",
-  "soccerball",
-  "surfboard",
-  "golf_ball",
+  "bicycle",
   "canoe",
+  "goggles",
+  "golf_ball",
+  "paddle",
+  "shuttlecock",
+  "sled",
+  "surfboard",
 ];
 
 var tool_objects = [
-  "hammer",
-  "wrench",
-  "crowbar",
-  "drill",
-  "chainsaw",
-  "mallet",
+  "auger",
+  "jackhammer",
+  "ladder",
+  "mixer",
+  "nail",
+  "pliers",
   "screwdriver",
-  "wheelbarrow",
+  "wrench",
 ];
 
 const sizeRelationships = {
-  baboon: {
+  cat: {
     larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
+      "screwdriver",
       "golf_ball",
       "shuttlecock",
-      "screwdriver",
-      "wrench",
-      "boxing_gloves",
-      "ice_skate",
-      "soccerball",
-      "mallet",
-      "crowbar",
-      "skateboard",
-      "chainsaw",
+      "goggles",
+      "paddle",
     ],
-    smaller_than: ["surfboard", "wheelbarrow", "canoe"],
+    smaller_than: [
+      "jackhammer",
+      "auger",
+      "mixer",
+      "surfboard",
+      "canoe",
+      "ladder",
+      "bicycle",
+      "sled",
+    ],
+  },
+  chicken: {
+    larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
+      "golf_ball",
+      "shuttlecock",
+      "goggles",
+      "paddle",
+      "screwdriver",
+    ],
+    smaller_than: [
+      "jackhammer",
+      "auger",
+      "mixer",
+      "surfboard",
+      "canoe",
+      "ladder",
+      "bicycle",
+      "sled",
+    ],
   },
   duck: {
     larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
       "golf_ball",
       "shuttlecock",
+      "goggles",
+      "paddle",
       "screwdriver",
-      "wrench",
-      "hammer",
-      "drill",
-      "mallet",
-          ],
-    smaller_than: [
-      "chainsaw",
-      "surfboard",
-      "crowbar",
-      "skateboard",
-      "soccerball",
-      "wheelbarrow",
-      "canoe",
-      "boxing_gloves",
-      "ice_skate",
-    ],
-  },
-  goat: {
-    larger_than: [
-      "golf_ball",
-      "shuttlecock",
-      "screwdriver",
-      "wrench",
-      "boxing_gloves",
-      "mallet",
-      "soccerball",
-      "hammer",
-      "drill",
-      "crowbar",
-      "skateboard",
-      "chainsaw",
-    ],
-    smaller_than: ["surfboard", "wheelbarrow", "canoe"],
-  },
-  lizard: {
-    larger_than: [
-      "golf_ball",
-      "shuttlecock",
-      "screwdriver",
-      "wrench",
-      "drill",
-      "mallet",
-      "hammer",
-      "boxing_gloves",
-      "ice_skate",
-      "soccerball",
     ],
     smaller_than: [
-      "skateboard",
+      "jackhammer",
+      "auger",
+      "mixer",
       "surfboard",
-      "chainsaw",
-      "crowbar",
-      "wheelbarrow",
       "canoe",
+      "ladder",
+      "bicycle",
+      "sled",
     ],
   },
-  rabbit: {
+  fox: {
     larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
       "golf_ball",
       "shuttlecock",
+      "goggles",
+      "paddle",
       "screwdriver",
-      "wrench",
-      "drill",
-      "hammer",
-      "mallet",
     ],
     smaller_than: [
+      "jackhammer",
+      "auger",
+      "mixer",
       "surfboard",
-      "chainsaw",
-      "crowbar",
-      "boxing_gloves",
-      "ice_skate",
-      "skateboard",
-      "soccerball",
       "canoe",
-      "wheelbarrow",
+      "ladder",
+      "bicycle",
+      "sled",
     ],
   },
-  bass: {
+  monkey: {
     larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
       "golf_ball",
       "shuttlecock",
+      "goggles",
+      "paddle",
       "screwdriver",
-      "wrench",
-      "drill",
-      "hammer",
-      "mallet",
-      "soccerball",
     ],
     smaller_than: [
-      "boxing_gloves",
-      "skateboard",
+      "jackhammer",
+      "auger",
+      "mixer",
       "surfboard",
-      "chainsaw",
-      "crowbar",
-      "ice_skate",
       "canoe",
-      "wheelbarrow",
+      "ladder",
+      "bicycle",
+      "sled",
     ],
   },
-  crow: {
+  skunk: {
     larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
       "golf_ball",
       "shuttlecock",
+      "goggles",
+      "paddle",
       "screwdriver",
-      "wrench",
-      "mallet",
-      "drill",
-      "hammer",
     ],
     smaller_than: [
-      "boxing_gloves",
-      "skateboard",
+      "jackhammer",
+      "auger",
+      "mixer",
       "surfboard",
-      "chainsaw",
-      "crowbar",
-      "ice_skate",
       "canoe",
-      "wheelbarrow",
-      "soccerball",
+      "ladder",
+      "bicycle",
+      "sled",
     ],
   },
   sombra: {
     larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
       "golf_ball",
       "shuttlecock",
+      "goggles",
+      "paddle",
       "screwdriver",
-      "wrench",
-      "mallet",
-      "hammer",
-      "drill",
-      "soccerball",
-      "boxing_gloves",
-      "ice_skate",
-      "crowbar",
-      "skateboard",
-      "chainsaw",
     ],
-    smaller_than: ["surfboard", "wheelbarrow", "canoe"],
+    smaller_than: [
+      "jackhammer",
+      "auger",
+      "mixer",
+      "surfboard",
+      "canoe",
+      "ladder",
+      "bicycle",
+      "sled",
+    ],
+  },
+  turtle: {
+    larger_than: [
+      "nail",
+      "wrench",
+      "pliers",
+      "golf_ball",
+      "shuttlecock",
+      "goggles",
+      "paddle",
+      "screwdriver",
+    ],
+    smaller_than: [
+      "jackhammer",
+      "auger",
+      "mixer",
+      "surfboard",
+      "canoe",
+      "ladder",
+      "bicycle",
+      "sled",
+    ],
   },
 };
 
@@ -1018,13 +1033,13 @@ var feedbackText =
 var promptTextList = `
   <div style="text-align:center; font-size:calc(.7em + 0.3vw); margin-bottom: 10px; line-height: 1.5;">
     <p>
-      Press <b>${
+      Press the <b>${
         responseMappings.smaller === ","
           ? "comma key (,)"
           : responseMappings.smaller === "."
           ? "period key (.)"
           : "Error: Mapping Missing"
-      }</b> if the target is <b>smaller</b> and 
+      }</b> if the target is <b>smaller</b> and the  
       <b>${
         responseMappings.larger === ","
           ? "comma key (,)"
@@ -1037,11 +1052,11 @@ var promptTextList = `
   <div style="text-align:center; margin-top:10px;">
     <p>
       <span style="font-size: 1.5em; color: ${internalColor};">+</span>
-      indicates memory (<b>internal item</b>).
+      indicates <b>memory item</b>.
     </p>
     <p>
       <span style="font-size: 1.5em; color: ${externalColor};">+</span>
-      indicates perception (<b>external item</b>).
+      indicates <b>perception item</b>.
     </p>
   </div>
 `;
@@ -1070,8 +1085,8 @@ const promptText = `
         ? "period key (.)"
         : "Error: Mapping Missing"
     }</b> if <b>larger</b>.<br> 
-    <span style="font-size: 1.5em; color: ${internalColor};">+</span> indicates memory (internal item) and 
-    <span style="font-size: 1.5em; color: ${externalColor};">+</span> indicates perception (external item).
+    <span style="font-size: 1.5em; color: ${internalColor};">+</span> indicates memory item and 
+    <span style="font-size: 1.5em; color: ${externalColor};">+</span> indicates perception item.
     </p>
   </div>
 `;
@@ -1079,7 +1094,9 @@ const promptText = `
 var pageInstruct = [
   `
   <div class="centerbox">
-    <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross (<span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>), and then by two object images shown side-by-side. Your task will be to judge whether one of the objects shown side-by-side (the &ldquo;target&rdquo;, shown with a black frame around it) is larger or smaller than one of the other two objects (&ldquo;reference items&rdquo;). In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color ( <span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>) of the fixation cross shown on the screen between the memory object and the target screen.</p>
+    <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross (<span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>), and then by two images shown side-by-side. Your task will be to judge whether the &ldquo;target&rdquo; (image shown with a black frame around it) is smaller or larger than the to-be-compared object. In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color of the fixation cross ( <span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>) presented on the screen between the memory object and the target screen.</p>
+
+    <p> Below is an example of what each trial will look like for you to reference alongside the instructions.</p>
     
     <div class="center-image">
       <img src="${trialExamplePath}" alt="Memory Object">
@@ -1087,7 +1104,7 @@ var pageInstruct = [
 
     <p class="block-text">Place your right-hand index finger on the <b>comma key (,)</b> and your right-hand middle finger on the <b>period key (.)</b></p>
 
-    <p class="block-text">If the cue is <span style="font-size: 1.5 em; color: ${internalColor};">+</span> then compare the target to the reference item held in memory (internal item). If the cue is <span style="font-size: 24px; color: ${externalColor};">+</span> then compare the target to the reference item shown alongside it on the screen (external item).</p>
+    <p class="block-text">If the cross is <span style="font-size: 1.5em; color: ${internalColor};">+</span> then compare the target to the item held in memory (memory item). If the cross is <span style="font-size: 1.5em; color: ${externalColor};">+</span> then compare the target to the item shown alongside it on the screen (perception item).</p>
 
   </div>
   `,
@@ -1097,13 +1114,13 @@ var pageInstruct = [
     </div>
 
   <div class="centerbox">
-    <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the cued reference item. The finger mappings are shown below:</p>
+    <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the item indicated by the colored cross. The finger responses are shown below:</p>
     ${promptTextList}
 
     <p class="block-text"> Looking at the example trial above, the <span style="font-size: 1.5em; color: #1A85FF;">+</span> cue indicates that on this trial you would need to compare the target to the ${
-      internalColor === "#1A85FF" ? "internal item" : "external item"
-    }. Because the target (<i>leopard</i>) is larger than the ${
-    internalColor === "#1A85FF" ? "internal item" : "external item"
+      internalColor === "#1A85FF" ? "memory item" : "perception item"
+    }, the object showed alongside the target. Because the target (<i>leopard</i>) is larger than the ${
+    internalColor === "#1A85FF" ? "memory item" : "perception item"
   } (<i>${
     internalColor === "#1A85FF" ? "tennis ball" : "drill"
   }</i>), you would press the <b>${
@@ -1114,7 +1131,7 @@ var pageInstruct = [
       : "Error: Mapping Missing"
   }</b> key.
   </p>
-  <p class="block-text">We'll start with a practice round. During practice, you will receive feedback and a reminder of the rules. These will be taken out for the test, so make sure you understand the instructions before moving on.</p>
+  <p class="block-text">Please try you best to respond as quickly and accurately as possible as soon as you are presented with the target on the screen. We'll start with the practice now. During practice, you will receive feedback on your responses for each trial and a reminder of the rules will be shown in the top left corner of the screen. These will be taken out for the test, so make sure you understand the instructions before moving on!</p>
     ${speedReminder}
   </div>
   `,
@@ -1433,7 +1450,7 @@ var practiceNode1 = {
       feedbackText = `
         <div class="centerbox">
           <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
-          <p class="block-text">During this task, you will be presented with a reference item (internal) to commit to memory followed by a colored cue, then a target indicated by a black frame and a second reference item (external). Your task is to compare the size of the target and the reference item indicated by the cue.</p>
+          <p class="block-text">During this task, you will be presented with an item to commit to memory followed by a colored cue, then a target indicated by a black frame and a second item. Your task is to compare the size of the target and the item indicated by the colored cross.</p>
           <p class="block-text">
               <b>${
                 responseMappings.larger === ","
@@ -1448,10 +1465,10 @@ var practiceNode1 = {
                   : responseMappings.smaller === "."
                   ? "period key (.)"
                   : "Error: Mapping Missing"
-              }</b> if <b>the target is smaller</b> than the cued reference item.
+              }</b> if <b>the target is smaller</b> than the cued item.
           </p>
-          <p class="block-text">If the cue is <span style="font-size: 1.5em; color: ${internalColor};">+</span>, then compare the target to the item held in memory (internal item).</p>
-          <p class="block-text">If the cue is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen (external item).</p>
+          <p class="block-text">If the cross is <span style="font-size: 1.5em; color: ${internalColor};">+</span>, then compare the target to the item held in memory.</p>
+          <p class="block-text">If the cross is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen.</p>
           <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
@@ -1783,7 +1800,7 @@ var practiceNode2 = {
       feedbackText = `
         <div class="centerbox">
           <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
-          <p class="block-text">During this task, you will be presented with a reference item (internal) to commit to memory followed by a colored cue, then a target indicated by a black frame and a second reference item (external). Your task is to compare the size of the target and the reference item indicated by the cue.</p>
+          <p class="block-text">During this task, you will be presented with an item to commit to memory followed by a colored cross, then a target indicated by a black frame and a second item. Your task is to compare the size of the target and the item that is indicated by the cue.</p>
           <p class="block-text">
               <b>${
                 responseMappings.larger === ","
@@ -1800,7 +1817,7 @@ var practiceNode2 = {
                   : "Error: Mapping Missing"
               }</b> if <b>the target is smaller</b> than the cued reference item.
           </p>
-          <p class="block-text">If the cue is <span style="font-size: 1.5 em; color: ${internalColor};">+</span>, then compare the target to the item held in memory (internal item). <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen (external item).</p>
+          <p class="block-text">If the cross is <span style="font-size: 1.5 em; color: ${internalColor};">+</span>, then compare the target to the item held in memory. If the cross is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen.</p>
           <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
