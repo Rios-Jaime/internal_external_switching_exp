@@ -654,10 +654,9 @@ function generateBalancedTrialsFixed(numTrials = 40) {
 
 // Generic Task Variables
 // Extract response mappings from assignedCondition
-
 //const assignedCondition = {
-//  internal_color: "#D41159",
-//  external_color: "#1A85FF",
+//  internal_color: "#005AB5",
+//  external_color: "#DC3220",
 //  response_mapping: "index:smaller, middle:larger",
 //};
 
@@ -754,10 +753,11 @@ var fileTypeExtension = "png";
 var preFileType = "<img class='center' src='/images/"; // Adjusted to match static file serving
 
 // PRE LOAD IMAGES HERE
-var pathSource = "/images/";
-//var pathSource =
-//  "/Users/jahrios/Documents/Duke/egnerlab/projects/internal_external_switching/code/internal_external_switching_exp/experiment/images/";
+//var pathSource = "/images/";
+var pathSource =
+  "/Users/jahrios/Documents/Duke/egnerlab/projects/internal_external_switching/code/internal_external_switching_exp/experiment/images/";
 var trialExamplePath = pathSource + "trial_example/trial_example.png";
+var trial2ExamplePath = pathSource + "trial_example/trial2_example.png";
 
 // Selected items arrays
 var animate_objects = [
@@ -1094,35 +1094,42 @@ const promptText = `
 var pageInstruct = [
   `
   <div class="centerbox">
-    <p class="block-text">During each trial of this task, you will first see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross (<span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>), and then by two images shown side-by-side. Your task will be to judge whether the &ldquo;target&rdquo; (image shown with a black frame around it) is smaller or larger than the to-be-compared object. In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color of the fixation cross ( <span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>) presented on the screen between the memory object and the target screen.</p>
+    <p class="block-text">During each trial of this task, you will first see a black fixation cross indicating that the trial is about to begin. You will then see one object image presented by itself, which you have to keep in memory. This is followed by a colored fixation cross (<span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>), and then by two images shown side-by-side. Your task will be to judge whether the &ldquo;target&rdquo; (image shown with a black frame around it) is smaller or larger than the to-be-compared object. In some trials, you will have to compare the target to the object you are holding in memory; in other trials, you will have to compare the target to the object shown next to it on the screen. Which object you need to compare the target to will be indicated by the color of the fixation cross ( <span style="font-size: 1.5em; color: ${externalColor};">+</span> or <span style="font-size: 1.5em; color: ${internalColor};">+</span>) presented on the screen between the memory object and the target screen.</p>
 
-    <p> Below is an example of what each trial will look like for you to reference alongside the instructions.</p>
+    <p> Below are two examples of what a trial looks like in this task.</p>
     
     <div class="center-image">
       <img src="${trialExamplePath}" alt="Memory Object">
     </div>
 
-    <p class="block-text">Place your right-hand index finger on the <b>comma key (,)</b> and your right-hand middle finger on the <b>period key (.)</b></p>
-
-    <p class="block-text">If the cross is <span style="font-size: 1.5em; color: ${internalColor};">+</span> then compare the target to the item held in memory (memory item). If the cross is <span style="font-size: 1.5em; color: ${externalColor};">+</span> then compare the target to the item shown alongside it on the screen (perception item).</p>
+    <div class="center-image">
+      <img src="${trial2ExamplePath}" alt="Memory Object">
+    </div>
 
   </div>
   `,
   `
+  <div class="centerbox">
+
+    <p class="block-text">Place your right-hand index finger on the <b>comma key (,)</b> and your right-hand middle finger on the <b>period key (.)</b></p>
+
+    <p class="block-text">If the cross is <span style="font-size: 1.5em; color: ${internalColor};">+</span> then compare the target to the item held in memory (memory item). If the cross is <span style="font-size: 1.5em; color: ${externalColor};">+</span> then compare the target to the item shown alongside it on the screen (perception item).</p>
+
+    <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the item indicated by the colored cross. The correct finger responses are shown below:</p>
+    ${promptTextList}
+
+    <p class="block-text">Please take the time now to commit the shown finger responses to memory. Now lets walk through the trial examples shown previosly.</p>
+
     <div class="center-image">
       <img src="${trialExamplePath}" alt="Memory Object">
     </div>
 
-  <div class="centerbox">
-    <p class="block-text">Again your task will be to judge whether the target is smaller or larger than the item indicated by the colored cross. The finger responses are shown below:</p>
-    ${promptTextList}
-
-    <p class="block-text"> Looking at the example trial above, the <span style="font-size: 1.5em; color: #1A85FF;">+</span> cue indicates that on this trial you would need to compare the target to the ${
-      internalColor === "#1A85FF" ? "memory item" : "perception item"
+    <p class="block-text"> Looking at the first example trial above, the <span style="font-size: 1.5em; color: #005AB5;">+</span> cue indicates that on this trial you would need to compare the target to the ${
+      internalColor === "#005AB5" ? "memory item" : "perception item"
     }, the object showed alongside the target. Because the target (<i>leopard</i>) is larger than the ${
-    internalColor === "#1A85FF" ? "memory item" : "perception item"
+    internalColor === "#005AB5" ? "memory item" : "perception item"
   } (<i>${
-    internalColor === "#1A85FF" ? "tennis ball" : "drill"
+    internalColor === "#005AB5" ? "tennis ball" : "drill"
   }</i>), you would press the <b>${
     responseMappings?.larger === ","
       ? "<b>comma key (,)</b>"
@@ -1131,7 +1138,40 @@ var pageInstruct = [
       : "Error: Mapping Missing"
   }</b> key.
   </p>
-  <p class="block-text">Please try you best to respond as quickly and accurately as possible as soon as you are presented with the target on the screen. We'll start with the practice now. During practice, you will receive feedback on your responses for each trial and a reminder of the rules will be shown in the top left corner of the screen. These will be taken out for the test, so make sure you understand the instructions before moving on!</p>
+
+  </div>
+  `,
+  `
+  <div class="centerbox">
+
+    <div class="center-image">
+      <img src="${trial2ExamplePath}" alt="Memory Object">
+    </div>
+
+    <p class="block-text"> Looking at the second example trial above, the <span style="font-size: 1.5em; color: #DC3220;">+</span> cue indicates that on this trial you would need to compare the target to the ${
+      internalColor === "#DC3220" ? "memory item" : "perception item"
+    }, the object showed alongside the target. Because the target (<i>rabbit</i>) is larger than the ${
+    internalColor === "#DC3220" ? "memory item" : "perception item"
+  } (<i>${
+    internalColor === "#DC3220" ? "chainsaw" : "cue ball"
+  }</i>), you would press the <b>${
+    responseMappings?.larger === ","
+      ? "<b>comma key (,)</b>"
+      : responseMappings?.larger === "."
+      ? "<b>period key (.)</b>"
+      : "Error: Mapping Missing"
+  }</b> key.
+    </p>
+
+    <p class="block-text">A few important things to note. First, the target will always be the image surrounded by the black box and the side it appears, left or right of the cue, can change from trial to trial. Second, judge the size of the objects as they would be presented in real life, not the size they appear on the screen. Lastly, please try your best to respond as quickly and accurately as possible as soon as you see the target appear on the screen.</p>
+
+  </div>
+
+  `,
+  `
+  <div class="centerbox">
+
+   <p class="block-text">We'll start with the practice now. During practice, you will receive feedback on your responses for each trial and a reminder of the rules will be shown in the top left corner of the screen. These will be taken out for the test, so make sure you understand the instructions before moving on!</p>
     ${speedReminder}
   </div>
   `,
