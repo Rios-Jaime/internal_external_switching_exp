@@ -753,9 +753,9 @@ var fileTypeExtension = "png";
 var preFileType = "<img class='center' src='/images/"; // Adjusted to match static file serving
 
 // PRE LOAD IMAGES HERE
-//var pathSource = "/images/";
-var pathSource =
-  "/Users/jahrios/Documents/Duke/egnerlab/projects/internal_external_switching/code/internal_external_switching_exp/experiment/images/";
+var pathSource = "/images/";
+//var pathSource =
+//  "/Users/jahrios/Documents/Duke/egnerlab/projects/internal_external_switching/code/internal_external_switching_exp/experiment/images/";
 var trialExamplePath = pathSource + "trial_example/trial_example.png";
 var trial2ExamplePath = pathSource + "trial_example/trial2_example.png";
 
