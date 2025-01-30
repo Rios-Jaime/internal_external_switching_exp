@@ -697,14 +697,14 @@ var sumInstructTime = 0; // ms
 var instructTimeThresh = 5; // in seconds
 var accuracyThresh = 0.75;
 var practiceAccuracyThresh = 0.75; //
-var rtThresh = 1000;
+var rtThresh = 1500;
 var missedResponseThresh = 0.1;
 var practiceThresh = 3;
 
 // Task Length Parameters
 var practiceLen = 8;
 var numTestBlocks = 8;
-var numTrialsPerBlock = 48;
+var numTrialsPerBlock = 40;
 var testLen = numTestBlocks * numTrialsPerBlock;
 
 // Trial Timing Paramters
@@ -1273,7 +1273,7 @@ var feedbackBlock = {
     return {
       trial_id: `${stage}_feedback`,
       exp_stage: stage,
-      trial_duration: stage === "initial_test" ? 180000 : 60000,
+      trial_duration: stage === "initial_test" ? 300000 : 60000,
       block_num: stage === "practice" ? practiceCount : testCount,
     };
   },
@@ -1281,7 +1281,7 @@ var feedbackBlock = {
   stimulus: getFeedback,
   trial_duration: function () {
     const stage = getExpStage();
-    return stage === "initial_test" ? 180000 : 60000;
+    return stage === "initial_test" ? 300000 : 60000;
   },
   response_ends_trial: true,
 };
@@ -1904,7 +1904,7 @@ var practiceNode2 = {
         console.log("\nValidation successful: Conditions are balanced.");
       }
 
-      expStage = "test";
+      expStage = "initial_test";
 
       runPractice2 = false;
 
