@@ -1149,23 +1149,25 @@ var pageInstruct = [
     </div>
 
     <p class="block-text">
-      Looking at the second example trial above, the 
-      <span style="font-size: 1.5em; color: #DC3220;">+</span> cue indicates that on this trial you would need to compare the target to the 
-      ${internalColor === "#DC3220" ? "memory item" : "perception item"}.
-  
-      Because the target (<i>rabbit</i>) is 
-      ${
-        internalColor === "#DC3220"
-          ? "smaller than the memory item (<i>chainsaw</i>)"
-          : "larger than the perception item (<i>cue ball</i>)"
-      },
-      you would press the <b>${
-        responseMappings?.larger === ","
-          ? "comma key (,)"
-          : responseMappings?.larger === "."
-          ? "period key (.)"
-          : "Error: Mapping Missing"
-      }</b> key.
+      Looking at the second example trial above, the <span style="font-size: 1.5em; color: #DC3220;">+</span> cue indicates that on this trial you would need to compare the target to the ${
+        internalColor === "#DC3220" ? "memory item" : "perception item"
+      }. Because the target (<i>rabbit</i>) is ${
+    internalColor === "#DC3220"
+      ? "smaller than the chainsaw"
+      : "larger than the cue ball"
+  }, you would press the <b>${
+    internalColor === "#DC3220"
+      ? responseMappings?.smaller === ","
+        ? "<b>comma key (,)</b>"
+        : responseMappings?.smaller === "."
+        ? "<b>period key (.)</b>"
+        : "Error: Mapping Missing"
+      : responseMappings?.larger === ","
+      ? "<b>comma key (,)</b>"
+      : responseMappings?.larger === "."
+      ? "<b>period key (.)</b>"
+      : "Error: Mapping Missing"
+  }</b> key.
     </p>
 
     <p class="block-text">A few important things to note. First, the target will always be the image surrounded by the black box and the side it appears, left or right of the cue, can change from trial to trial. Second, judge the size of the objects as they would be presented in real life, not the size they appear on the screen. Lastly, please try your best to respond as quickly and accurately as possible as soon as you see the target appear on the screen.</p>
