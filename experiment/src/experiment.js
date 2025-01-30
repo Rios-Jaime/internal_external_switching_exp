@@ -703,8 +703,8 @@ var practiceThresh = 3;
 
 // Task Length Parameters
 var practiceLen = 8;
-var numTestBlocks = 8;
-var numTrialsPerBlock = 40;
+var numTestBlocks = 6;
+var numTrialsPerBlock = 56;
 var testLen = numTestBlocks * numTrialsPerBlock;
 
 // Trial Timing Paramters
@@ -2195,6 +2195,8 @@ var testCount = 0;
 var testNode = {
   timeline: [feedbackBlock].concat(testTrials),
   loop_function: function (data) {
+    expStage = "test";
+
     testCount += 1;
     currentTrial = 0;
 
