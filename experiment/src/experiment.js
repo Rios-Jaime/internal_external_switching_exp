@@ -69,32 +69,6 @@ jsPsych.data.addProperties({
 /* Define helper functions */
 /* ************************************ */
 
-var meanITI = 0.5;
-function sampleFromDecayingExponential() {
-  // Decay parameter of the exponential distribution λ = 1 / μ
-  var lambdaParam = 1 / meanITI;
-  var minValue = 0;
-  var maxValue = 5;
-
-  /**
-   * Sample one value with replacement
-   * from a decaying exponential distribution within a specified range.
-   *
-   * @param {number} lambdaParam
-   * - The decay parameter lambda of the exponential distribution.
-   * @param {number} minValue - The minimum value of the range.
-   * @param {number} maxValue - The maximum value of the range.
-   * @returns {number}
-   * A single value sampled from the decaying
-   * exponential distribution within the specified range.
-   */
-  var sample;
-  do {
-    sample = -Math.log(Math.random()) / lambdaParam;
-  } while (sample < minValue || sample > maxValue);
-  return sample;
-}
-
 function shuffleArray(array) {
   // Create a copy of the original array
   const shuffledArray = [...array];
@@ -125,7 +99,6 @@ function sampleCueCondition(conditions, currentCueCond, isSwitch) {
 
   // If no valid options are found for "switch" or "stay", repopulate and retry
   if (filteredConditions.length === 0) {
-    console.log("No valid options available. Repopulating...");
     conditions.push(...shuffleArray([...originalCueConditions]));
 
     // Retry filtering after repopulating
@@ -549,17 +522,6 @@ function setStims(trial) {
   }
 
   correctResponse = correctResponse === "smaller" ? "," : ".";
-
-  // Add debug logging
-  console.log({
-    trial_type: trialType,
-    comparison: comparison_type,
-    target: currTarget,
-    internal: trial.internal_item,
-    external: trial.external_item,
-    correct_response: correctResponse,
-    is_internal_sports: isInternalSports,
-  });
 }
 
 function generateBalancedTrialsFixed(numTrials = 40) {
@@ -604,7 +566,6 @@ function generateBalancedTrialsFixed(numTrials = 40) {
     });
 
     if (validConditions.length === 0) {
-      console.log("No valid conditions left. Relaxing constraints...");
       // Relax the constraints and sample from any remaining conditions
       validConditions = conditions.filter(
         (condition) => conditionCounts[condition] > 0
@@ -1202,12 +1163,6 @@ const isBalanced = Object.values(conditionCountsFixed).every(
   (count) => count === Math.floor(practiceLen / conditions.length)
 );
 
-if (!isBalanced) {
-  console.error("Conditions are not balanced!", conditionCountsFixed);
-} else {
-  console.log("\nValidation successful: Conditions are balanced.");
-}
-
 /* ************************************ */
 /* Set up jsPsych blocks */
 /* ************************************ */
@@ -1295,7 +1250,6 @@ for (var i = 0; i < practiceLen + 1; i++) {
       trial_duration: null,
     },
     func: ((trialIndex) => () => {
-      console.log(`Setting trial: ${trialIndex + 1}`);
       setStims(practiceTrials1Data[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
@@ -1351,8 +1305,6 @@ for (var i = 0; i < practiceLen + 1; i++) {
     on_finish: appendData,
   };
 
-  var ITIms = null;
-
   // *** ITI *** //
   var ITIBlock = {
     type: jsPsychHtmlKeyboardResponse,
@@ -1363,20 +1315,12 @@ for (var i = 0; i < practiceLen + 1; i++) {
       const stage = getExpStage();
       return {
         trial_id: `${stage}_ITI`,
-        ITIParams: {
-          min: 0.5,
-          max: 0.5,
-          mean: 0.5,
-        },
         block_num: stage === "practice" ? practiceCount : testCount,
         exp_stage: stage,
       };
     },
 
-    trial_duration: function () {
-      ITIms = 500;
-      return ITIms;
-    },
+    trial_duration: 500,
     prompt: function () {
       return getExpStage() === "practice" ? promptText : "";
     },
@@ -1450,10 +1394,6 @@ var practiceNode1 = {
     practiceCount += 1;
     currentTrial = 0;
 
-    console.log(`Block ${practiceCount}`);
-
-    console.log(data.trials);
-
     var sumRT = 0;
     var sumResponses = 0;
     var correct = 0;
@@ -1464,7 +1404,6 @@ var practiceNode1 = {
         data.trials[i].trial_id == "practice_trial" &&
         data.trials[i].block_num == getCurrBlockNum() - 1
       ) {
-        console.log(data.trials[i]);
         totalTrials += 1;
         if (data.trials[i].rt != null) {
           sumRT += data.trials[i].rt;
@@ -1475,10 +1414,6 @@ var practiceNode1 = {
         }
       }
     }
-
-    console.log("correct: " + correct);
-    console.log("totalTrials: " + totalTrials);
-    console.log("sumResponses: " + sumResponses);
 
     var accuracy = correct / totalTrials;
     var missedResponses = (totalTrials - sumResponses) / totalTrials;
@@ -1496,10 +1431,10 @@ var practiceNode1 = {
     if (accuracy >= practiceAccuracyThresh) {
       feedbackText = `
         <div class="centerbox">
-          <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
-          <p class="block-text">During this task, you will be presented with an item to commit to memory followed by a colored cue, then a target indicated by a black frame and a second item. Your task is to compare the size of the target and the item indicated by the colored cross.</p>
+          <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback on each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
+          <p class="block-text">During this task, you will be presented with an item to commit to memory followed by a colored cue, then a target indicated by a black frame and a second item shown next to it. Your task is to compare the size of the target and the item indicated by the colored cue.</p>
           <p class="block-text">
-              <b>${
+              Press the <b>${
                 responseMappings.larger === ","
                   ? "comma key (,)"
                   : responseMappings.larger === "."
@@ -1514,8 +1449,8 @@ var practiceNode1 = {
                   : "Error: Mapping Missing"
               }</b> if <b>the target is smaller</b> than the cued item.
           </p>
-          <p class="block-text">If the cross is <span style="font-size: 1.5em; color: ${internalColor};">+</span>, then compare the target to the item held in memory.</p>
-          <p class="block-text">If the cross is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen.</p>
+          <p class="block-text">If the cue (fixation cross) is <span style="font-size: 1.5em; color: ${internalColor};">+</span>, then compare the target to the item held in memory.</p>
+          <p class="block-text">If the cue is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen.</p>
           <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
@@ -1537,17 +1472,10 @@ var practiceNode1 = {
         (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
       );
 
-      if (!isBalanced) {
-        console.error("Conditions are not balanced!", conditionCountsFixed);
-      } else {
-        console.log("\nValidation successful: Conditions are balanced.");
-      }
-
       expStage = "initial_test";
 
       runPractice2 = false;
     } else {
-      console.log("practice1 moving into 2!");
       feedbackText =
         "<div class = centerbox><p class = block-text>Please take this time to read your feedback! This screen will advance automatically in 1 minute.</p>";
 
@@ -1615,20 +1543,8 @@ var practiceNode1 = {
         (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
-      if (!isBalanced) {
-        console.error("Conditions are not balanced!", conditionCountsFixed);
-      } else {
-        console.log("\nValidation successful: Conditions are balanced.");
-      }
-
       runPractice2 = true;
     }
-
-    console.log("Practice 1 Performance:", {
-      accuracy,
-      avgRT,
-      missedResponses,
-    });
 
     return false;
   },
@@ -1698,8 +1614,6 @@ for (var i = 0; i < practiceLen + 1; i++) {
     on_finish: appendData,
   };
 
-  var ITIms = null;
-
   // *** ITI *** //
   var ITIBlock = {
     type: jsPsychHtmlKeyboardResponse,
@@ -1710,20 +1624,12 @@ for (var i = 0; i < practiceLen + 1; i++) {
       const stage = getExpStage();
       return {
         trial_id: `${stage}_ITI`,
-        ITIParams: {
-          min: 0.5,
-          max: 0.5,
-          mean: 0.5,
-        },
         block_num: stage === "practice" ? practiceCount : testCount,
         exp_stage: stage,
       };
     },
 
-    trial_duration: function () {
-      ITIms = 500;
-      return ITIms;
-    },
+    trial_duration: 500,
     prompt: function () {
       return getExpStage() === "practice" ? promptText : "";
     },
@@ -1806,7 +1712,6 @@ var practiceNode2 = {
         data.trials[i].trial_id == "practice_trial" &&
         data.trials[i].block_num == getCurrBlockNum() - 1
       ) {
-        console.log(data.trials[i]);
         totalTrials += 1;
         if (data.trials[i].rt != null) {
           sumRT += data.trials[i].rt;
@@ -1817,10 +1722,6 @@ var practiceNode2 = {
         }
       }
     }
-
-    console.log("correct: " + correct);
-    console.log("totalTrials: " + totalTrials);
-    console.log("sumResponses: " + sumResponses);
 
     var accuracy = correct / totalTrials;
     var missedResponses = (totalTrials - sumResponses) / totalTrials;
@@ -1834,22 +1735,16 @@ var practiceNode2 = {
       },
     });
 
-    console.log("Updated Performance:", {
-      accuracy: accuracy,
-      avgRT: avgRT,
-      missedResponses: missedResponses,
-    });
-
     if (
       accuracy >= practiceAccuracyThresh ||
       practiceCount === practiceThresh
     ) {
       feedbackText = `
         <div class="centerbox">
-          <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback during each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
-          <p class="block-text">During this task, you will be presented with an item to commit to memory followed by a colored cross, then a target indicated by a black frame and a second item. Your task is to compare the size of the target and the item that is indicated by the cue.</p>
+          <p class="block-text">We will now begin the testing phase. During this phase, you will not see feedback on each trial, but you will be given feedback and reminders of the rules after each block (collection of trials). Below is a summary of the instructions shown earlier. Please take your time to read them and when you are ready to begin, you can press continue to start the test phase!</p>
+          <p class="block-text">During this task, you will be presented with an item to commit to memory followed by a colored cue, then a target indicated by a black frame and a second item shown next to it. Your task is to compare the size of the target and the item indicated by the colored cue.</p>
           <p class="block-text">
-              <b>${
+              Press the <b>${
                 responseMappings.larger === ","
                   ? "comma key (,)"
                   : responseMappings.larger === "."
@@ -1862,9 +1757,10 @@ var practiceNode2 = {
                   : responseMappings.smaller === "."
                   ? "period key (.)"
                   : "Error: Mapping Missing"
-              }</b> if <b>the target is smaller</b> than the cued reference item.
+              }</b> if <b>the target is smaller</b> than the cued item.
           </p>
-          <p class="block-text">If the cross is <span style="font-size: 1.5 em; color: ${internalColor};">+</span>, then compare the target to the item held in memory. If the cross is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen.</p>
+          <p class="block-text">If the cue (fixation cross) is <span style="font-size: 1.5em; color: ${internalColor};">+</span>, then compare the target to the item held in memory.</p>
+          <p class="block-text">If the cue is <span style="font-size: 1.5em; color: ${externalColor};">+</span>, then compare the target to the item shown alongside it on the screen.</p>
           <p class="block-text">Please remember to respond as quickly and accurately as possible as soon as you are presented with the target on the screen.</p>
           <p class="block-text">Press <b>enter</b> to start the test phase.</p>
         </div>
@@ -1873,8 +1769,6 @@ var practiceNode2 = {
       // Generate test trials for the testing phase
       ({ trials: testTrialsData, conditionCounts: testConditionCounts } =
         generateBalancedTrialsFixed(numTrialsPerBlock));
-
-      console.log("Generated test trials:", testTrialsData);
 
       // functions to check proportions //
       const conditionCountsFixed = testTrialsData.reduce((counts, trial) => {
@@ -1888,29 +1782,12 @@ var practiceNode2 = {
         (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
       );
 
-      console.log("\nGenerated Trials:");
-      testTrialsData.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
-      });
-
-      console.log("\nCondition Counts (Fixed):");
-      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
-        console.log(`${condition}: ${count}`);
-      });
-
-      if (!isBalanced) {
-        console.error("Conditions are not balanced!", conditionCountsFixed);
-      } else {
-        console.log("\nValidation successful: Conditions are balanced.");
-      }
-
       expStage = "initial_test";
 
       runPractice2 = false;
 
       return false;
     } else {
-      console.log("practice running again: " + practiceCount);
       feedbackText =
         "<div class = centerbox><p class = block-text>Please take this time to read your feedback! This screen will advance automatically in 1 minute.</p>";
 
@@ -1977,22 +1854,6 @@ var practiceNode2 = {
         (count) => count === Math.floor(practiceLen / conditions.length)
       );
 
-      console.log("\nGenerated Trials:");
-      practiceTrials2Data.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
-      });
-
-      console.log("\nCondition Counts (Fixed):");
-      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
-        console.log(`${condition}: ${count}`);
-      });
-
-      if (!isBalanced) {
-        console.error("Conditions are not balanced!", conditionCountsFixed);
-      } else {
-        console.log("\nValidation successful: Conditions are balanced.");
-      }
-
       runPractice2 = true;
 
       // Build new test timeline dynamically
@@ -2051,9 +1912,6 @@ var practiceNode2 = {
 
       practiceNode2.timeline = [feedbackBlock].concat(practiceTrials2);
 
-      console.log(practiceTrials2);
-      console.log(runPractice2);
-
       return true;
     }
   },
@@ -2062,8 +1920,6 @@ var practiceNode2 = {
 var conditionalPractice2Node = {
   timeline: [practiceNode2],
   conditional_function: function () {
-    console.log(runPractice2);
-
     return runPractice2;
   },
 };
@@ -2077,7 +1933,6 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
       trial_duration: null,
     },
     func: ((trialIndex) => () => {
-      console.log(`Setting trial: ${trialIndex + 1}`);
       setStims(testTrialsData[trialIndex]);
     })(i), // Use an immediately invoked function to bind the correct trial index
   };
@@ -2131,8 +1986,6 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
     on_finish: appendData,
   };
 
-  var ITIms = null;
-
   // *** ITI *** //
   var ITIBlock = {
     type: jsPsychHtmlKeyboardResponse,
@@ -2143,20 +1996,12 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
       const stage = getExpStage();
       return {
         trial_id: `${stage}_ITI`,
-        ITIParams: {
-          min: 0.5,
-          max: 0.5,
-          mean: 0.5,
-        },
         block_num: stage === "test" ? testCount : testCount,
         exp_stage: stage,
       };
     },
 
-    trial_duration: function () {
-      ITIms = 500;
-      return ITIms;
-    },
+    trial_duration: 500,
     on_finish: function (data) {
       data["trial_duration"] = 500;
       data["stimulus_duration"] = 500;
@@ -2199,8 +2044,6 @@ var testNode = {
 
     testCount += 1;
     currentTrial = 0;
-
-    console.log(`Block ${testCount} of ${numTestBlocks}`);
 
     var sumRT = 0;
     var sumResponses = 0;
@@ -2298,22 +2141,6 @@ var testNode = {
       const isBalanced = Object.values(conditionCountsFixed).every(
         (count) => count === Math.floor(numTrialsPerBlock / conditions.length)
       );
-
-      console.log("\nGenerated Trials:");
-      testTrialsData.forEach((trial, index) => {
-        console.log(`Trial ${index + 1}:`, trial);
-      });
-
-      console.log("\nCondition Counts (Fixed):");
-      Object.entries(conditionCountsFixed).forEach(([condition, count]) => {
-        console.log(`${condition}: ${count}`);
-      });
-
-      if (!isBalanced) {
-        console.error("Conditions are not balanced!", conditionCountsFixed);
-      } else {
-        console.log("\nValidation successful: Conditions are balanced.");
-      }
 
       // Build new test timeline dynamically
       testTrials = [];
