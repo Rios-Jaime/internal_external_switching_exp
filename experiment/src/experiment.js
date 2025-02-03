@@ -704,7 +704,7 @@ var practiceThresh = 3;
 // Task Length Parameters
 var practiceLen = 8;
 var numTestBlocks = 6;
-var numTrialsPerBlock = 56;
+var numTrialsPerBlock = 48;
 var testLen = numTestBlocks * numTrialsPerBlock;
 
 // Trial Timing Paramters
@@ -1273,7 +1273,7 @@ var feedbackBlock = {
     return {
       trial_id: `${stage}_feedback`,
       exp_stage: stage,
-      trial_duration: stage === "initial_test" ? 300000 : 60000,
+      trial_duration: stage === "initial_test" ? 180000 : 60000,
       block_num: stage === "practice" ? practiceCount : testCount,
     };
   },
@@ -1281,7 +1281,7 @@ var feedbackBlock = {
   stimulus: getFeedback,
   trial_duration: function () {
     const stage = getExpStage();
-    return stage === "initial_test" ? 300000 : 60000;
+    return stage === "initial_test" ? 180000 : 60000;
   },
   response_ends_trial: true,
 };
@@ -1595,7 +1595,7 @@ var practiceNode1 = {
 
       feedbackText +=
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
-        `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
+        `<p class="block-text"When you are ready, press <i>enter</i> to begin.</p></div>`;
 
       ({ trials: practiceTrials2Data, conditionCounts: testConditionCounts } =
         generateBalancedTrialsFixed(practiceLen));
@@ -1957,7 +1957,7 @@ var practiceNode2 = {
 
       feedbackText +=
         `<p class="block-text">We are now going to repeat the practice round.</p>` +
-        `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
+        `<p class="block-text">When you are ready to start, press <i>enter</i> to begin.</p></div>`;
 
       ({ trials: practiceTrials2Data, conditionCounts: testConditionCounts } =
         generateBalancedTrialsFixed(practiceLen));
@@ -2282,7 +2282,7 @@ var testNode = {
         `;
       }
 
-      feedbackText += `<p class="block-text">Press <i>enter</i> to begin.</p></div>`;
+      feedbackText += `<p class="block-text">When you are ready to start the next block, press <i>enter</i> to begin.</p></div>`;
 
       // Generate test trials for the testing phase
       ({ trials: testTrialsData, conditionCounts: testConditionCounts } =
