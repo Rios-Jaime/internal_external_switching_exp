@@ -47,11 +47,6 @@ var jsPsych = initJsPsych({
   },
 });
 
-// capture info from Prolific
-//var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
-//var study_id = jsPsych.data.getURLVariable("STUDY_ID");
-//var session_id = jsPsych.data.getURLVariable("SESSION_ID");
-
 var study_id = "attention-test";
 var session_id = "ses-1";
 var task_id = "mwq_survey";
@@ -77,7 +72,7 @@ var instructionsBlock = {
   stimulus: `
     <div class='instructions'>
       <p>Welcome to this survey.</p>
-      <p>For each of the following statements, please indicate how often you currently have each experience.</p>
+      <p>For each of the following statements, please indicate how often you currently have each experience. Remember you can scroll using the mouse or trackpad if need be. Be sure to answer all questions in order to move forward.</p>
       <p>Press <b>enter</b> to begin.</p>
     </div>`,
   choices: ["Enter"],

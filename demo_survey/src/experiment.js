@@ -2,7 +2,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const participant_id = urlParams.get("participant_id");
 
-
 var jsPsych = initJsPsych({
   on_finish: function () {
     // Collect experiment data
@@ -36,7 +35,6 @@ var jsPsych = initJsPsych({
           // Redirect to /next with progress and surveys
           const surveys = urlParams.get("surveys");
           window.location.href = `/next?progress=demo_survey&surveys=${surveys}&participant_id=${participant_id}`;
-          
         })
         .catch((error) => {
           console.error("Error sending data:", error);
@@ -48,11 +46,6 @@ var jsPsych = initJsPsych({
     console.log("Experiment data:", fullData);
   },
 });
-
-// capture info from Prolific
-//var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
-//var study_id = jsPsych.data.getURLVariable("STUDY_ID");
-//var session_id = jsPsych.data.getURLVariable("SESSION_ID");
 
 var study_id = "attention-test";
 var session_id = "ses-1";
@@ -67,7 +60,7 @@ jsPsych.data.addProperties({
 
 const demographicSurvey = {
   type: jsPsychSurveyMultiChoice,
-  preamble: `<h3>Demographic Survey</h3><p>Please answer the following questions:</p>`,
+  preamble: `<h3>Demographic Survey</h3><p>Please answer the following questions (remember you can scroll through the questions using your trackpad or mouse):</p>`,
   questions: [
     {
       prompt: "Gender:",

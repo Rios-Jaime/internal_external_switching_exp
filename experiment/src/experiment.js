@@ -983,7 +983,7 @@ var feedbackInstructText = `
     Welcome! This experiment will take around 50 minutes.
   </p>
   <p class="block-text">
-    To avoid technical issues, please keep the experiment tab (on Chrome or Firefox) active and in fullscreen mode for the whole duration of each task.
+    To avoid technical issues, please keep the experiment tab (on Chrome or Firefox) active and in fullscreen mode for the whole duration of the task or tasks. During the instructions you will be able to scroll up and down using your trackpad or mouse if need be.
   </p>
   <p class="block-text"> Press <i>enter</i> to begin.</p>
 `;

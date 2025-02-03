@@ -46,11 +46,6 @@ var jsPsych = initJsPsych({
   },
 });
 
-// capture info from Prolific
-//var subject_id = jsPsych.data.getURLVariable("PROLIFIC_PID");
-//var study_id = jsPsych.data.getURLVariable("STUDY_ID");
-//var session_id = jsPsych.data.getURLVariable("SESSION_ID");
-
 var study_id = "attention-test";
 var session_id = "ses-1";
 var task_id = "maas_survey";
@@ -76,7 +71,7 @@ var instructionsBlock = {
   stimulus: `
     <div class='instructions'>
       <p>Welcome to this survey.</p>
-      <p>You will be shown a collection of statements about your everyday experience. Using the 1-6 scale shown, please indicate how frequently or infrequently you currently have each experience. Please answer according to what really reflects your experiences rather than what you think your experience should be. Please treat each item seperately from every other item.</p>
+      <p>You will be shown a collection of statements about your everyday experience. Using the 1-6 scale shown, please indicate how frequently or infrequently you currently have each experience. Please answer according to what really reflects your experiences rather than what you think your experience should be. Please treat each item seperately from every other item. Lastly, remember you can scroll through the questions using the trackpad or mouse if needed. Be sure to answer all the questions in order to move forward.</p>
       <p>Press <b>enter</b> to begin.</p>
     </div>`,
   choices: ["Enter"],
