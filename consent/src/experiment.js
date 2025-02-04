@@ -84,9 +84,10 @@ const consentForm = {
 // Initialize jsPsych timeline with the consent form
 const timeline = [consentForm];
 
-jsPsych.init({
-  timeline: timeline,
+const jsPsych = initJsPsych({
   on_finish: function () {
     console.log("Consent form completed.");
   },
 });
+
+jsPsych.run(timeline);
