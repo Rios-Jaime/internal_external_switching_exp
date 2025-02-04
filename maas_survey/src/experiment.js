@@ -46,7 +46,7 @@ var jsPsych = initJsPsych({
   },
 });
 
-var study_id = "attention-test";
+var study_id = "attention_mode_switching_study";
 var session_id = "ses-1";
 var task_id = "maas_survey";
 

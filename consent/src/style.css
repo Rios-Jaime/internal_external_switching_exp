@@ -1,0 +1,124 @@
+body {
+  background-color: #707070 !important;
+  color: white;
+}
+
+form {
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.instructions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  max-width: 1000px;
+}
+
+.instructions p {
+  font-size: 28px;
+  line-height: 120%;
+}
+
+.sv_container {
+  text-align: left;
+  color: white !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+span[data-bind="css: question.koCss().error.item"] {
+  color: #ffa500;
+}
+
+.sv_main.sv_default_css {
+  background-color: transparent !important;
+}
+
+.sv_body {
+  background-color: #707070 !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 80px;
+}
+
+.sv_row {
+  background-color: #707070 !important;
+}
+
+.sv_main .sv-action-bar {
+  margin-left: 0 !important;
+}
+
+.sv_nav_btn {
+  background-color: #6495ed !important;
+  font-size: 18px !important;
+  padding: 10px 14px !important;
+  border-radius: 4px !important;
+  border: 1px solid transparent !important;
+  margin-top: 16px !important;
+}
+
+.sv_nav_btn:hover {
+  border-color: #999 !important;
+  background-color: darkblue !important;
+}
+
+.sv_p_root {
+  width: 1200px;
+}
+
+.sv-action-bar {
+  padding: 0px !important;
+}
+
+.sv_prev_btn {
+  margin-right: 12px;
+}
+
+.sv-string-viewer {
+  font-size: 16px;
+}
+
+.sv_q_rating fieldset {
+  width: 600px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sv_q_rating_item_text {
+  padding: 6px;
+}
+
+.sv_q_rating_item {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid white;
+  width: 250px;
+}
+
+.sv_q_rating_item:hover {
+  background-color: #9a9a9a !important;
+}
+
+.sv_q_rating_item.active {
+  background-color: #9a9a9a !important;
+}
+
+.sv_main.sv_default_css .sv_q_rating_item.active .sv_q_rating_item_text {
+  background-color: #9a9a9a !important;
+}
+.sv_q_rating_max_text {
+  margin-left: 10px;
+}
+.sv_q_rating_min_text {
+  margin-right: 10px;
+}

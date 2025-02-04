@@ -1,3 +1,7 @@
+// Extract participant_id from query parameters
+const urlParams = new URLSearchParams(window.location.search);
+const participant_id = urlParams.get("participant_id");
+
 var jsPsych = initJsPsych({
   on_finish: function () {
     // Collect experiment data
@@ -5,7 +9,7 @@ var jsPsych = initJsPsych({
 
     // Add metadata
     const fullData = {
-      participant_id: subject_id,
+      participant_id: participant_id,
       session_id: session_id,
       study_id: study_id,
       task_id: task_id,
@@ -36,7 +40,7 @@ var jsPsych = initJsPsych({
           const surveys = new URLSearchParams(window.location.search).get(
             "surveys"
           );
-          window.location.href = `/next?progress=experiment&surveys=${surveys}&participant_id=${subject_id}`;
+          window.location.href = `/next?progress=experiment&surveys=${surveys}&participant_id=${participant_id}`;
         })
         .catch((error) => {
           console.error("Error sending data:", error);
@@ -53,13 +57,12 @@ var jsPsych = initJsPsych({
 //var study_id = jsPsych.data.getURLVariable("STUDY_ID");
 //var session_id = jsPsych.data.getURLVariable("SESSION_ID");
 
-var subject_id = jsPsych.randomization.randomID(8);
-var study_id = "attention-test";
+var study_id = "attention_mode_switching_study";
 var session_id = "ses-1";
 var task_id = "internal_external_exp";
 
 jsPsych.data.addProperties({
-  subject_id: subject_id,
+  subject_id: participant_id,
   study_id: study_id,
   session_id: session_id,
   task_id: task_id,
