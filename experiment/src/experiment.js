@@ -19,36 +19,32 @@ var jsPsych = initJsPsych({
 
     console.log("Experiment data:", fullData);
 
-    // Send data to the server
-    const sendData = () => {
-      fetch("/egner", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(fullData),
-      })
-        .then((response) => {
-          if (response.ok) {
-            console.log("Data successfully sent to server");
-          } else {
-            console.error("Failed to send data to server; retrying...");
-            setTimeout(sendData, 3000); // Retry after 3 seconds
-          }
+    // Send data to the correct endpoint
+    fetch("/save_data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(fullData),
+    })
+      .then((response) => {
+        if (response.ok) {
+          console.log("✅ Data successfully sent to server");
 
-          // Redirect to /next with progress and surveys
+          // Redirect **ONLY AFTER** successful save
           const surveys = new URLSearchParams(window.location.search).get(
             "surveys"
           );
           window.location.href = `/next?progress=experiment&surveys=${surveys}&participant_id=${participant_id}`;
-        })
-        .catch((error) => {
-          console.error("Error sending data:", error);
-          setTimeout(sendData, 3000); // Retry after 3 seconds
-        });
-    };
-
-    sendData();
+        } else {
+          console.error("❌ Failed to send data to server; retrying...");
+          setTimeout(() => sendData(), 3000); // Retry after 3 seconds
+        }
+      })
+      .catch((error) => {
+        console.error("❌ Error sending data:", error);
+        setTimeout(() => sendData(), 3000); // Retry after 3 seconds
+      });
   },
 });
 
