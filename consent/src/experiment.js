@@ -34,13 +34,13 @@ const consentForm = {
       <p>We know of no risks or benefits to you for participating in this research study. The potential benefits of this research lie in the knowledge that will be acquired.</p>
       
       <h3>CONFIDENTIALITY</h3>
-      <p>Our records will include the demographic information that you report (age, gender, etc.) as well as your task performance data and questionnaire responses. We employ a participant code system to ensure that this information is not directly linked to your name or consent form.</p>
+      <p>Our records will include the demographic information that you report (age, gender, etc.) as well as your task performance data and questionnaire responses. We employ a participant code system to ensure that this information is not directly linked to your name or consent form. The consent and demographics, the de-identified performance and questionnaire data, and any code sheet that links your personal information to your data will be placed on our secure computer network, both of which can only be accessed by trained study personnel. All data will be kept for at least six years or as long as is required by Duke University or any journal that may publish these findings. If a report of this study is published or presented, only group results will be reported. In case that the data is published in a public repository of scientific data, only task performance alongside any applicable survey data will be shared, without any demographic information being included.</p>
       
       <h3>COMPENSATION & PARTICIPATION</h3>
       <p>For participating in this study, you will earn one course credit per hour of participation for a maximum of 1 credit. Your participation is voluntary. You can discontinue participation at any time for any reason.</p>
       
       <h3>CONTACT</h3>
-      <p>If you have additional questions regarding this study, contact Professor Tobias Egner at <a href="mailto:tobias.egner@duke.edu">tobias.egner@duke.edu</a>. Reference protocol ID# <b>2025-0174</b>.</p>
+      <p>If you have additional questions regarding this study, contact Professor Tobias Egner at (+1) 919-684-1049 or <a href="mailto:tobias.egner@duke.edu">tobias.egner@duke.edu</a>. If you have any questions about your rights as a research subject, you may contact the Human Subjects Protection at <a>campusirb@duke.edu</a>.Please reference protocol ID# <b>2025-0174</b>.</p>
 
       <p><b>Please click to indicate your consent to participate in the study.</b></p>
     </div>
