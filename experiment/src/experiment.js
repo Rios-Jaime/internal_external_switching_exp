@@ -653,9 +653,6 @@ var runPractice2 = false; // Global flag to control whether Practice 2 runs
 
 const choices = [responseMappings.smaller, responseMappings.larger];
 
-// Toggle Attention Checks
-var runAttentionChecks = false;
-
 // Threshold Parameters
 var sumInstructTime = 0; // ms
 var instructTimeThresh = 5; // in seconds
@@ -667,8 +664,8 @@ var practiceThresh = 3;
 
 // Task Length Parameters
 var practiceLen = 8;
-var numTestBlocks = 6;
-var numTrialsPerBlock = 48;
+var numTestBlocks = 1;
+var numTrialsPerBlock = 8;
 var testLen = numTestBlocks * numTrialsPerBlock;
 
 // Trial Timing Paramters
