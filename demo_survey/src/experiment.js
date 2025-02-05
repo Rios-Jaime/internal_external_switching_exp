@@ -4,46 +4,71 @@ const participant_id = urlParams.get("participant_id");
 
 var jsPsych = initJsPsych({
   on_finish: function () {
-    // Collect experiment data
-    const experimentData = jsPsych.data.get().json();
+    // ✅ Extract participant_id from URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const participant_id = urlParams.get("participant_id");
 
-    // Add metadata
+    // ✅ Ensure correct survey order
+    const surveys = JSON.parse(
+      decodeURIComponent(urlParams.get("surveys") || "[]")
+    );
+
+    // ✅ Get the current survey progress
+    const currentSurvey = urlParams.get("progress");
+    const currentSurveyIndex = surveys.indexOf(currentSurvey);
+    const nextSurveyIndex = currentSurveyIndex + 1;
+    const nextSurvey = surveys[nextSurveyIndex];
+
+    // ✅ Dynamically set task_id based on current survey
+    const task_id = currentSurvey || "demo_survey";
+
+    // ✅ Collect experiment data
+    const experimentData = jsPsych.data.get().json();
     const fullData = {
       participant_id: participant_id,
-      session_id: session_id,
-      study_id: study_id,
+      session_id: "ses-1",
+      study_id: "attention_mode_switching_study",
       task_id: task_id,
       data: experimentData,
     };
 
-    console.log("📩 Experiment data to be sent:", fullData);
+    console.log("📩 Sending Experiment Data:", fullData);
 
-    // ✅ Send data to the correct endpoint & ensure it saves before redirecting
-    fetch("/save_data", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(fullData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("✅ Data successfully sent to server");
-
-          // ✅ Redirect **ONLY AFTER** successful data save
-          const surveys = new URLSearchParams(window.location.search).get(
-            "surveys"
-          );
-          window.location.href = `/next?progress=demo_survey&surveys=${surveys}&participant_id=${participant_id}`;
-        } else {
-          console.error("❌ Failed to send data to server; retrying...");
-          setTimeout(() => sendData(), 3000); // Retry after 3 seconds
-        }
+    // ✅ Function to send data before moving forward
+    const sendData = () => {
+      fetch("/save_data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullData),
       })
-      .catch((error) => {
-        console.error("❌ Error sending data:", error);
-        setTimeout(() => sendData(), 3000); // Retry after 3 seconds
-      });
+        .then((response) => {
+          if (response.ok) {
+            console.log("✅ Data successfully sent");
+
+            // ✅ Move to the next survey or finish study
+            if (nextSurvey) {
+              console.log(`✅ Moving to next survey: ${nextSurvey}`);
+              window.location.href = `/next?progress=${nextSurvey}&surveys=${encodeURIComponent(
+                JSON.stringify(surveys)
+              )}&participant_id=${participant_id}`;
+            } else {
+              console.log(
+                "🎉 All surveys completed, redirecting to SONA credit page."
+              );
+              window.location.href = `https://duke-psy-credit.sona-systems.com/webstudy_credit.aspx?experiment_id=1693&credit_token=3ed9ddbbd30f4957bb7f1d43c1478ba5&survey_code=${participant_id}`;
+            }
+          } else {
+            console.error("❌ Failed to send data, retrying...");
+            setTimeout(sendData, 3000);
+          }
+        })
+        .catch((error) => {
+          console.error("❌ Error sending data:", error);
+          setTimeout(sendData, 3000);
+        });
+    };
+
+    sendData();
   },
 });
 
