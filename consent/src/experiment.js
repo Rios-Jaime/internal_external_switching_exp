@@ -75,7 +75,13 @@ const consentForm = {
           consent_given: false,
         }),
       }).then(() => {
-        window.location.href = "https://www.google.com"; // Redirect to exit page
+        // Display exit message instead of redirecting
+        document.body.innerHTML = `
+          <div style="text-align: center; margin-top: 50px;">
+            <h2>You have opted to not participate in the study.</h2>
+            <p>Please close this window.</p>
+          </div>
+        `;
       });
     }
   },
