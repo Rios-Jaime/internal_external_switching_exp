@@ -436,22 +436,27 @@ const getDecisionStim = () => {
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block">
-        <div class="stim-placeholder" id="target-container"></div>
+        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
       <div class="stimulus-block">
-        <div class="stim-placeholder" id="external-container"></div>
+        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli" style="opacity: 0;">
       </div>
     </div>
     <script>
-      setTimeout(() => {
-        document.getElementById("target-container").innerHTML = 
-          '<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">';
-        document.getElementById("external-container").innerHTML = 
-          '<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli">';
-      }, 50); // Small delay ensures proper rendering
+      const targetEl = document.getElementById("target-img");
+      const externalEl = document.getElementById("external-img");
+
+      function showImage(imgEl) {
+        imgEl.onload = () => {
+          imgEl.style.opacity = "1";
+        };
+      }
+
+      showImage(targetEl);
+      showImage(externalEl);
     </script>
   `;
 };
