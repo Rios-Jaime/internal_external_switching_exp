@@ -450,8 +450,11 @@ const getDecisionStim = () => {
     </div>
     <script>
       setTimeout(() => {
-        document.querySelectorAll('.stimuli').forEach(el => el.style.visibility = 'visible');
-      }, 10);
+        document.querySelectorAll('.stimuli').forEach(el => {
+          console.log("Making visible:", el.src); // Debugging log
+          el.style.visibility = 'visible';
+        });
+      }, 50);
     </script>
   `;
 };
