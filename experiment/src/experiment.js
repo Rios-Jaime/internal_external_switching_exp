@@ -431,32 +431,37 @@ const getDecisionStim = () => {
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
 
-  const targetPosition = Math.random() < 0.5 ? "left" : "right";
-
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block">
-        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
+        <img id="target-img" src="" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
       <div class="stimulus-block">
-        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli" style="opacity: 0;">
+        <img id="external-img" src="" alt="external" class="stimuli external-stimuli" style="opacity: 0;">
       </div>
     </div>
     <script>
-      const targetEl = document.getElementById("target-img");
-      const externalEl = document.getElementById("external-img");
+      const targetImg = document.getElementById("target-img");
+      const externalImg = document.getElementById("external-img");
 
-      function showImage(imgEl) {
+      targetImg.src = "${targetImage}";
+      externalImg.src = "${externalStimImage}";
+
+      function showWhenLoaded(imgEl) {
         imgEl.onload = () => {
-          imgEl.style.opacity = "1";
+          imgEl.style.opacity = "1"; // Make visible only when loaded
+          console.log("Image loaded:", imgEl.src);
+        };
+        imgEl.onerror = () => {
+          console.error("Failed to load image:", imgEl.src);
         };
       }
 
-      showImage(targetEl);
-      showImage(externalEl);
+      showWhenLoaded(targetImg);
+      showWhenLoaded(externalImg);
     </script>
   `;
 };
