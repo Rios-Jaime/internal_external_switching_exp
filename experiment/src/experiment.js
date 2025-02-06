@@ -433,27 +433,25 @@ const getDecisionStim = () => {
 
   const targetPosition = Math.random() < 0.5 ? "left" : "right";
 
-  const targetHtml = `<img src="/images/placeholder.png" data-src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">`;
-  const externalHtml = `<img src="/images/placeholder.png" data-src="${externalStimImage}" alt="external" class="stimuli external-stimuli">`;
-
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block">
-        ${targetPosition === "left" ? targetHtml : externalHtml}
+        <div class="stim-placeholder" id="target-container"></div>
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
       <div class="stimulus-block">
-        ${targetPosition === "left" ? externalHtml : targetHtml}
+        <div class="stim-placeholder" id="external-container"></div>
       </div>
     </div>
     <script>
       setTimeout(() => {
-        document.querySelectorAll('.stimuli').forEach(el => {
-          el.src = el.dataset.src; // Swap the placeholder with the real image
-        });
-      }, 50); // Delay ensures proper rendering
+        document.getElementById("target-container").innerHTML = 
+          '<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">';
+        document.getElementById("external-container").innerHTML = 
+          '<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli">';
+      }, 50); // Small delay ensures proper rendering
     </script>
   `;
 };
