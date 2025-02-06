@@ -443,25 +443,21 @@ const getDecisionStim = () => {
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
 
+  console.log("Decision Phase - Target Image:", targetImage);
+  console.log("Decision Phase - External Image:", externalStimImage);
+
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block">
-        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
+        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
       <div class="stimulus-block">
-        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli" style="opacity: 0;">
+        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
       </div>
     </div>
-    <script>
-      setTimeout(() => {
-        console.log("Preloading images before displaying...");
-        document.getElementById("target-img").style.opacity = "1";
-        document.getElementById("external-img").style.opacity = "1";
-      }, 20); // Delay ensures a smoother transition
-    </script>
   `;
 };
 

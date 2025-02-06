@@ -72,8 +72,14 @@ body, .jspsych-display-element {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 100px; /* Adjust based on image size */
-  min-height: 100px;
-  font-size: 0; /* Prevents the dot from appearing */
+  min-width: 120px; /* Ensure enough space for images */
+  min-height: 120px;
+  font-size: 0; /* Prevents browser inserting placeholder text */
+}
+
+img.stimuli {
+  max-width: 120px; /* Ensure images fit correctly */
+  max-height: 120px;
+  visibility: visible !important;
 }
 
