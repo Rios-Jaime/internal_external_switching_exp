@@ -660,8 +660,8 @@ var practiceThresh = 3;
 
 // Task Length Parameters
 var practiceLen = 8;
-var numTestBlocks = 1;
-var numTrialsPerBlock = 8;
+var numTestBlocks = 6;
+var numTrialsPerBlock = 48;
 var testLen = numTestBlocks * numTrialsPerBlock;
 
 // Trial Timing Paramters
