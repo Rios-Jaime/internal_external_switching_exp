@@ -77,9 +77,3 @@ body, .jspsych-display-element {
   font-size: 0; /* Prevents browser inserting placeholder text */
 }
 
-img.stimuli {
-  max-width: 120px; /* Ensure images fit correctly */
-  max-height: 120px;
-  visibility: visible !important;
-}
-
