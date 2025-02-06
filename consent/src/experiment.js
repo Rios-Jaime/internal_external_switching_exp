@@ -28,7 +28,7 @@ const consentForm = {
       <p>This research study is conducted by Dr. Tobias Egner at the Center for Cognitive Neuroscience at Duke University. Its purpose is to examine how people switch between paying attention to internal memory and external stimuli in the world.</p>
       
       <h3>PROCEDURE</h3>
-      <p>In this experiment, you will be shown pictures of objects and asked to classify one object as being either smaller or larger than another object. The entire experiment is expected to take about <b>30 to 60 minutes</b>.</p>
+      <p>In this experiment, you will be shown pictures of objects and asked to classify one object as being either smaller or larger than another object. The entire experiment is expected to take about <b>60 minutes</b>.</p>
       
       <h3>RISKS & BENEFITS</h3>
       <p>We know of no risks or benefits to you for participating in this research study. The potential benefits of this research lie in the knowledge that will be acquired.</p>
