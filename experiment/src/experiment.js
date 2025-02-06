@@ -446,15 +446,22 @@ const getDecisionStim = () => {
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block">
-        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">
+        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
       <div class="stimulus-block">
-        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
+        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli" style="opacity: 0;">
       </div>
     </div>
+    <script>
+      setTimeout(() => {
+        console.log("Preloading images before displaying...");
+        document.getElementById("target-img").style.opacity = "1";
+        document.getElementById("external-img").style.opacity = "1";
+      }, 20); // Delay ensures a smoother transition
+    </script>
   `;
 };
 
@@ -1378,6 +1385,13 @@ for (var i = 0; i < practiceLen + 1; i++) {
     response_ends_trial: false,
     prompt: promptText,
     on_finish: appendData,
+    on_load: () => {
+      console.log("Decision phase displayed. Ensuring no placeholder text...");
+      document.querySelectorAll(".stimuli").forEach((el) => {
+        el.style.minWidth = "100px";
+        el.style.minHeight = "100px";
+      });
+    },
   };
 
   var practiceFeedbackBlock = {
@@ -1687,6 +1701,13 @@ for (var i = 0; i < practiceLen + 1; i++) {
     response_ends_trial: false,
     prompt: promptText,
     on_finish: appendData,
+    on_load: () => {
+      console.log("Decision phase displayed. Ensuring no placeholder text...");
+      document.querySelectorAll(".stimuli").forEach((el) => {
+        el.style.minWidth = "100px";
+        el.style.minHeight = "100px";
+      });
+    },
   };
 
   var practiceFeedbackBlock = {
@@ -1930,6 +1951,15 @@ var practiceNode2 = {
             },
             trial_duration: stimTrialDuration,
             on_finish: appendData,
+            on_load: () => {
+              console.log(
+                "Decision phase displayed. Ensuring no placeholder text..."
+              );
+              document.querySelectorAll(".stimuli").forEach((el) => {
+                el.style.minWidth = "100px";
+                el.style.minHeight = "100px";
+              });
+            },
           },
           {
             type: jsPsychHtmlKeyboardResponse,
@@ -2055,6 +2085,13 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
     trial_duration: stimTrialDuration, // 1500
     response_ends_trial: false,
     on_finish: appendData,
+    on_load: () => {
+      console.log("Decision phase displayed. Ensuring no placeholder text...");
+      document.querySelectorAll(".stimuli").forEach((el) => {
+        el.style.minWidth = "100px";
+        el.style.minHeight = "100px";
+      });
+    },
   };
 
   testTrials.push(
@@ -2214,6 +2251,15 @@ var testNode = {
             },
             trial_duration: stimTrialDuration,
             on_finish: appendData,
+            on_load: () => {
+              console.log(
+                "Decision phase displayed. Ensuring no placeholder text..."
+              );
+              document.querySelectorAll(".stimuli").forEach((el) => {
+                el.style.minWidth = "100px";
+                el.style.minHeight = "100px";
+              });
+            },
           },
           {
             type: jsPsychHtmlKeyboardResponse,
