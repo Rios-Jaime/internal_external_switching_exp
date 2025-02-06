@@ -433,28 +433,26 @@ const getDecisionStim = () => {
 
   const targetPosition = Math.random() < 0.5 ? "left" : "right";
 
-  const targetHtml = `<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="visibility: hidden;">`;
-  const externalHtml = `<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli" style="visibility: hidden;">`;
-
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block">
-        ${targetPosition === "left" ? targetHtml : externalHtml}
+        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
       <div class="stimulus-block">
-        ${targetPosition === "left" ? externalHtml : targetHtml}
+        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli" style="opacity: 0;">
       </div>
     </div>
     <script>
-      setTimeout(() => {
-        document.querySelectorAll('.stimuli').forEach(el => {
-          console.log("Making visible:", el.src); // Debugging log
-          el.style.visibility = 'visible';
-        });
-      }, 50);
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          console.log("Making visible:", document.getElementById("target-img").src);
+          document.getElementById("target-img").style.opacity = "1";
+          document.getElementById("external-img").style.opacity = "1";
+        }, 100);
+      });
     </script>
   `;
 };
