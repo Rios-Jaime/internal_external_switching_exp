@@ -425,16 +425,11 @@ const getEncodingStim = () => {
 //};
 
 const getDecisionStim = () => {
-  console.log("getDecisionStim() was called!");
-
   const externalStimImage =
     currCue === "external"
       ? getImageUrl(currStim)
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
-
-  console.log("External Image:", externalStimImage);
-  console.log("Target Image:", targetImage);
 
   return `
     <div class="decision-stim-container">

@@ -14,8 +14,6 @@ body, .jspsych-display-element {
   line-height: 1.5em;
 }
 
-
-
 .picture_box {
   position: absolute;
   top: 50%;
@@ -45,7 +43,7 @@ body, .jspsych-display-element {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 40px;
+  gap: 20px;
 }
 
 .cue-block {
@@ -68,5 +66,14 @@ body, .jspsych-display-element {
 .target-stimuli {
   border: 3px solid black;
   box-sizing: border-box;
+}
+
+.stimulus-block {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 100px; /* Adjust based on image size */
+  min-height: 100px;
+  font-size: 0; /* Prevents the dot from appearing */
 }
 
