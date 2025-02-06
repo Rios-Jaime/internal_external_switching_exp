@@ -1382,10 +1382,9 @@ for (var i = 0; i < practiceLen + 1; i++) {
     prompt: promptText,
     on_finish: appendData,
     on_load: () => {
-      console.log("Decision phase displayed. Ensuring no placeholder text...");
+      console.log("Decision phase displayed.");
       document.querySelectorAll(".stimuli").forEach((el) => {
-        el.style.minWidth = "100px";
-        el.style.minHeight = "100px";
+        el.style.visibility = "visible"; // Force images to show
       });
     },
   };
@@ -1698,10 +1697,9 @@ for (var i = 0; i < practiceLen + 1; i++) {
     prompt: promptText,
     on_finish: appendData,
     on_load: () => {
-      console.log("Decision phase displayed. Ensuring no placeholder text...");
+      console.log("Decision phase displayed.");
       document.querySelectorAll(".stimuli").forEach((el) => {
-        el.style.minWidth = "100px";
-        el.style.minHeight = "100px";
+        el.style.visibility = "visible"; // Force images to show
       });
     },
   };
@@ -1948,12 +1946,9 @@ var practiceNode2 = {
             trial_duration: stimTrialDuration,
             on_finish: appendData,
             on_load: () => {
-              console.log(
-                "Decision phase displayed. Ensuring no placeholder text..."
-              );
+              console.log("Decision phase displayed.");
               document.querySelectorAll(".stimuli").forEach((el) => {
-                el.style.minWidth = "100px";
-                el.style.minHeight = "100px";
+                el.style.visibility = "visible"; // Force images to show
               });
             },
           },
@@ -2082,10 +2077,9 @@ for (var i = 0; i < numTrialsPerBlock + 1; i++) {
     response_ends_trial: false,
     on_finish: appendData,
     on_load: () => {
-      console.log("Decision phase displayed. Ensuring no placeholder text...");
+      console.log("Decision phase displayed.");
       document.querySelectorAll(".stimuli").forEach((el) => {
-        el.style.minWidth = "100px";
-        el.style.minHeight = "100px";
+        el.style.visibility = "visible"; // Force images to show
       });
     },
   };
@@ -2248,12 +2242,9 @@ var testNode = {
             trial_duration: stimTrialDuration,
             on_finish: appendData,
             on_load: () => {
-              console.log(
-                "Decision phase displayed. Ensuring no placeholder text..."
-              );
+              console.log("Decision phase displayed.");
               document.querySelectorAll(".stimuli").forEach((el) => {
-                el.style.minWidth = "100px";
-                el.style.minHeight = "100px";
+                el.style.visibility = "visible"; // Force images to show
               });
             },
           },
