@@ -393,25 +393,61 @@ const getEncodingStim = () => {
   `;
 };
 
+//const getDecisionStim = () => {
+// Determine the external stimulus based on currCue
+//  const externalStimImage =
+//    currCue === "external"
+//      ? getImageUrl(currStim)
+//      : getImageUrl(currDistractorStim);
+//  const targetImage = getImageUrl(currTarget);
+
+// Randomly decide if the target is on the left or right
+//  const targetPosition = Math.random() < 0.5 ? "left" : "right";
+
+// Generate HTML for the stimuli with consistent sizes and alignment
+//const targetHtml = `<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">`;
+// const externalHtml = `<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli"">`;
+
+// Generate the HTML structure
+// return `
+//    <div class="decision-stim-container">
+//      <div class="stimulus-block"">
+//        ${targetPosition === "left" ? targetHtml : externalHtml}
+//      </div>
+//      <div class="cue-block">
+//      ${getCue()}
+//  </div>
+//      <div class="stimulus-block">
+//        ${targetPosition === "left" ? externalHtml : targetHtml}
+//    </div>
+//  </div>
+// `;
+//};
+
+const preloadTargetImage = (targetImage) => {
+  const img = new Image();
+  img.src = targetImage;
+  return img;
+};
+
 const getDecisionStim = () => {
-  // Determine the external stimulus based on currCue
   const externalStimImage =
     currCue === "external"
       ? getImageUrl(currStim)
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
 
-  // Randomly decide if the target is on the left or right
+  // Preload the target image before returning the HTML
+  preloadTargetImage(targetImage);
+
   const targetPosition = Math.random() < 0.5 ? "left" : "right";
 
-  // Generate HTML for the stimuli with consistent sizes and alignment
-  const targetHtml = `<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">`;
-  const externalHtml = `<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli"">`;
+  const targetHtml = `<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="visibility: hidden;">`;
+  const externalHtml = `<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli" style="visibility: hidden;">`;
 
-  // Generate the HTML structure
   return `
     <div class="decision-stim-container">
-      <div class="stimulus-block"">
+      <div class="stimulus-block">
         ${targetPosition === "left" ? targetHtml : externalHtml}
       </div>
       <div class="cue-block">
@@ -421,6 +457,11 @@ const getDecisionStim = () => {
         ${targetPosition === "left" ? externalHtml : targetHtml}
       </div>
     </div>
+    <script>
+      setTimeout(() => {
+        document.querySelectorAll('.stimuli').forEach(el => el.style.visibility = 'visible');
+      }, 10);
+    </script>
   `;
 };
 
@@ -459,6 +500,7 @@ var appendData = function () {
     correct_response: correctResponse,
     CTI: CTI,
     block_num: getExpStage() == "practice" ? practiceCount : testCount,
+    decision_stim: getDecisionStim,
   });
 
   if (trialID == "practice_trial" || trialID == "test_trial") {

@@ -69,3 +69,18 @@ body, .jspsych-display-element {
   border: 3px solid black;
   box-sizing: border-box;
 }
+
+.stimulus-block {
+  min-height: 100px;  /* Ensure space is reserved */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.stimulus-block::before {
+  content: "";  /* Prevents unexpected characters from appearing */
+  display: block;
+  width: 1px;
+  height: 1px;
+  visibility: hidden;
+}
