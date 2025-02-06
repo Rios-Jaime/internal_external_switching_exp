@@ -425,44 +425,29 @@ const getEncodingStim = () => {
 //};
 
 const getDecisionStim = () => {
+  console.log("getDecisionStim() was called!");
+
   const externalStimImage =
     currCue === "external"
       ? getImageUrl(currStim)
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
 
+  console.log("External Image:", externalStimImage);
+  console.log("Target Image:", targetImage);
+
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block">
-        <img id="target-img" src="" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
+        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
       <div class="stimulus-block">
-        <img id="external-img" src="" alt="external" class="stimuli external-stimuli" style="opacity: 0;">
+        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
       </div>
     </div>
-    <script>
-      const targetImg = document.getElementById("target-img");
-      const externalImg = document.getElementById("external-img");
-
-      targetImg.src = "${targetImage}";
-      externalImg.src = "${externalStimImage}";
-
-      function showWhenLoaded(imgEl) {
-        imgEl.onload = () => {
-          imgEl.style.opacity = "1"; // Make visible only when loaded
-          console.log("Image loaded:", imgEl.src);
-        };
-        imgEl.onerror = () => {
-          console.error("Failed to load image:", imgEl.src);
-        };
-      }
-
-      showWhenLoaded(targetImg);
-      showWhenLoaded(externalImg);
-    </script>
   `;
 };
 
