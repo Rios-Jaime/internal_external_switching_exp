@@ -70,7 +70,7 @@ body, .jspsych-display-element {
   box-sizing: border-box;
 }
 
-/*.stimulus-block {
+.stimulus-block {
   min-height: 100px;
   display: flex;
   justify-content: center;
@@ -83,4 +83,4 @@ body, .jspsych-display-element {
   width: 1px;
   height: 1px;
   visibility: hidden;
-}*/
+}

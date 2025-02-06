@@ -424,21 +424,12 @@ const getEncodingStim = () => {
 // `;
 //};
 
-const preloadTargetImage = (targetImage) => {
-  const img = new Image();
-  img.src = targetImage;
-  return img;
-};
-
 const getDecisionStim = () => {
   const externalStimImage =
     currCue === "external"
       ? getImageUrl(currStim)
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
-
-  // Preload the target image before returning the HTML
-  preloadTargetImage(targetImage);
 
   const targetPosition = Math.random() < 0.5 ? "left" : "right";
 
