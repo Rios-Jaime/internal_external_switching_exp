@@ -363,8 +363,20 @@ const getFixation = (color = "black") => `
   <div class="fixation" style="font-size: 100px; color: ${color}; text-align: center; line-height: 1;">+</div>
 `;
 
-const getCue = () =>
-  getFixation(currCue === "internal" ? internalColor : externalColor);
+const getCue = () => `
+  <div id="cue-fixation" class="fixation" style="
+    font-size: 100px; 
+    color: ${currCue === "internal" ? internalColor : externalColor}; 
+    text-align: center; 
+    line-height: 1;
+    width: 100%;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: monospace; /* Prevents browser font rendering artifacts */
+  ">+</div>
+`;
 
 const getEncodingStim = () => {
   // Determine the internal stimulus image
