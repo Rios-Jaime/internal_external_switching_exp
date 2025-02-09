@@ -104,8 +104,3 @@ body, .jspsych-display-element {
   overflow: hidden;
 }
 
-#target-placeholder {
-  border: none !important; /* 🔥 Ensures placeholder does not create an artifact */
-  visibility: hidden;
-}
-

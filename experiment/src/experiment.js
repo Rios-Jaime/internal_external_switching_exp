@@ -425,27 +425,28 @@ const getDecisionStim = () => {
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
 
+  // Restore correct randomization
   const targetPosition = Math.random() < 0.5 ? "left" : "right";
+
+  const targetHtml = `
+    <div class="stimulus-block target-container">
+      <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">
+    </div>`;
+
+  const externalHtml = `
+    <div class="stimulus-block external-container">
+      <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
+    </div>`;
 
   return `
     <div class="decision-stim-container">
-      <div class="stimulus-block target-container">
-        <div id="target-placeholder" style="width: 200px; height: 200px; background: transparent;"></div>
-        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="display: none;">
-      </div>
-      <div class="cue-block">
-        ${getCue()}
-      </div>
-      <div class="stimulus-block external-container">
-        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
-      </div>
+      ${
+        targetPosition === "left"
+          ? targetHtml + externalHtml
+          : externalHtml + targetHtml
+      }
+      <div class="cue-block">${getCue()}</div>
     </div>
-    <script>
-      document.getElementById("target-img").onload = function() {
-        document.getElementById("target-placeholder").style.display = "none"; 
-        this.style.display = "block"; 
-      };
-    </script>
   `;
 };
 
