@@ -69,9 +69,9 @@ body, .jspsych-display-element {
 }
 
 .target-stimuli {
-  border: 4px solid black !important;
+  border: none !important; /* 🔥 Removes the black border */
   box-sizing: border-box;
-  outline: none !important; /* 🔥 Prevents rendering artifacts */
+  outline: none !important;
   width: 200px;
   height: auto;
   display: block !important;
