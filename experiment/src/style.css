@@ -83,7 +83,8 @@ body, .jspsych-display-element {
   min-width: 120px;
   min-height: 120px;
   text-align: center;
-  font-size: 0; /* Prevents any placeholder text */
+  font-size: 0 !important; /* 🔥 Prevents placeholder text */
+  overflow: hidden;
 }
 
 .external-container {
