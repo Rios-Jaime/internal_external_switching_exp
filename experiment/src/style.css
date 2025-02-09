@@ -90,9 +90,9 @@ body, .jspsych-display-element {
   min-width: 200px;
   min-height: 200px;
   text-align: center;
-  font-size: 0 !important; /* 🔥 Prevents placeholder artifacts */
+  font-size: 0 !important;
   overflow: hidden;
-  border: none !important; /* 🔥 Removes any lingering lines */
+  border: none !important; /* 🔥 Ensures no black lines appear */
 }
 
 .external-container {
@@ -102,5 +102,10 @@ body, .jspsych-display-element {
   text-align: center;
   font-size: 0 !important;
   overflow: hidden;
+}
+
+#target-placeholder {
+  border: none !important; /* 🔥 Ensures placeholder does not create an artifact */
+  visibility: hidden;
 }
 
