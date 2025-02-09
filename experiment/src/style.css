@@ -41,9 +41,9 @@ body, .jspsych-display-element {
 
 .decision-stim-container {
   display: flex;
-  justify-content: center;
+  justify-content: space-between; /* Ensures equal spacing */
   align-items: center;
-  gap: 40px; /* Ensure proper spacing */
+  gap: 100px; /* Increase gap between stimuli */
   position: relative;
 }
 
@@ -55,6 +55,7 @@ body, .jspsych-display-element {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  margin: 0 80px; /* Push cue away from external stimuli */
 }
 
 .stimuli {
@@ -68,25 +69,35 @@ body, .jspsych-display-element {
 }
 
 .target-stimuli {
-  border: 3px solid black;
+  border: 4px solid black !important; /* Ensure the black box is always applied */
   box-sizing: border-box;
   outline: 1px solid transparent;
-  width: 150px; /* Ensure consistent size */
+  width: 200px; /* Ensure correct size */
   height: auto;
+  display: block !important; /* Force visibility */
 }
 
 .stimulus-block {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 150px;
-  min-height: 150px;
+  min-width: 200px;
+  min-height: 200px;
 }
 
-.target-container, .external-container {
+.target-container {
   position: relative;
-  min-width: 150px; /* Adjust for proper layout */
-  min-height: 150px;
+  min-width: 200px;
+  min-height: 200px;
+  text-align: center;
+  font-size: 0 !important;
+  overflow: hidden;
+}
+
+.external-container {
+  position: relative;
+  min-width: 200px;
+  min-height: 200px;
   text-align: center;
   font-size: 0 !important;
   overflow: hidden;

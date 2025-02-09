@@ -428,7 +428,7 @@ const getDecisionStim = () => {
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block target-container">
-        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
+        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">
       </div>
       <div class="cue-block">
         ${getCue()}
@@ -437,11 +437,6 @@ const getDecisionStim = () => {
         <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
       </div>
     </div>
-    <script>
-      document.getElementById("target-img").onload = function() {
-        this.style.opacity = "1"; 
-      };
-    </script>
   `;
 };
 
