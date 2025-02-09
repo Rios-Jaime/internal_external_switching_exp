@@ -43,14 +43,18 @@ body, .jspsych-display-element {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 20px;
+  gap: 40px; /* Ensure proper spacing */
+  position: relative;
 }
 
 .cue-block {
-  margin: 0 40px;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .stimuli {
@@ -66,32 +70,25 @@ body, .jspsych-display-element {
 .target-stimuli {
   border: 3px solid black;
   box-sizing: border-box;
-  outline: 1px solid transparent; /* Prevents rendering glitches */
+  outline: 1px solid transparent;
+  width: 150px; /* Ensure consistent size */
+  height: auto;
 }
 
 .stimulus-block {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 120px; /* Ensure enough space for images */
-  min-height: 120px;
-  font-size: 0; /* Prevents browser inserting placeholder text */
+  min-width: 150px;
+  min-height: 150px;
 }
 
-.target-container {
+.target-container, .external-container {
   position: relative;
-  min-width: 120px;
-  min-height: 120px;
+  min-width: 150px; /* Adjust for proper layout */
+  min-height: 150px;
   text-align: center;
-  font-size: 0 !important; /* 🔥 Prevents placeholder text */
+  font-size: 0 !important;
   overflow: hidden;
-}
-
-.external-container {
-  position: relative;
-  min-width: 120px;
-  min-height: 120px;
-  text-align: center;
-  font-size: 0; /* Prevents any placeholder text */
 }
 

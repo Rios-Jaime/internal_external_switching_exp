@@ -418,37 +418,6 @@ const getEncodingStim = () => {
   `;
 };
 
-//const getDecisionStim = () => {
-// Determine the external stimulus based on currCue
-//  const externalStimImage =
-//    currCue === "external"
-//      ? getImageUrl(currStim)
-//      : getImageUrl(currDistractorStim);
-//  const targetImage = getImageUrl(currTarget);
-
-// Randomly decide if the target is on the left or right
-//  const targetPosition = Math.random() < 0.5 ? "left" : "right";
-
-// Generate HTML for the stimuli with consistent sizes and alignment
-//const targetHtml = `<img src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">`;
-// const externalHtml = `<img src="${externalStimImage}" alt="external" class="stimuli external-stimuli"">`;
-
-// Generate the HTML structure
-// return `
-//    <div class="decision-stim-container">
-//      <div class="stimulus-block"">
-//        ${targetPosition === "left" ? targetHtml : externalHtml}
-//      </div>
-//      <div class="cue-block">
-//      ${getCue()}
-//  </div>
-//      <div class="stimulus-block">
-//        ${targetPosition === "left" ? externalHtml : targetHtml}
-//    </div>
-//  </div>
-// `;
-//};
-
 const getDecisionStim = () => {
   const externalStimImage =
     currCue === "external"
@@ -459,8 +428,7 @@ const getDecisionStim = () => {
   return `
     <div class="decision-stim-container">
       <div class="stimulus-block target-container">
-        <div id="target-placeholder" style="width: 120px; height: 120px; background: transparent;">.</div>
-        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="display: none;">
+        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli" style="opacity: 0;">
       </div>
       <div class="cue-block">
         ${getCue()}
@@ -471,8 +439,7 @@ const getDecisionStim = () => {
     </div>
     <script>
       document.getElementById("target-img").onload = function() {
-        document.getElementById("target-placeholder").style.display = "none"; 
-        this.style.display = "block"; 
+        this.style.opacity = "1"; 
       };
     </script>
   `;
