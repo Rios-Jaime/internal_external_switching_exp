@@ -66,6 +66,7 @@ body, .jspsych-display-element {
 .target-stimuli {
   border: 3px solid black;
   box-sizing: border-box;
+  outline: 1px solid transparent; /* Prevents rendering glitches */
 }
 
 .stimulus-block {
@@ -75,5 +76,21 @@ body, .jspsych-display-element {
   min-width: 120px; /* Ensure enough space for images */
   min-height: 120px;
   font-size: 0; /* Prevents browser inserting placeholder text */
+}
+
+.target-container {
+  position: relative;
+  min-width: 120px;
+  min-height: 120px;
+  text-align: center;
+  font-size: 0; /* Prevents any placeholder text */
+}
+
+.external-container {
+  position: relative;
+  min-width: 120px;
+  min-height: 120px;
+  text-align: center;
+  font-size: 0; /* Prevents any placeholder text */
 }
 

@@ -68,6 +68,19 @@ jsPsych.data.addProperties({
 /* Define helper functions */
 /* ************************************ */
 
+const preloadImages = (imageUrls) => {
+  return Promise.all(
+    imageUrls.map((url) => {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = resolve;
+        img.onerror = resolve; // Prevent blocking on errors
+      });
+    })
+  );
+};
+
 function shuffleArray(array) {
   // Create a copy of the original array
   const shuffledArray = [...array];
@@ -443,18 +456,15 @@ const getDecisionStim = () => {
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
 
-  console.log("Decision Phase - Target Image:", targetImage);
-  console.log("Decision Phase - External Image:", externalStimImage);
-
   return `
     <div class="decision-stim-container">
-      <div class="stimulus-block">
+      <div class="stimulus-block target-container">
         <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
-      <div class="stimulus-block">
+      <div class="stimulus-block external-container">
         <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
       </div>
     </div>
@@ -2248,7 +2258,9 @@ var endBlock = {
 
 var internal_external_experiment = [];
 var internal_external_experiment_init = () => {
-  jsPsych.pluginAPI.preloadImages(imageUrls);
+  preloadImages(imageUrls).then(() => {
+    console.log("✅ All images preloaded successfully.");
+  });
 
   internal_external_experiment.push(fullscreen);
   internal_external_experiment.push(instructionNode);
