@@ -425,22 +425,28 @@ const getDecisionStim = () => {
       : getImageUrl(currDistractorStim);
   const targetImage = getImageUrl(currTarget);
 
+  // Randomly decide if the target is on the left or right
+  const targetPosition = Math.random() < 0.5 ? "left" : "right";
+
+  const targetHtml = `<img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">`;
+  const externalHtml = `<img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">`;
+
   return `
     <div class="decision-stim-container">
-      <div class="stimulus-block target-container">
-        <img id="target-img" src="${targetImage}" alt="${currTarget}" class="stimuli target-stimuli">
+      <div class="stimulus-block">
+        ${targetPosition === "left" ? targetHtml : externalHtml}
       </div>
       <div class="cue-block">
         ${getCue()}
       </div>
-      <div class="stimulus-block external-container">
-        <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
+      <div class="stimulus-block">
+        ${targetPosition === "left" ? externalHtml : targetHtml}
       </div>
     </div>
     <script>
       setTimeout(() => {
         document.getElementById("target-img").style.opacity = "1";
-      }, 20); /* Small delay to prevent flickering */
+      }, 20);
     </script>
   `;
 };
