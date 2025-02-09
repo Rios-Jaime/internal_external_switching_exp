@@ -55,7 +55,7 @@ body, .jspsych-display-element {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  margin: 0 80px; /* Push cue away from external stimuli */
+  z-index: 1000; /* Ensures the cue is always on top */
 }
 
 .stimuli {

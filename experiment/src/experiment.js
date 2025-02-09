@@ -437,6 +437,11 @@ const getDecisionStim = () => {
         <img id="external-img" src="${externalStimImage}" alt="external" class="stimuli external-stimuli">
       </div>
     </div>
+    <script>
+      setTimeout(() => {
+        document.getElementById("target-img").style.opacity = "1";
+      }, 20); /* Small delay to prevent flickering */
+    </script>
   `;
 };
 
