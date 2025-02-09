@@ -69,12 +69,14 @@ body, .jspsych-display-element {
 }
 
 .target-stimuli {
-  border: none !important; /* 🔥 Removes the black border */
   box-sizing: border-box;
   outline: none !important;
   width: 200px;
   height: auto;
   display: block !important;
+  object-fit: contain !important; /* Ensures the entire image is displayed */
+  padding: 2px; /* Adds a small buffer to prevent cropping */
+  background-color: transparent !important; /* Ensures no hidden artifacts */
 }
 
 .stimulus-block {
